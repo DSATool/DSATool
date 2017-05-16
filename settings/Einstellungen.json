@@ -1,0 +1,9 @@
+{ "Allgemein" : { "Bücher" : ["Wege der Helden", "Wege des Schwerts", "Wege der Zauberei", "Liber Cantiones (HC)", "Liber Liturgium", "Wege der Alchimie", "Wege der Götter", "Aventurisches Arsenal", "Zoo-Botanica Aventurica"], "Jahreswechsel" : "Jahreszeiten" }, "Heldenerschaffung" : {
+	"GP" : 110,
+	"GP aus Nachteilen" : 50,
+	"GP aus Schlechten Eigenschaften" : 30,
+	"GP für Eigenschaften" : 100,
+	"Gewicht:Spanne" : 15,
+	"Maximum für Eigenschaften" : 14,
+	"Minimum für Eigenschaften" : 8
+}, "Kampf" : { "Rüstungsart" : "Zonenrüstung" }, "Steigerung" : { "Lernmethode" : "Gegenseitiges Lehren" } }

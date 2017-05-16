@@ -1,0 +1,89 @@
+.background {
+    -fx-padding: 2, 2, 2, 2;
+}
+
+.column-header.left-aligned > .label {
+    -fx-alignment: baseline-left;
+}
+
+.invalid {
+    -fx-background-color: lightcoral;
+}
+
+.invalid:selected {
+    -fx-background-color: #E2AAAA;
+}
+
+.valid {
+	-fx-background-color: lightgreen;
+}
+
+.valid:selected {
+    -fx-background-color: #B2E0B2;
+}
+
+.disabled-opaque:disabled {
+	-fx-opacity: 1;
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-background-radius: 5, 5, 4, 3;
+	-fx-background-insets: 0 0 -1 0, 0, 1, 2;
+}
+
+.disabled-opaque:disabled .list-cell {
+	-fx-opacity: 1.0;
+	-fx-text-fill: -fx-text-base-color;
+}
+
+.disabled-opaque:disabled .text-field {
+	-fx-opacity: 1.0;
+	-fx-background: transparent;
+	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-text-fill: -fx-text-base-color;
+}
+
+.disabled-opaque:disabled .arrow-button {
+	-fx-opacity: 0.0;
+}
+
+.disabled-opaque:disabled .increment-arrow-button {
+	visibility: hidden;
+}
+
+.disabled-opaque:disabled .decrement-arrow-button {
+	visibility: hidden;
+}
+
+.remove-vertical-scrollbar .scroll-bar:vertical {
+    -fx-opacity: 0;
+    -fx-padding:-7;
+}
+
+.remove-horizontal-scrollbar .scroll-bar:horizontal {
+    -fx-opacity: 0;
+    -fx-padding:-7;
+}
+
+.remove-header .column-header-background {
+    -fx-max-height: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+.tooltip {
+	-fx-font-family: normal;
+	-fx-font-size: 9.5;
+}
+
+.icon-font {
+	-fx-font-family: "Material Icons";
+	-fx-font-size: 15;
+}
+
+.flat-link {
+	-fx-text-fill: -fx-text-background-color;
+	-fx-underline: false;
+}
+
+.flat-link:hover {
+	-fx-underline: true;
+}

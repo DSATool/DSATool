@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox fx:id="pane" xmlns:fx="http://javafx.com/fxml/1" styleClass="background" >
+   <ScrollPane fx:id="scroll" VBox.vgrow="ALWAYS" >
+      <VBox fx:id="box" spacing="5">
+         <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+      </VBox>
+   </ScrollPane>
+   <HBox alignment="CENTER_RIGHT" >
+      <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+      <Button text="Schließen" onAction="#close" />
+   </HBox>
+</VBox>

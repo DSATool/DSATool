@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import dsatool.util.ReactiveSpinner?>
+
+<VBox fx:id="pane" xmlns:fx="http://javafx.com/fxml/1" spacing="2" styleClass="background" >
+   <padding><Insets top="2" right="2" bottom="2" left="2"/></padding>
+   <Label text="Pfad zur Datei:" />
+   <HBox spacing="2" >
+      <TextField fx:id="path" HBox.hgrow="ALWAYS" />
+      <Button onAction="#browsePath" prefWidth="25" prefHeight="25" text="&#xE8B6;" >
+         <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+         <font>
+            <Font name="Material Icons" size="20.0" />
+         </font>
+         <tooltip>
+            <Tooltip text="Datei suchen" >
+               <font>
+                  <Font name="normal" size="9.5" />
+               </font>
+            </Tooltip>
+         </tooltip>
+      </Button>
+   </HBox>
+   <HBox spacing="15" >
+      <Label text="Öffnen mit" />
+      <RadioButton fx:id="defaultApp" selected="true" text="Standardanwendung">
+         <toggleGroup>
+            <ToggleGroup fx:id="applicationGroup" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="specified" text="folgendem Befehl" toggleGroup="$applicationGroup" />
+   </HBox>
+   <HBox alignment="CENTER" spacing="2" >
+      <TextField fx:id="command" disable="true" HBox.hgrow="ALWAYS" >
+         <tooltip>
+            <Tooltip text="${'Eigener Befehl zum Öffnen der Datei\nPlatzhalter:\n%f für Dateipfad\n%p für Seitennummer'}"/>
+         </tooltip>
+      </TextField>
+      <Label text="Seitenoffset:" >
+         <tooltip>
+            <Tooltip text="Wird zur Seitennummer addiert"/>
+         </tooltip>
+      </Label>
+      <ReactiveSpinner fx:id="offset" imin="-99" imax="99" initialValue="0" disable="true" prefWidth="60" >
+         <tooltip>
+            <Tooltip text="Wird zur Seitennummer addiert"/>
+         </tooltip>
+      </ReactiveSpinner>
+   </HBox>
+   <HBox spacing="2" alignment="BOTTOM_RIGHT" >
+      <Button text="Ok" onAction="#close" />
+   </HBox>
+</VBox>

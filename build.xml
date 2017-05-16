@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="deploy" name="DSATool">
+	<property name="Name" value="DSATool"/>
+	<property name="Includes" value="dependencies/controlsfx.jar,dependencies/Jsonant.jar,licences/ALv2.txt,licences/controlsfx-license.txt,resources/fonts/MaterialIcons-Regular.ttf,update/Updater.jar"/>
+	<target name="deploy" description="Builds the jar archive">
+		<mkdir dir="plugins"/>
+    	<mkdir dir="bin"/>
+    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="1.8" target="1.8"/>
+		<jar destfile="DSATool.jar">
+			<manifest>
+				<attribute name="Main-Class" value="dsatool.gui.Main"/>
+				<attribute name="Class-Path" value=". dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
+			</manifest>
+			<fileset dir="bin" excludes="dsatool/update/Updater.class"/>
+			<metainf file="LICENSE"/>
+			<metainf file="NOTICE"/>
+		</jar>
+	</target>
+	<target name="update" description="Creates a zip file for release" depends="deploy,Updater">
+		<delete dir="release/current"/>
+		<mkdir dir="release/current"/>
+		<copy todir="release/current" includeEmptyDirs="false">
+			<fileset dir="." includes="${Includes},${Name}.jar">
+			    <different targetdir="release/previous"/>
+			</fileset>
+		</copy>
+		<fileset id="deleted" dir="release/previous" includes="${Includes},${Name}.jar">
+			<present present="srconly" targetdir="."/>
+		</fileset>
+		<resourcecount property="hasDeleted" refId="deleted" when="greater" count="0"/>
+		<echo file="release/current/deleted.txt">${toString:deleted}</echo>
+		<delete>
+			<fileset file="release/current/deleted.txt">
+				<size value="3" when="less"/>
+			</fileset>
+		</delete>
+		<tstamp>
+			<format property="releaseDate" pattern="yyyy-MM-dd_HH-mm" />
+		</tstamp>
+		<loadfile srcfile="release/previous/release-info.json" property="previousReleaseDate">
+			<filterchain>
+				<linecontains>
+					<contains value="releaseDate"/>
+				</linecontains>
+				<tokenfilter>
+					<replaceregex pattern=".*: ."/>
+					<replaceregex pattern=".,"/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+		<copy file="release/release-info.template" tofile="release/current/release-info.json"/>
+		<replace file="release/current/release-info.json" token="@releaseDate@" value="${releaseDate}"/>
+		<replace file="release/current/release-info.json" token="@previousReleaseDate@" value="${previousReleaseDate}"/>
+		<copy file="release/current/release-info.json" tofile="release/current/update/${Name}.json"/>
+		<copy file="release/update-info.template" tofile="release/update-info.json" overwrite="true"/>
+		<replace file="release/update-info.json" token="@releaseDate@" value="${releaseDate}"/>
+		<zip destfile="release/${Name}_${releaseDate}.zip">
+			<fileset dir="release/current"/>
+		</zip>
+		<delete dir="release/previous"/>
+		<copy todir="release/previous" includeEmptyDirs="false">
+			<fileset dir="." includes="${Includes},${Name}.jar"/>
+		</copy>
+		<copy file="release/current/release-info.json" todir="release/previous"/>
+		<delete dir="release/current"/>
+	</target>
+	<target name="release" description="Creates a full release as well as an update" depends="update">
+		<copy file="release/release-info.template" tofile="update/${Name}.json"/>
+		<replace file="update/${Name}.json" token="@releaseDate@" value="${releaseDate}"/>
+		<replace file="update/${Name}.json" token="@previousReleaseDate@" value="${previousReleaseDate}"/>
+		<zip destfile="release/${Name}_${releaseDate}_full.zip">
+			<fileset dir="." includes="data/**,dependencies/**,licenses/**,plugins/**,resources/**,update/**,settings/Einstellungen.json,${Name}.jar"/>
+		</zip>
+		<delete file="update/${Name}.json"/>
+	</target>
+	<target name="Updater" description="Builds the jar for the Updater">
+		<jar destfile="update/Updater.jar">
+			<manifest>
+				<attribute name="Main-Class" value="dsatool.update.Updater"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="bin" includes="dsatool/update/Updater.class"/>
+		</jar>
+	</target>
+</project>

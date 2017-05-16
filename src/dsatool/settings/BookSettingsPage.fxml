@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fx:id="pane" fitToWidth="true" styleClass="background" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox fx:id="box" spacing="2">
+         <HBox spacing="2" >
+            <VBox spacing="2" >
+               <Label text="Genutzte Regelwerke" >
+                  <tooltip>
+                    <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
+                  </tooltip>
+               </Label>
+               <ListView fx:id="usedBooks" maxHeight="211" >
+                  <tooltip>
+                    <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
+                  </tooltip>
+               </ListView>
+               <Button fx:id="edit" text="&#xE3C9;" disable="true" minWidth="35" onAction="#editBook" >
+                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <font>
+                     <Font name="Material Icons" size="20.0" />
+                  </font>
+                  <tooltip>
+                     <Tooltip text="Buch bearbeiten" />
+                  </tooltip>
+               </Button>
+            </VBox>
+            <VBox spacing="5" >
+               <Label text="" />
+               <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
+               <Button text="&#xE314;" minWidth="35" onAction="#useBooks" >
+                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <font>
+                     <Font name="Material Icons" size="20.0" />
+                  </font>
+                  <tooltip>
+                     <Tooltip text="Benutzen" />
+                  </tooltip>
+               </Button>
+               <Button text="&#xE315;" minWidth="35" onAction="#removeBooks" >
+                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <font>
+                     <Font name="Material Icons" size="20.0" />
+                  </font>
+                  <tooltip>
+                     <Tooltip text="Nicht mehr benutzen" />
+                  </tooltip>
+               </Button>
+               <Label prefHeight="25" VBox.vgrow="NEVER" />
+               <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
+            </VBox>
+            <VBox spacing="2" >
+               <Label text="Nicht genutzte Regelwerke" >
+                  <tooltip>
+                    <Tooltip text="Diese Regelwerke werden aktuell nicht verwendet"/>
+                  </tooltip>
+               </Label>
+               <ListView fx:id="unusedBooks" maxHeight="211" >
+                  <tooltip>
+                    <Tooltip text="Diese Regelwerke werden aktuell nicht verwendet"/>
+                  </tooltip>
+               </ListView>
+            </VBox>
+         </HBox>
+      </VBox>
+   </content>
+</ScrollPane>

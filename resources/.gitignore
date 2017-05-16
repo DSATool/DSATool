@@ -1,0 +1,5 @@
+/images/
+/fonts/*
+!/fonts/MaterialIcons-Regular.ttf
+!/fonts/codepoints
+/logos/

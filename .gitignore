@@ -1,0 +1,6 @@
+/bin/
+/data/
+/source/
+/plugins/*.jar
+/*.jar
+/error.log

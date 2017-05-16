@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" styleClass="background" >
+   <VBox spacing="2" >
+      <Label fx:id="textLabel" wrapText="true" />
+      <Label fx:id="licenseLabel" wrapText="true" />
+      <Hyperlink fx:id="licenseLink" wrapText="true" >
+         <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+      </Hyperlink>
+      <Hyperlink fx:id="urlLabel" wrapText="true" >
+         <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+      </Hyperlink>
+   </VBox>
+   <ImageView fx:id="image" />
+</HBox>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.StatusBar?>
+
+<BorderPane fx:id="mainPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dsatool.control.MainWindowController">
+   <top>
+      <MenuBar fx:id="menu" />
+   </top>
+   <left>
+      <ScrollPane fx:id="scrollPane"  fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="ALWAYS" styleClass="background" >
+         <VBox fx:id="toolSelector" fillWidth="true" >
+            <padding>
+               <Insets bottom="0" left="0" right ="3" top="0"/>
+            </padding>
+         </VBox>
+      </ScrollPane>
+   </left>
+   <center>
+      <StackPane fx:id="toolArea">
+         <BorderPane styleClass="background" />
+      </StackPane>
+   </center>
+   <bottom>
+	  <StatusBar fx:id="statusBar" />
+   </bottom>
+</BorderPane>
