@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -90,7 +91,7 @@ public class ResourceManager {
 	/**
 	 * A list of listeners for changes to specific paths
 	 */
-	private static Map<String, List<Runnable>> pathListeners = new HashMap<>();
+	private static Map<String, List<Consumer<Boolean>>> pathListeners = new HashMap<>();
 
 	/**
 	 * A Collator to sort files lexicographically according to the users locale
@@ -229,7 +230,7 @@ public class ResourceManager {
 	 * @param listener
 	 *            The listener that is executed on changes
 	 */
-	public static void addPathListener(final String path, final Runnable listener) {
+	public static void addPathListener(final String path, final Consumer<Boolean> listener) {
 		if (!pathListeners.containsKey(path)) {
 			pathListeners.put(path, new ArrayList<>());
 		}
@@ -303,9 +304,9 @@ public class ResourceManager {
 	public static void discardChanges() {
 		resources = new HashMap<>();
 		paths = new HashMap<>();
-		for (final List<Runnable> listeners : pathListeners.values()) {
-			for (final Runnable listener : listeners) {
-				listener.run();
+		for (final List<Consumer<Boolean>> listeners : pathListeners.values()) {
+			for (final Consumer<Boolean> listener : listeners) {
+				listener.accept(true);
 			}
 		}
 	}
@@ -532,8 +533,8 @@ public class ResourceManager {
 	private static void notifyPathListeners(final String path) {
 		for (final String listenerPath : pathListeners.keySet()) {
 			if (path.startsWith(listenerPath)) {
-				for (final Runnable listener : pathListeners.get(listenerPath)) {
-					listener.run();
+				for (final Consumer<Boolean> listener : pathListeners.get(listenerPath)) {
+					listener.accept(false);
 				}
 			}
 		}
@@ -547,8 +548,8 @@ public class ResourceManager {
 	 * @param listener
 	 *            The listener that is to be removed
 	 */
-	public static void removePathListener(final String path, final Runnable listener) {
-		final List<Runnable> listeners = pathListeners.get(path);
+	public static void removePathListener(final String path, final Consumer<Boolean> listener) {
+		final List<Consumer<Boolean>> listeners = pathListeners.get(path);
 		if (listeners != null) {
 			listeners.remove(listener);
 		}
@@ -643,6 +644,11 @@ public class ResourceManager {
 			zip = null;
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
+		}
+		for (final List<Consumer<Boolean>> listeners : pathListeners.values()) {
+			for (final Consumer<Boolean> listener : listeners) {
+				listener.accept(false);
+			}
 		}
 		try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Util.getAppDir() + "/settings/Gruppe.txt"))) {
 			writer.write(path.getAbsolutePath());
