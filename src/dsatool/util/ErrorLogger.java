@@ -30,7 +30,7 @@ import javafx.application.Platform;
  */
 public class ErrorLogger {
 	public static void log(final String text) {
-		Util.alert(text);
+		Platform.runLater(() -> Util.alert(text).show());
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
 			writer.write(text);
