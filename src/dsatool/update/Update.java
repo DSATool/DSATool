@@ -57,7 +57,11 @@ public class Update {
 						final ZipEntry entry = entries.nextElement();
 						if ("update/Updater.jar".equals(entry.getName())) {
 							final File destination = new File(Util.getAppDir() + "/update/Updater.jar");
-							destination.delete();
+							try {
+								Files.deleteIfExists(destination.toPath());
+							} catch (final IOException e) {
+								ErrorLogger.logError(e);
+							}
 							try (ReadableByteChannel in = Channels.newChannel(zipFile.getInputStream(entry));
 									FileOutputStream out = new FileOutputStream(destination)) {
 								out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);

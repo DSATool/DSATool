@@ -51,7 +51,11 @@ public class Updater {
 							File parent = toDelete.getCanonicalFile().getParentFile();
 							for (int i = 0; parent != null && i < 20; ++i) {
 								if (parent.equals(appDir)) {
-									toDelete.delete();
+									try {
+										Files.deleteIfExists(toDelete.toPath());
+									} catch (final IOException e) {
+										logError(e);
+									}
 									break;
 								}
 								parent = parent.getParentFile();
@@ -60,8 +64,10 @@ public class Updater {
 					}
 				} else if (!"update/Updater.jar".equals(fileName) && !"release-info.json".equals(fileName)) {
 					final File destination = new File(getAppDir() + "/" + fileName);
-					if (destination.exists()) {
-						destination.delete();
+					try {
+						Files.deleteIfExists(destination.toPath());
+					} catch (final IOException e) {
+						logError(e);
 					}
 					try (ReadableByteChannel in = Channels.newChannel(zipFile.getInputStream(entry));
 							FileOutputStream out = new FileOutputStream(destination)) {
