@@ -23,16 +23,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonBase;
+import javafx.scene.control.ComboBoxBase;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 
 	private final boolean alwaysVisible;
+	private Node graphic;
 
 	public GraphicTableCell(final boolean alwaysVisible) {
 		this.alwaysVisible = alwaysVisible;
@@ -45,7 +50,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 		if (!alwaysVisible) {
 			setText(getItem() != null ? getItem().toString() : "");
 			setPadding(new Insets(5, 0, 0, 5));
-			setGraphic(null);
+			setGraphic(graphic);
 		}
 	}
 
@@ -74,11 +79,25 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 				}
 			}
 		});
+		if (graphic instanceof TextField) {
+			((TextField) graphic).setOnAction(e -> {
+				requestFocus();
+			});
+		} else if (graphic instanceof ButtonBase) {
+			((ButtonBase) graphic).setOnAction(e -> {
+				requestFocus();
+			});
+		} else if (graphic instanceof ComboBoxBase) {
+			((ComboBoxBase<?>) graphic).setOnAction(e -> {
+				requestFocus();
+			});
+		}
 	}
 
 	@Override
 	public void startEdit() {
-		if (!isEmpty() && getGraphic() == null) {
+		graphic = getGraphic();
+		if (!isEmpty() && !alwaysVisible) {
 			createGraphic();
 		}
 		getGraphic().requestFocus();
