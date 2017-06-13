@@ -4,3 +4,4 @@
 /plugins/*.jar
 /*.jar
 /error.log
+/update/*.json
