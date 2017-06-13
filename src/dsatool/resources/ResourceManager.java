@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -36,8 +35,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -92,11 +90,6 @@ public class ResourceManager {
 	 * A list of listeners for changes to specific paths
 	 */
 	private static Map<String, List<Consumer<Boolean>>> pathListeners = new HashMap<>();
-
-	/**
-	 * A Collator to sort files lexicographically according to the users locale
-	 */
-	private static final Collator comparator = Collator.getInstance();
 
 	private static final List<String> priorities;
 
@@ -166,60 +159,61 @@ public class ResourceManager {
 		if (resources.containsKey(path)) return true;
 		final JSONParser parser = new JSONParser(discriminate ? discriminator : null, e -> ErrorLogger.logError(e));
 		final String jsonpath = path + ".json";
-		Source bestMatch = Source.ZIP;
+		Source source = null;
+		JSONObject result = new JSONObject(null);
+		File file = new File(Util.getAppDir() + File.separator + jsonpath);
+		if (file.exists()) {
+			source = Source.GENERAL;
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+				result = parser.parse(reader);
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+				return false;
+			}
+		}
+		file = new File(Util.getAppDir() + "/mod/" + jsonpath);
+		if (file.exists()) {
+			if (source == null) {
+				source = Source.MOD;
+			}
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+				final JSONObject mod = parser.parse(reader);
+				modifyResource(result, mod);
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+				return false;
+			}
+		}
 		if (zip != null) {
 			final ZipEntry entry = zip.getEntry(jsonpath);
 			if (entry != null) {
+				if (source == null) {
+					source = Source.ZIP;
+				}
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"))) {
-					final JSONObject result = parser.parse(reader);
-					resources.put(path, new Tuple<>(result, Source.ZIP));
-					paths.put(result, path);
-					if (notifyPathListeners) {
-						notifyPathListeners(path);
-					}
-					return true;
+					final JSONObject mod = parser.parse(reader);
+					modifyResource(result, mod);
 				} catch (final IOException e) {
 					ErrorLogger.logError(e);
+					return false;
 				}
 			}
 		}
-		File file = new File(Util.getAppDir() + "/mod/" + jsonpath);
-		if (file.exists()) {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-				final JSONObject result = parser.parse(reader);
-				resources.put(path, new Tuple<>(result, Source.MOD));
-				paths.put(result, path);
-				if (notifyPathListeners) {
-					notifyPathListeners(path);
-				}
-				return true;
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-				bestMatch = Source.MOD;
+		if (source == null) {
+			resources.put(path, new Tuple<>(result, Source.ZIP));
+			paths.put(result, path);
+			if (notifyPathListeners) {
+				notifyPathListeners(path);
 			}
-		}
-		file = new File(Util.getAppDir() + File.separator + jsonpath);
-		if (file.exists()) {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-				final JSONObject result = parser.parse(reader);
-				resources.put(path, new Tuple<>(result, Source.GENERAL));
-				paths.put(result, path);
-				if (notifyPathListeners) {
-					notifyPathListeners(path);
-				}
-				return true;
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-				bestMatch = Source.GENERAL;
+			return false;
+		} else {
+			resources.put(path, new Tuple<>(result, source));
+			paths.put(result, path);
+			if (notifyPathListeners) {
+				notifyPathListeners(path);
 			}
+			return true;
 		}
-		final JSONObject result = new JSONObject(null);
-		resources.put(path, new Tuple<>(result, bestMatch));
-		paths.put(result, path);
-		if (notifyPathListeners) {
-			notifyPathListeners(path);
-		}
-		return false;
 	}
 
 	/**
@@ -329,19 +323,10 @@ public class ResourceManager {
 	 * @return A list of all resources in that directory
 	 */
 	public static List<JSONObject> getAllResources(final String path) {
-		final Set<JSONObject> result = new TreeSet<>((hero1, hero2) -> {
-			final String name1 = hero1.getObj("Biografie").getString("Vorname");
-			final String name2 = hero2.getObj("Biografie").getString("Vorname");
-			if (name1 == null) {
-				if (name2 == null) return 0;
-				return 1;
-			}
-			if (name2 == null) return -1;
-			return comparator.compare(name1, name2);
-		});
+		final Map<String, JSONObject> result = new TreeMap<>();
 		for (final String resourcePath : resources.keySet()) {
 			if (resourcePath.startsWith(path)) {
-				result.add(resources.get(resourcePath)._1);
+				result.put(resourcePath.substring(resourcePath.lastIndexOf("/") + 1) + ".json", resources.get(resourcePath)._1);
 			}
 		}
 		if (zip != null) {
@@ -353,13 +338,13 @@ public class ResourceManager {
 					if (!current.isDirectory()) {
 						final Path currentPath = Paths.get(current.getName());
 						if (currentPath.startsWith(path)) {
-							result.add(getResource(current.getName().substring(0, current.getName().lastIndexOf('.'))));
+							result.put(currentPath.getFileName().toString(), getResource(current.getName().substring(0, current.getName().lastIndexOf('.'))));
 						}
 					}
 				}
 			}
 		}
-		return new ArrayList<>(result);
+		return new ArrayList<>(result.values());
 	}
 
 	public static JSONObject getDiscrimination(final JSONObject data) {
@@ -479,6 +464,41 @@ public class ResourceManager {
 		final String path = name.substring(0, pathEnd);
 		final String fileName = name.substring(pathEnd);
 		return path + fileName.replaceAll("[^\\w-]", "_");
+	}
+
+	/**
+	 * Modifies a resource according to a JSONObject containing overrides and deletions
+	 *
+	 * @param resource
+	 *            The resource modified
+	 * @param modification
+	 *            The modifications to apply
+	 */
+	private static void modifyResource(final JSONObject resource, final JSONObject modification) {
+		for (final String key : modification.keySet()) {
+			final Object value = modification.getUnsafe(key);
+			if (value instanceof JSONObject) {
+				if (((JSONObject) value).getBoolOrDefault("gelöscht", false)) {
+					resource.removeKey(key);
+				} else if (resource.containsKey(key)) {
+					modifyResource(resource.getObj(key), (JSONObject) value);
+				} else {
+					resource.put(key, (JSONObject) value);
+				}
+			} else if (value instanceof JSONArray) {
+				resource.put(key, (JSONArray) value);
+			} else if (value instanceof Double) {
+				resource.put(key, (Double) value);
+			} else if (value instanceof Long) {
+				resource.put(key, (Long) value);
+			} else if (value instanceof Boolean) {
+				resource.put(key, (Boolean) value);
+			} else if (value instanceof String) {
+				resource.put(key, (String) value);
+			} else {
+				resource.putNull(key);
+			}
+		}
 	}
 
 	/**
