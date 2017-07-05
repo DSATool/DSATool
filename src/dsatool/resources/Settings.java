@@ -29,7 +29,7 @@ public class Settings {
 	private static Map<String, Map<String, Set<Setting>>> settings = new LinkedHashMap<>();
 	private static JSONObject actualSettings = null;
 
-	public static void addSetting(Setting setting) {
+	public static void addSetting(final Setting setting) {
 		final String[] path = setting.getPath();
 		Map<String, Set<Setting>> page = settings.get(path[0]);
 		if (page == null) {
@@ -46,7 +46,7 @@ public class Settings {
 		category.add(setting);
 	}
 
-	private static JSONObject getSetting(final String[] path, boolean create) {
+	private static JSONObject getSetting(final String[] path, final boolean create) {
 		if (actualSettings == null) {
 			actualSettings = ResourceManager.getResource("settings/Einstellungen", false);
 		}
@@ -71,6 +71,18 @@ public class Settings {
 		final JSONObject setting = getSetting(path, false);
 		if (setting == null) return def;
 		return setting.getArrOrDefault(path[path.length - 1], def);
+	}
+
+	public static Boolean getSettingBool(final String... path) {
+		final JSONObject setting = getSetting(path, false);
+		if (setting == null) return null;
+		return setting.getBoolOrDefault(path[path.length - 1], null);
+	}
+
+	public static Boolean getSettingBoolOrDefault(final Boolean def, final String... path) {
+		final JSONObject setting = getSetting(path, false);
+		if (setting == null) return def;
+		return setting.getBoolOrDefault(path[path.length - 1], def);
 	}
 
 	public static Integer getSettingInt(final String... path) {
@@ -101,12 +113,17 @@ public class Settings {
 		return setting.getStringOrDefault(path[path.length - 1], def);
 	}
 
-	public static void setSetting(int value, final String... path) {
+	public static void setSetting(final boolean value, final String... path) {
 		final JSONObject setting = getSetting(path, true);
 		setting.put(path[path.length - 1], value);
 	}
 
-	public static void setSetting(String value, String[] path) {
+	public static void setSetting(final int value, final String... path) {
+		final JSONObject setting = getSetting(path, true);
+		setting.put(path[path.length - 1], value);
+	}
+
+	public static void setSetting(final String value, final String... path) {
 		final JSONObject setting = getSetting(path, true);
 		setting.put(path[path.length - 1], value);
 	}

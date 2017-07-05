@@ -24,6 +24,8 @@ import org.controlsfx.control.StatusBar;
 import dsatool.control.MainWindowController;
 import dsatool.plugins.PluginLoader;
 import dsatool.resources.GroupFileManager;
+import dsatool.resources.Settings;
+import dsatool.settings.BooleanSetting;
 import dsatool.ui.DetachableNode;
 import dsatool.ui.MenuGroup;
 import dsatool.update.Update;
@@ -70,10 +72,13 @@ public class Main extends Application {
 	}
 
 	public static void main(final String[] args) {
+		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
 		if (new File(Update.updateListPath).exists()) {
 			Update.execute();
 		}
-		new Thread(() -> new Update().searchUpdates(false)).start();
+		if (Settings.getSettingBoolOrDefault(true, "Allgemein", "Auto-Update")) {
+			new Thread(() -> new Update().searchUpdates(false)).start();
+		}
 		launch(args);
 	}
 
