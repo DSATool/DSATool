@@ -483,10 +483,10 @@ public class ResourceManager {
 				} else if (resource.containsKey(key)) {
 					modifyResource(resource.getObj(key), (JSONObject) value);
 				} else {
-					resource.put(key, (JSONObject) value);
+					resource.put(key, ((JSONObject) value).clone(resource));
 				}
 			} else if (value instanceof JSONArray) {
-				resource.put(key, (JSONArray) value);
+				resource.put(key, ((JSONArray) value).clone(resource));
 			} else if (value instanceof Double) {
 				resource.put(key, (Double) value);
 			} else if (value instanceof Long) {
