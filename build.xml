@@ -75,12 +75,9 @@
 		<delete file="update/${Name}.json"/>
 	</target>
 	<target name="Updater" description="Builds the jar for the Updater">
-		<jar destfile="update/Updater.jar">
-			<manifest>
-				<attribute name="Main-Class" value="dsatool.update.Updater"/>
-				<attribute name="Class-Path" value="."/>
-			</manifest>
+		<zip encoding="UTF-8" destfile="update/Updater.jar">
 			<fileset dir="bin" includes="dsatool/update/Updater.class"/>
-		</jar>
+			<fileset dir="src/dsatool/update" includes="META-INF/MANIFEST.MF"/>
+		</zip>
 	</target>
 </project>
