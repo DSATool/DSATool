@@ -58,16 +58,17 @@ public class SettingsPage {
 		}
 	}
 
-	public void addBooleanChoice(final String text, final BooleanProperty property) {
+	public CheckBox addBooleanChoice(final String text, final BooleanProperty property) {
 		final Label label = new Label(text + ":");
 		label.setMaxWidth(Double.POSITIVE_INFINITY);
 		HBox.setHgrow(label, Priority.ALWAYS);
 		final CheckBox result = new CheckBox();
 		box.getChildren().add(new HBox(2, label, result));
 		result.selectedProperty().bindBidirectional(property);
+		return result;
 	}
 
-	public void addFileChoice(String text, ObjectProperty<File> property, String extensionDesc, List<String> fileExtensions) {
+	public Button addFileChoice(final String text, final ObjectProperty<File> property, final String extensionDesc, final List<String> fileExtensions) {
 		final Label label = new Label(text + ":");
 		label.setMaxWidth(Double.POSITIVE_INFINITY);
 		HBox.setHgrow(label, Priority.ALWAYS);
@@ -87,9 +88,10 @@ public class SettingsPage {
 
 			property.setValue(dialog.showOpenDialog(null));
 		});
+		return result;
 	}
 
-	public void addIntegerChoice(final String text, final IntegerProperty property, final int min, final int max) {
+	public ReactiveSpinner<Integer> addIntegerChoice(final String text, final IntegerProperty property, final int min, final int max) {
 		final Label label = new Label(text + ":");
 		label.setMaxWidth(Double.POSITIVE_INFINITY);
 		HBox.setHgrow(label, Priority.ALWAYS);
@@ -103,6 +105,7 @@ public class SettingsPage {
 		property.addListener((o, oldV, newV) -> {
 			result.getValueFactory().setValue(newV.intValue());
 		});
+		return result;
 	}
 
 	public void addLabel(final String text) {
@@ -111,7 +114,7 @@ public class SettingsPage {
 		box.getChildren().add(label);
 	}
 
-	public void addNode(Node node) {
+	public void addNode(final Node node) {
 		box.getChildren().add(node);
 	}
 
@@ -119,7 +122,7 @@ public class SettingsPage {
 		box.getChildren().add(new Separator());
 	}
 
-	public void addStringChoice(final String text, final StringProperty property, final Collection<String> choices) {
+	public ComboBox<String> addStringChoice(final String text, final StringProperty property, final Collection<String> choices) {
 		final Label label = new Label(text + ":");
 		label.setMaxWidth(Double.POSITIVE_INFINITY);
 		HBox.setHgrow(label, Priority.ALWAYS);
@@ -132,6 +135,7 @@ public class SettingsPage {
 		property.addListener((ov, oldVal, newVal) -> {
 			result.getSelectionModel().select(newVal);
 		});
+		return result;
 	}
 
 	public void clear() {
