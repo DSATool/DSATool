@@ -49,7 +49,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 
 		if (!alwaysVisible) {
 			setText(getItem() != null ? getItem().toString() : "");
-			setPadding(new Insets(5, 0, 0, 5));
+			setPadding(new Insets(2, 2, 2, 2));
 			setGraphic(graphic);
 		}
 	}
@@ -115,13 +115,15 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 				if (getGraphic() == null) {
 					createGraphic();
 				}
+				setText(null);
+				setGraphic(getGraphic());
 			} else {
 				if (item == null) {
 					setText("");
 				} else {
 					setText(item.toString());
 				}
-				setPadding(new Insets(5, 0, 0, 5));
+				setPadding(new Insets(2, 2, 2, 2));
 				setGraphic(null);
 			}
 		}
