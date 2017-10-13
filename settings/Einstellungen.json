@@ -6,4 +6,4 @@
 	"Gewicht:Spanne" : 15,
 	"Maximum für Eigenschaften" : 14,
 	"Minimum für Eigenschaften" : 8
-}, "Kampf" : { "Rüstungsart" : "Zonenrüstung" }, "Steigerung" : { "Lernmethode" : "Gegenseitiges Lehren" } }
+}, "Kampf" : { "Rüstungsart" : "Zonenrüstung" }, "Steigerung" : { "Lernmethode" : "Gegenseitiges Lehren", "Lehrmeisterkosten" : true } }
