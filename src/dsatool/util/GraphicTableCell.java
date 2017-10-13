@@ -37,7 +37,7 @@ import javafx.scene.control.TextField;
 public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 
 	private final boolean alwaysVisible;
-	private Node graphic;
+	protected Node graphic;
 
 	public GraphicTableCell(final boolean alwaysVisible) {
 		this.alwaysVisible = alwaysVisible;
@@ -65,14 +65,14 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 		setText(null);
 		setGraphic(graphic);
 		final TableView<S> table = getTableView();
-		final int row = getTableRow().getIndex();
 		final TableColumn<S, T> column = getTableColumn();
 		graphic.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
 				if (oldValue && !newValue) {
 					graphic.focusedProperty().removeListener(this);
-					final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, row, column), TableColumn.editCommitEvent(),
+					final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, getTableRow().getIndex(), column),
+							TableColumn.editCommitEvent(),
 							getText.get());
 					Event.fireEvent(getTableColumn(), editEvent);
 					cancelEdit();
@@ -114,9 +114,9 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			if (alwaysVisible || isEditing()) {
 				if (getGraphic() == null) {
 					createGraphic();
+					setText(null);
+					setGraphic(getGraphic());
 				}
-				setText(null);
-				setGraphic(getGraphic());
 			} else {
 				if (item == null) {
 					setText("");

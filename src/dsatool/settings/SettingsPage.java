@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 import dsatool.util.ErrorLogger;
+import dsatool.util.ReactiveComboBox;
 import dsatool.util.ReactiveSpinner;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -126,7 +127,7 @@ public class SettingsPage {
 		final Label label = new Label(text + ":");
 		label.setMaxWidth(Double.POSITIVE_INFINITY);
 		HBox.setHgrow(label, Priority.ALWAYS);
-		final ComboBox<String> result = new ComboBox<>(FXCollections.observableArrayList(choices));
+		final ComboBox<String> result = new ReactiveComboBox<>(FXCollections.observableArrayList(choices));
 		box.getChildren().add(new HBox(2, label, result));
 		result.getSelectionModel().select(property.get());
 		result.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {

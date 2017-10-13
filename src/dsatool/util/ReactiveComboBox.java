@@ -17,39 +17,63 @@ package dsatool.util;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public class ReactiveComboBox<T> extends ComboBox<T> {
+	private final StringBuilder searchString = new StringBuilder();
+	private long lastChange = 0;
+
+	private final ChangeListener<String> textListener = (observable, oldValue, newValue) -> {
+		final String text = getEditor().getText();
+
+		final StringConverter<T> converter = getConverter();
+		if (converter != null) {
+			final T value = converter.fromString(text);
+			setValue(value);
+		}
+	};
+
+	private final EventHandler<KeyEvent> searchHandler = event -> {
+		final long current = System.currentTimeMillis();
+
+		if (current > lastChange + 750) {
+			searchString.setLength(0);
+		}
+		lastChange = current;
+		final KeyCode code = event.getCode();
+		if (code.isLetterKey() || code.isDigitKey() || code == KeyCode.SPACE) {
+			searchString.append(event.getText());
+		} else if (code == KeyCode.BACK_SPACE && searchString.length() > 0) {
+			searchString.setLength(searchString.length() - 1);
+		} else if (code == KeyCode.ESCAPE) {
+			searchString.setLength(0);
+		} else
+			return;
+
+		final ObservableList<T> items = getItems();
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).toString().toLowerCase().startsWith(searchString.toString().toLowerCase())) {
+				setValue(items.get(i));
+				break;
+			}
+		}
+	};
+
 	public ReactiveComboBox() {
 		super();
 
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-			final String text = getEditor().getText();
-
-			final StringConverter<T> converter = getConverter();
-			if (converter != null) {
-				final T value = converter.fromString(text);
-				setValue(value);
-			}
-		});
+		getEditor().textProperty().addListener(textListener);
+		setOnKeyPressed(searchHandler);
 	}
 
-	/**
-	 * Creates a default ComboBox instance with the provided items list and
-	 * a default {@link #selectionModelProperty() selection model}.
-	 */
-	public ReactiveComboBox(ObservableList<T> items) {
+	public ReactiveComboBox(final ObservableList<T> items) {
 		super(items);
 
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-			final String text = getEditor().getText();
-
-			final StringConverter<T> converter = getConverter();
-			if (converter != null) {
-				final T value = converter.fromString(text);
-				setValue(value);
-			}
-		});
+		getEditor().textProperty().addListener(textListener);
+		setOnKeyPressed(searchHandler);
 	}
 }
