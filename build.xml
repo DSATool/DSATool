@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="deploy" name="DSATool">
+<project basedir="." default="deploy" name="DSATool" xmlns:unless="ant:unless">
 	<property name="Name" value="DSATool"/>
 	<property name="Includes" value="dependencies/controlsfx.jar,dependencies/Jsonant.jar,licences/ALv2.txt,licences/controlsfx-license.txt,resources/fonts/MaterialIcons-Regular.ttf,update/Updater.jar"/>
 	<target name="deploy" description="Builds the jar archive">
@@ -75,9 +75,13 @@
 		<delete file="update/${Name}.json"/>
 	</target>
 	<target name="Updater" description="Builds the jar for the Updater">
-		<zip encoding="UTF-8" destfile="update/Updater.jar">
+		<uptodate property="UpdaterUnchanged" srcfile="src/dsatool/update/Updater.java" targetfile="update/Updater.jar" />
+		<jar unless:set="UpdaterUnchanged" destfile="update/Updater.jar">
+			<manifest>
+				<attribute name="Main-Class" value="dsatool.update.Updater"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
 			<fileset dir="bin" includes="dsatool/update/Updater.class"/>
-			<fileset dir="src/dsatool/update" includes="META-INF/MANIFEST.MF"/>
-		</zip>
+		</jar>
 	</target>
 </project>
