@@ -173,9 +173,7 @@ public class ResourceManager {
 		}
 		file = new File(Util.getAppDir() + "/mod/" + jsonpath);
 		if (file.exists()) {
-			if (source == null) {
-				source = Source.MOD;
-			}
+			source = Source.MOD;
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
 				final JSONObject mod = parser.parse(reader);
 				modifyResource(result, mod);
@@ -187,9 +185,7 @@ public class ResourceManager {
 		if (zip != null) {
 			final ZipEntry entry = zip.getEntry(jsonpath);
 			if (entry != null) {
-				if (source == null) {
-					source = Source.ZIP;
-				}
+				source = Source.ZIP;
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"))) {
 					final JSONObject mod = parser.parse(reader);
 					modifyResource(result, mod);
@@ -659,6 +655,7 @@ public class ResourceManager {
 		zipPath = path;
 		try {
 			zip = new ZipFile(path);
+			discardChanges();
 		} catch (final ZipException e) {
 			// This can happen if the zip is empty, just ignore it
 			zip = null;

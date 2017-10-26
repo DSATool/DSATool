@@ -27,7 +27,6 @@ import jsonant.value.JSONObject;
 
 public class Settings {
 	private static Map<String, Map<String, Set<Setting>>> settings = new LinkedHashMap<>();
-	private static JSONObject actualSettings = null;
 
 	public static void addSetting(final Setting setting) {
 		final String[] path = setting.getPath();
@@ -47,10 +46,7 @@ public class Settings {
 	}
 
 	private static JSONObject getSetting(final String[] path, final boolean create) {
-		if (actualSettings == null) {
-			actualSettings = ResourceManager.getResource("settings/Einstellungen", false);
-		}
-		JSONObject setting = actualSettings;
+		JSONObject setting = ResourceManager.getResource("settings/Einstellungen", false);
 		for (int i = 0; i < path.length - 1 && setting != null; ++i) {
 			if (create) {
 				setting = setting.getObj(path[i]);
