@@ -72,6 +72,8 @@ public class Main extends Application {
 	}
 
 	public static void main(final String[] args) {
+		GroupFileManager.openCurrentGroup();
+
 		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
 		if (new File(Update.updateListPath).exists()) {
 			Update.execute();
@@ -109,8 +111,6 @@ public class Main extends Application {
 			primaryStage.show();
 
 			window.resizeToolSelector();
-
-			GroupFileManager.openCurrentGroup();
 		} catch (final Exception e) {
 			ErrorLogger.logError(e);
 		}
