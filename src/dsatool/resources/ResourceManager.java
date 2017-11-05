@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -37,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -86,24 +88,16 @@ public class ResourceManager {
 	 */
 	private static File zipPath;
 
+	private static String discriminatingAttribute;
+
 	/**
 	 * A list of listeners for changes to specific paths
 	 */
 	private static Map<String, List<Consumer<Boolean>>> pathListeners = new HashMap<>();
 
-	private static final List<String> priorities;
+	private static Collection<String> priorities = new ArrayList<>();
 
-	static {
-		final JSONArray prioritiesArr = Settings.getSettingArray("Allgemein", "Bücher");
-		if (prioritiesArr != null) {
-			priorities = new ArrayList<>();
-			for (int i = 0; i < prioritiesArr.size(); ++i) {
-				priorities.add(prioritiesArr.getString(i));
-			}
-		} else {
-			priorities = null;
-		}
-	}
+	private static final List<Function<JSONObject, JSONObject>> resourceSanitizers = new ArrayList<>();
 
 	private static final Map<JSONObject, JSONObject> discriminatingAttributes = new IdentityHashMap<>();
 
@@ -111,9 +105,9 @@ public class ResourceManager {
 		@Override
 		public void handle(final ArrayParseEvent event) {
 			if (event.getValue() instanceof JSONObject) {
-				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault("Bücher", null);
+				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault(discriminatingAttribute, null);
 				if (attribute != null) {
-					((JSONObject) event.getValue()).removeKey("Bücher");
+					((JSONObject) event.getValue()).removeKey(discriminatingAttribute);
 					discriminatingAttributes.put((JSONObject) event.getValue(), attribute);
 				}
 			}
@@ -121,10 +115,10 @@ public class ResourceManager {
 
 		@Override
 		public void handle(final ObjectParseEvent event) {
-			if (priorities != null && event.getValue() instanceof JSONObject) {
-				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault("Bücher", null);
+			if (event.getValue() instanceof JSONObject) {
+				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault(discriminatingAttribute, null);
 				if (attribute != null) {
-					((JSONObject) event.getValue()).removeKey("Bücher");
+					((JSONObject) event.getValue()).removeKey(discriminatingAttribute);
 					discriminatingAttributes.put((JSONObject) event.getValue(), attribute);
 				}
 				final int prio = attribute != null ? getPrio(attribute) : Integer.MAX_VALUE - 1;
@@ -195,21 +189,17 @@ public class ResourceManager {
 				}
 			}
 		}
-		if (source == null) {
-			resources.put(path, new Tuple<>(result, Source.ZIP));
-			paths.put(result, path);
-			if (notifyPathListeners) {
-				notifyPathListeners(path);
-			}
-			return false;
-		} else {
-			resources.put(path, new Tuple<>(result, source));
-			paths.put(result, path);
-			if (notifyPathListeners) {
-				notifyPathListeners(path);
-			}
-			return true;
+
+		for (final Function<JSONObject, JSONObject> sanitizer : resourceSanitizers) {
+			result = sanitizer.apply(result);
 		}
+
+		resources.put(path, new Tuple<>(result, source == null ? Source.ZIP : source));
+		paths.put(result, path);
+		if (notifyPathListeners) {
+			notifyPathListeners(path);
+		}
+		return source != null;
 	}
 
 	/**
@@ -225,6 +215,10 @@ public class ResourceManager {
 			pathListeners.put(path, new ArrayList<>());
 		}
 		pathListeners.get(path).add(listener);
+	}
+
+	public static void addResourceSanitizer(final Function<JSONObject, JSONObject> sanitizer) {
+		resourceSanitizers.add(sanitizer);
 	}
 
 	/**
@@ -428,13 +422,6 @@ public class ResourceManager {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
 				final JSONObject tmp = getNewResource(makeValidFile(internalPath), false);
 				final String tmpPath = paths.get(tmp);
-				final JSONArray prioritiesArr = Settings.getSettingArray("Allgemein", "Bücher");
-				final List<String> priorities = new ArrayList<>();
-				if (prioritiesArr != null) {
-					for (int i = 0; i < prioritiesArr.size(); ++i) {
-						priorities.add(prioritiesArr.getString(i));
-					}
-				}
 				final JSONObject result = new JSONParser(discriminator, e -> ErrorLogger.logError(e)).parse(reader);
 				resources.put(tmpPath, new Tuple<>(result, Source.ZIP));
 				paths.put(result, tmpPath);
@@ -579,8 +566,11 @@ public class ResourceManager {
 	 * @param path
 	 *            The path the json file is to be created at
 	 */
-	public static void saveResource(final JSONObject resource, final String path) {
+	public static void saveResource(JSONObject resource, final String path) {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(path))) {
+			for (final Function<JSONObject, JSONObject> sanitizer : resourceSanitizers) {
+				resource = sanitizer.apply(resource);
+			}
 			JSONPrinter.print(writer, resource);
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
@@ -641,6 +631,14 @@ public class ResourceManager {
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
 		}
+	}
+
+	public static void setDiscriminatingAttribute(final String key) {
+		discriminatingAttribute = key;
+	}
+
+	public static void setPriorities(final Collection<String> priorities) {
+		ResourceManager.priorities = priorities;
 	}
 
 	/**
