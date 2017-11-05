@@ -23,8 +23,8 @@
 }
 
 .disabled-opaque:disabled {
-	-fx-opacity: 1;
-	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-opacity: 1.0;
+	-fx-background-color: transparent;
 	-fx-background-radius: 5, 5, 4, 3;
 	-fx-background-insets: 0 0 -1 0, 0, 1, 2;
 }
@@ -36,8 +36,7 @@
 
 .disabled-opaque:disabled .text-field {
 	-fx-opacity: 1.0;
-	-fx-background: transparent;
-	-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+	-fx-background-color: transparent;
 	-fx-text-fill: -fx-text-base-color;
 }
 
