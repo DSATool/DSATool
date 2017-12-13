@@ -78,9 +78,6 @@ public class GroupFileManager {
 				final File zipFile = new File(zipPath);
 				if (zipFile.exists()) {
 					ResourceManager.setZipFile(new File(zipPath));
-					for (final Plugin plugin : PluginLoader.plugins.values()) {
-						plugin.loadData();
-					}
 					return;
 				}
 			}

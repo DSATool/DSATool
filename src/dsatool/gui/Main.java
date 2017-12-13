@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.controlsfx.control.StatusBar;
 
 import dsatool.control.MainWindowController;
+import dsatool.plugins.Plugin;
 import dsatool.plugins.PluginLoader;
 import dsatool.resources.GroupFileManager;
 import dsatool.resources.Settings;
@@ -107,6 +108,9 @@ public class Main extends Application {
 			statusBar.setText("");
 
 			PluginLoader.loadPlugins();
+			for (final Plugin plugin : PluginLoader.plugins.values()) {
+				plugin.loadData();
+			}
 
 			primaryStage.show();
 
