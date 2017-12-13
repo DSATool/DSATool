@@ -45,12 +45,12 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 		}
 		lastChange = current;
 		final KeyCode code = event.getCode();
-		if (code.isLetterKey() || code.isDigitKey() || code == KeyCode.SPACE) {
-			searchString.append(event.getText());
-		} else if (code == KeyCode.BACK_SPACE && searchString.length() > 0) {
+		if (code == KeyCode.BACK_SPACE && searchString.length() > 0) {
 			searchString.setLength(searchString.length() - 1);
 		} else if (code == KeyCode.ESCAPE) {
 			searchString.setLength(0);
+		} else if (!code.isArrowKey() && !code.isFunctionKey() && !code.isMediaKey() && !code.isModifierKey()) {
+			searchString.append(event.getText());
 		} else
 			return;
 
