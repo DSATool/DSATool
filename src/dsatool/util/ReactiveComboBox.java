@@ -18,6 +18,7 @@ package dsatool.util;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -26,7 +27,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public class ReactiveComboBox<T> extends ComboBox<T> {
+	private static EventHandler<ActionEvent> filter = e -> e.consume();
 	private final StringBuilder searchString = new StringBuilder();
+
 	private long lastChange = 0;
 
 	private final ChangeListener<String> textListener = (observable, oldValue, newValue) -> {
@@ -48,7 +51,9 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 		} else {
 			final StringConverter<T> converter = getConverter();
 			if (converter != null) {
+				addEventFilter(ActionEvent.ACTION, filter);
 				setValue(converter.fromString(text));
+				removeEventFilter(ActionEvent.ACTION, filter);
 			}
 		}
 	};
@@ -73,7 +78,9 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 
 			final T item = findItem(searchString.toString());
 			if (item != null) {
+				addEventFilter(ActionEvent.ACTION, filter);
 				setValue(item);
+				removeEventFilter(ActionEvent.ACTION, filter);
 			}
 		}
 	};

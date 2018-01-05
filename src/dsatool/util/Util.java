@@ -24,6 +24,10 @@ import java.io.StringWriter;
 import com.sun.javafx.scene.control.skin.LabeledSkinBase;
 
 import dsatool.resources.ResourceManager;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContentDisplay;
@@ -38,7 +42,7 @@ import jsonant.value.JSONObject;
 
 public class Util {
 
-	public static void addReference(final Labeled control, final JSONObject data, final double padding) {
+	public static void addReference(final Labeled control, final JSONObject data, final double padding, final ReadOnlyDoubleProperty width) {
 		final JSONObject books = ResourceManager.getResource("settings/Buecher");
 		final JSONObject refs = ResourceManager.getDiscrimination(data);
 		if (refs != null && refs.size() > 0) {
@@ -56,7 +60,8 @@ public class Util {
 			final Label iconLabel = new Label("\uE54B");
 			iconLabel.getStyleClass().add("icon-font");
 			iconLabel.setTextFill(Color.DIMGREY);
-			final Hyperlink label = new Hyperlink(Integer.toString(refs.getInt(name)), iconLabel);
+			final String page = Integer.toString(refs.getInt(name));
+			final Hyperlink label = new Hyperlink(page, iconLabel);
 			label.setGraphicTextGap(0);
 			label.setTextFill(Color.DIMGREY);
 			label.getStyleClass().add("flat-link");
@@ -89,20 +94,23 @@ public class Util {
 				tooltip.append(refs.getInt(bookName));
 			}
 			label.setTooltip(new Tooltip(tooltip.toString()));
+			final Label graphic = new Label("", label);
+			graphic.setAlignment(Pos.CENTER_RIGHT);
+			graphic.setPadding(new Insets(0, (3 - page.length()) * 6, 0, 0));
 			control.setContentDisplay(ContentDisplay.RIGHT);
-			control.setGraphic(label);
+			control.setGraphic(graphic);
 			if (control.getSkin() != null) {
 				final Text text = (Text) ((LabeledSkinBase<?, ?>) control.getSkin()).getChildren().get(1);
 				text.setText(control.getText());
-				control.graphicTextGapProperty()
-						.bind(control.widthProperty().subtract(Math.ceil(text.getLayoutBounds().getWidth() + label.getWidth() + padding)));
+				graphic.minWidthProperty()
+						.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
 			} else {
 				control.skinProperty().addListener((o, oldV, newV) -> {
 					if (newV != null) {
 						final Text text = (Text) ((LabeledSkinBase<?, ?>) newV).getChildren().get(1);
 						text.setText(control.getText());
-						control.graphicTextGapProperty()
-								.bind(control.widthProperty().subtract(Math.ceil(text.getLayoutBounds().getWidth() + label.getWidth() + padding)));
+						graphic.minWidthProperty()
+								.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
 					}
 				});
 			}
