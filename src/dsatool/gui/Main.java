@@ -34,10 +34,12 @@ import dsatool.util.ErrorLogger;
 import dsatool.util.Util;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -96,7 +98,8 @@ public class Main extends Application {
 
 			Font.loadFont(new FileInputStream(new File(Util.getAppDir() + "/resources/fonts/MaterialIcons-Regular.ttf")), 15);
 
-			final Scene scene = new Scene(root, 1100, 880);
+			final Rectangle2D resolution = Screen.getPrimary().getVisualBounds();
+			final Scene scene = new Scene(root, Math.min(1100, resolution.getWidth()), Math.min(880, resolution.getHeight()));
 
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
