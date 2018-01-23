@@ -99,6 +99,8 @@ public class Main extends Application {
 			Font.loadFont(new FileInputStream(new File(Util.getAppDir() + "/resources/fonts/MaterialIcons-Regular.ttf")), 15);
 
 			final Rectangle2D resolution = Screen.getPrimary().getVisualBounds();
+			primaryStage.setMaxWidth(resolution.getWidth());
+			primaryStage.setMaxHeight(resolution.getHeight());
 			final Scene scene = new Scene(root, Math.min(1100, resolution.getWidth()), Math.min(880, resolution.getHeight()));
 
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
