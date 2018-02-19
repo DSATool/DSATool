@@ -82,7 +82,9 @@ public class Main extends Application {
 			Update.execute();
 		}
 		if (Settings.getSettingBoolOrDefault(true, "Allgemein", "Auto-Update")) {
-			new Thread(() -> new Update().searchUpdates(false)).start();
+			final Thread updateThread = new Thread(() -> new Update().searchUpdates(false));
+			updateThread.setPriority(Thread.MIN_PRIORITY);
+			updateThread.start();
 		}
 		launch(args);
 	}
