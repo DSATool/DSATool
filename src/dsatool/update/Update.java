@@ -50,7 +50,8 @@ public class Update {
 
 	public static void execute() {
 		try {
-			Files.lines(Paths.get(updateListPath)).forEach(zipPath -> {
+			Files.lines(Paths.get(updateListPath)).forEach(line -> {
+				final String zipPath = line.split(";", 2)[0];
 				try (ZipFile zipFile = new ZipFile(Util.getAppDir() + "/update/" + zipPath)) {
 					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 					while (entries.hasMoreElements()) {
@@ -81,32 +82,51 @@ public class Update {
 
 	private final JSONParser parser = new JSONParser(null, e -> ErrorLogger.logError(e));
 
-	private void performUpdate(final String previousTime, final String link, final List<Tuple<String, String>> files) {
+	private String getSignatureKeySpecification(final JSONObject info) {
+		if (info.containsKey("signatureProviderName") && info.containsKey("signatureKeyAlgorithm") && info.containsKey("signatureAlgorithm")
+				&& info.containsKey("signatureKey"))
+			return ";" + info.getString("signatureProviderName") + ";" + info.getString("signatureKeyAlgorithm") + ";"
+					+ info.getString("signatureAlgorithm") + ";" + info.getString("signatureKey");
+		else
+			return "";
+	}
+
+	private String performUpdate(final JSONObject oldReleaseInfo, final String link, final List<Tuple<String, String>> files) {
 		final File dest = new File(Util.getAppDir() + "/update/" + link.substring(link.lastIndexOf('/')));
 		try (final ReadableByteChannel in = Channels.newChannel(new URL(link).openStream()); FileOutputStream out = new FileOutputStream(dest)) {
 			out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
-			return;
+			return null;
 		}
+		final String previousTime = oldReleaseInfo.getString("releaseDate");
 		try (ZipFile zipFile = new ZipFile(dest)) {
 			final ZipEntry releaseInfo = zipFile.getEntry("release-info.json");
-			if (releaseInfo == null) return;
+			if (releaseInfo == null) return null;
 			final JSONObject info = parser.parse(new BufferedReader(new InputStreamReader(zipFile.getInputStream(releaseInfo))));
-			if (info.containsKey("releaseDate") && info.getString("releaseDate").compareTo(previousTime) > 0) {
-				files.add(new Tuple<>(info.getString("releaseDate"), dest.getName()));
-			}
+			String signatureKeySpecification;
 			if (info.containsKey("previousReleaseDate") && info.getString("previousReleaseDate").compareTo(previousTime) > 0) {
-				performUpdate(previousTime, info.getString("previousReleaseLink"), files);
+				final String oldKeySpec = performUpdate(oldReleaseInfo, info.getString("previousReleaseLink"), files);
+				if (oldKeySpec != null) {
+					signatureKeySpecification = oldKeySpec;
+				} else
+					return null;
+			} else {
+				signatureKeySpecification = getSignatureKeySpecification(oldReleaseInfo);
+			}
+			if (info.containsKey("releaseDate") && info.getString("releaseDate").compareTo(previousTime) > 0) {
+				files.add(new Tuple<>(info.getString("releaseDate"), dest.getName() + signatureKeySpecification));
+				return getSignatureKeySpecification(info);
 			}
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
 		}
+		return null;
 	}
 
-	private void performUpdates(final List<Tuple<String, String>> updates) {
+	private void performUpdates(final List<Tuple<JSONObject, String>> updates) {
 		final List<Tuple<String, String>> files = new ArrayList<>();
-		for (final Tuple<String, String> update : updates) {
+		for (final Tuple<JSONObject, String> update : updates) {
 			performUpdate(update._1, update._2, files);
 		}
 
@@ -136,7 +156,7 @@ public class Update {
 		});
 	}
 
-	public Tuple<String, String> searchUpdate(final File releaseInfoFile) {
+	public Tuple<JSONObject, String> searchUpdate(final File releaseInfoFile) {
 		JSONObject releaseInfo = null;
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(releaseInfoFile), "UTF-8"))) {
@@ -157,14 +177,14 @@ public class Update {
 		}
 
 		if (updateInfo.containsKey("releaseDate") && releaseInfo.getString("releaseDate").compareTo(updateInfo.getString("releaseDate")) < 0)
-			return new Tuple<>(releaseInfo.getString("releaseDate"), updateInfo.getString("releaseLink"));
+			return new Tuple<>(releaseInfo, updateInfo.getString("releaseLink"));
 		return null;
 	}
 
 	public void searchUpdates(final boolean notifyOnNoUpdate) {
-		final List<Tuple<String, String>> updates = new LinkedList<>();
+		final List<Tuple<JSONObject, String>> updates = new LinkedList<>();
 		for (final File releaseInfo : new File(Util.getAppDir() + "/update").listFiles((dir, name) -> name.toLowerCase().endsWith(".json"))) {
-			final Tuple<String, String> update = searchUpdate(releaseInfo);
+			final Tuple<JSONObject, String> update = searchUpdate(releaseInfo);
 			if (update != null) {
 				updates.add(update);
 			}

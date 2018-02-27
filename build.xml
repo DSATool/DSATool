@@ -11,7 +11,7 @@
 				<attribute name="Main-Class" value="dsatool.gui.Main"/>
 				<attribute name="Class-Path" value=". dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
 			</manifest>
-			<fileset dir="bin" excludes="dsatool/update/Updater.class"/>
+			<fileset dir="bin" excludes="dsatool/update/Updater.class,dsatool/update/SignatureTool.class"/>
 			<metainf file="LICENSE"/>
 			<metainf file="NOTICE"/>
 		</jar>
@@ -55,9 +55,15 @@
 		<copy file="release/current/release-info.json" tofile="release/current/update/${Name}.json"/>
 		<copy file="release/update-info.template" tofile="release/update-info.json" overwrite="true"/>
 		<replace file="release/update-info.json" token="@releaseDate@" value="${releaseDate}"/>
-		<zip destfile="release/${Name}_${releaseDate}.zip">
-			<fileset dir="release/current"/>
-		</zip>
+		<java jar="update/SignatureTool.jar" fork="true">
+			<arg value="sign"/>
+			<arg path="release/current"/>
+			<arg path="release/${Name}_${releaseDate}.zip"/>
+			<arg path="release/private.key"/>
+			<arg value="SunEC"/>
+			<arg value="EC"/>
+			<arg value="SHA512withECDSA"/>
+		</java>
 		<delete dir="release/previous"/>
 		<copy todir="release/previous" includeEmptyDirs="false">
 			<fileset dir="." includes="${Includes},${Name}.jar"/>
@@ -82,6 +88,15 @@
 				<attribute name="Class-Path" value="."/>
 			</manifest>
 			<fileset dir="bin" includes="dsatool/update/Updater.class"/>
+		</jar>
+	</target>
+	<target name="SignatureTool" description="Builds the jar for the SignatureTool">
+		<jar destfile="update/SignatureTool.jar">
+			<manifest>
+				<attribute name="Main-Class" value="dsatool.update.SignatureTool"/>
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			<fileset dir="bin" includes="dsatool/update/SignatureTool.class"/>
 		</jar>
 	</target>
 </project>

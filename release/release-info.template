@@ -2,5 +2,9 @@
 	"releaseDate" : "@releaseDate@",
 	"previousReleaseDate" : "@previousReleaseDate@",
 	"previousReleaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_@previousReleaseDate@.zip",
-	"updateInfo" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/update-info.json"
+	"updateInfo" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/update-info.json",
+	"signatureProviderName" : "SunEC",
+	"signatureKeyAlgorithm" : "EC",
+	"signatureAlgorithm" : "SHA512withECDSA",
+	"signatureKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEv/bhNL3TE4lXx8MBz+Oi4sGYoRlf0MVz0E1RjIfbCUIyDa8hgewACgWUKcBj363cZQfbLE3aUFqW2HmELS7HrA=="
 }

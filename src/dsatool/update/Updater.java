@@ -17,16 +17,25 @@ package dsatool.update;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -35,8 +44,66 @@ public class Updater {
 	private final static String updateListPath = getAppDir() + "/update/updateList.txt";
 	private static File appDir;
 
-	private static void applyUpdate(final String zipPath) {
+	private static void applyUpdate(final String zipName, final String signatureProviderName, final String keyAlgorithm, final String signatureAlgorithm,
+			final String signatureKeyString) {
+		final String zipPath = getAppDir() + "/update/" + zipName;
+
 		try (ZipFile zipFile = new ZipFile(zipPath)) {
+			if (signatureProviderName != null && keyAlgorithm != null && signatureAlgorithm != null && signatureKeyString != null) {
+				final ZipEntry signatureFile = zipFile.getEntry("signature.sig");
+				if (signatureFile == null) {
+					log("Update " + zipName + " ist nicht signiert, Update nicht durchgeführt");
+					throw new RuntimeException();
+				}
+
+				try {
+					final Provider signatureProvider = Security.getProvider(signatureProviderName);
+
+					// Prepare the public key
+					final byte[] signatureKey = Base64.getDecoder().decode(signatureKeyString);
+					final X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(signatureKey);
+					final KeyFactory keyFactory = KeyFactory.getInstance(keyAlgorithm, signatureProvider);
+					final PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+					// Prepare the signature object
+					final Signature sig = Signature.getInstance(signatureAlgorithm, signatureProvider);
+					sig.initVerify(publicKey);
+
+					// Input the data
+					final byte[] buffer = new byte[1024];
+					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+					while (entries.hasMoreElements()) {
+						final ZipEntry entry = entries.nextElement();
+						final String fileName = entry.getName();
+						if (!"signature.sig".equals(fileName)) {
+							sig.update(fileName.getBytes());
+							if (!entry.isDirectory()) {
+								try (InputStream inputStream = zipFile.getInputStream(entry)) {
+									int len;
+									while ((len = inputStream.read(buffer)) > 0) {
+										sig.update(buffer, 0, len);
+									}
+								}
+							}
+						}
+					}
+
+					final byte[] signature = new byte[(int) signatureFile.getSize()];
+					try (DataInputStream signatureStream = new DataInputStream(zipFile.getInputStream(signatureFile))) {
+						// Read the signature
+						signatureStream.readFully(signature);
+
+						// Verify the signature
+						if (!sig.verify(signature)) {
+							log("Update " + zipName + " nicht korrekt signiert, Update nicht durchgeführt");
+							throw new RuntimeException();
+						}
+					}
+				} catch (final Exception e) {
+					log("Fehler bei der Verifikation von " + zipName + ", Update nicht durchgeführt");
+					throw e;
+				}
+			}
 			final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 			while (entries.hasMoreElements()) {
 				final ZipEntry entry = entries.nextElement();
@@ -62,23 +129,24 @@ public class Updater {
 							}
 						}
 					}
-				} else if (!"update/Updater.jar".equals(fileName) && !"release-info.json".equals(fileName)) {
+				} else if (!"update/Updater.jar".equals(fileName) && !"release-info.json".equals(fileName) && !"signature.sig".equals(fileName)) {
 					final File destination = new File(getAppDir() + "/" + fileName);
-					try {
-						Files.deleteIfExists(destination.toPath());
-					} catch (final IOException e) {
-						logError(e);
-					}
+					Files.deleteIfExists(destination.toPath());
 					try (ReadableByteChannel in = Channels.newChannel(zipFile.getInputStream(entry));
 							FileOutputStream out = new FileOutputStream(destination)) {
 						out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
 					}
 				}
 			}
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 			logError(e);
+		} finally {
+			try {
+				new File(zipPath).delete();
+			} catch (final Exception e) {
+				logError(e);
+			}
 		}
-		new File(zipPath).delete();
 	}
 
 	private static File getAppDir() {
@@ -91,6 +159,16 @@ public class Updater {
 		}
 	}
 
+	private static void log(final String message) {
+		final File log = new File(getAppDir() + "/error.log");
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
+			writer.write(message);
+			writer.println();
+		} catch (final IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
 	private static void logError(final Exception e) {
 		final File log = new File(getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
@@ -99,8 +177,8 @@ public class Updater {
 				writer.println();
 			}
 			e.printStackTrace(writer);
-		} catch (final IOException e1) {
-			e1.printStackTrace();
+		} catch (final IOException ioe) {
+			ioe.printStackTrace();
 		} finally {
 			e.printStackTrace();
 		}
@@ -109,8 +187,13 @@ public class Updater {
 	public static void main(final String[] args) {
 		try {
 			appDir = getAppDir().getCanonicalFile();
-			Files.lines(Paths.get(updateListPath)).forEach(zipPath -> {
-				applyUpdate(getAppDir() + "/update/" + zipPath);
+			Files.lines(Paths.get(updateListPath)).forEach(line -> {
+				final String[] entry = line.split(";", 5);
+				if (entry.length == 5) {
+					applyUpdate(entry[0], entry[1], entry[2], entry[3], entry[4]);
+				} else {
+					applyUpdate(entry[0], null, null, null, null);
+				}
 			});
 			new File(updateListPath).delete();
 		} catch (final IOException e) {
