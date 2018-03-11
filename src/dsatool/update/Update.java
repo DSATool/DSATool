@@ -16,10 +16,12 @@
 package dsatool.update;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -27,7 +29,14 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.security.KeyFactory;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.Security;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,8 +60,75 @@ public class Update {
 	public static void execute() {
 		try {
 			Files.lines(Paths.get(updateListPath)).forEach(line -> {
-				final String zipPath = line.split(";", 2)[0];
-				try (ZipFile zipFile = new ZipFile(Util.getAppDir() + "/update/" + zipPath)) {
+				final String[] data = line.split(";", 5);
+				final String zipName = data[0];
+				final String zipPath = Util.getAppDir() + "/update/" + zipName;
+				try (ZipFile zipFile = new ZipFile(zipPath)) {
+					if (data.length == 5) {
+						final ZipEntry signatureFile = zipFile.getEntry("signature.sig");
+						if (signatureFile == null) {
+							ErrorLogger.log("Update " + zipName + " ist nicht signiert, Update nicht durchgeführt");
+							try {
+								new File(zipPath).delete();
+							} catch (final Exception e) {
+								ErrorLogger.logError(e);
+							}
+							throw new RuntimeException();
+						}
+
+						try {
+							final Provider signatureProvider = Security.getProvider(data[1]);
+
+							// Prepare the public key
+							final byte[] signatureKey = Base64.getDecoder().decode(data[4]);
+							final X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(signatureKey);
+							final KeyFactory keyFactory = KeyFactory.getInstance(data[2], signatureProvider);
+							final PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
+
+							// Prepare the signature object
+							final Signature sig = Signature.getInstance(data[3], signatureProvider);
+							sig.initVerify(publicKey);
+
+							// Input the data
+							final byte[] buffer = new byte[1024];
+							final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+							while (entries.hasMoreElements()) {
+								final ZipEntry entry = entries.nextElement();
+								final String fileName = entry.getName();
+								if (!"signature.sig".equals(fileName)) {
+									sig.update(fileName.getBytes());
+									if (!entry.isDirectory()) {
+										try (InputStream inputStream = zipFile.getInputStream(entry)) {
+											int len;
+											while ((len = inputStream.read(buffer)) > 0) {
+												sig.update(buffer, 0, len);
+											}
+										}
+									}
+								}
+							}
+
+							final byte[] signature = new byte[(int) signatureFile.getSize()];
+							try (DataInputStream signatureStream = new DataInputStream(zipFile.getInputStream(signatureFile))) {
+								// Read the signature
+								signatureStream.readFully(signature);
+
+								// Verify the signature
+								if (!sig.verify(signature)) {
+									ErrorLogger.log("Update " + zipName + " nicht korrekt signiert, Update nicht durchgeführt");
+									try {
+										new File(zipPath).delete();
+									} catch (final Exception e) {
+										ErrorLogger.logError(e);
+									}
+									throw new RuntimeException();
+								}
+							}
+						} catch (final Exception e) {
+							ErrorLogger.log("Fehler bei der Verifikation von " + zipName + ", Update nicht durchgeführt");
+							throw e;
+						}
+					}
 					final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 					while (entries.hasMoreElements()) {
 						final ZipEntry entry = entries.nextElement();
@@ -69,7 +145,7 @@ public class Update {
 							}
 						}
 					}
-				} catch (final IOException e) {
+				} catch (final Exception e) {
 					ErrorLogger.logError(e);
 				}
 			});
