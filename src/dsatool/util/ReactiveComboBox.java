@@ -39,7 +39,10 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 
 		T item = null;
 		if (previousCaret > 0 && previousCaret <= text.length()) {
-			item = findItem(editor.getText().substring(0, previousCaret));
+			final String searchText = editor.getText().substring(0, previousCaret);
+			if (!getSelectionModel().getSelectedItem().toString().toLowerCase().startsWith(searchText.toLowerCase())) {
+				item = findItem(searchText);
+			}
 		}
 
 		if (item != null) {
