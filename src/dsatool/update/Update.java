@@ -58,6 +58,12 @@ public class Update {
 	public final static String updateListPath = Util.getAppDir() + "/update/updateList.txt";
 
 	public static void execute() {
+		final Thread executorThread = new Thread(() -> executeUpdate());
+		executorThread.setPriority(Thread.MAX_PRIORITY);
+		executorThread.start();
+	}
+		
+	private static void executeUpdate() {
 		try {
 			Files.lines(Paths.get(updateListPath)).forEach(line -> {
 				final String[] data = line.split(";", 5);
