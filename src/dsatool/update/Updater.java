@@ -37,6 +37,8 @@ import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Enumeration;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -185,6 +187,15 @@ public class Updater {
 	}
 
 	public static void main(final String[] args) {
+		final Optional<ProcessHandle> parent = ProcessHandle.current().parent();
+		if (parent.isPresent()) {
+			try {
+				parent.get().onExit().get();
+			} catch (final InterruptedException | ExecutionException e) {
+				logError(e);
+				System.exit(0);
+			}
+		}
 		try {
 			appDir = getAppDir().getCanonicalFile();
 			Files.lines(Paths.get(updateListPath)).forEach(line -> {
@@ -206,4 +217,6 @@ public class Updater {
 		}
 		System.exit(0);
 	}
+
+	private Updater() {}
 }
