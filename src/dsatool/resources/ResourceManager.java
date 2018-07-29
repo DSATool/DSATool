@@ -677,4 +677,6 @@ public class ResourceManager {
 			}
 		}
 	}
+
+	private ResourceManager() {}
 }

@@ -123,4 +123,6 @@ public class Settings {
 		final JSONObject setting = getSetting(path, true);
 		setting.put(path[path.length - 1], value);
 	}
+
+	private Settings() {}
 }

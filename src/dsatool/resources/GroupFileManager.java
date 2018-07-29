@@ -133,4 +133,6 @@ public class GroupFileManager {
 		}
 		return false;
 	}
+
+	private GroupFileManager() {}
 }

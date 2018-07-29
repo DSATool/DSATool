@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import com.sun.javafx.scene.control.skin.LabeledSkinBase;
-
 import dsatool.resources.ResourceManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleProperty;
@@ -36,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.skin.LabeledSkinBase;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import jsonant.value.JSONObject;
@@ -100,14 +99,14 @@ public class Util {
 			control.setContentDisplay(ContentDisplay.RIGHT);
 			control.setGraphic(graphic);
 			if (control.getSkin() != null) {
-				final Text text = (Text) ((LabeledSkinBase<?, ?>) control.getSkin()).getChildren().get(1);
+				final Text text = (Text) ((LabeledSkinBase<?>) control.getSkin()).getChildren().get(1);
 				text.setText(control.getText());
 				graphic.minWidthProperty()
 						.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
 			} else {
 				control.skinProperty().addListener((o, oldV, newV) -> {
 					if (newV != null) {
-						final Text text = (Text) ((LabeledSkinBase<?, ?>) newV).getChildren().get(1);
+						final Text text = (Text) ((LabeledSkinBase<?>) newV).getChildren().get(1);
 						text.setText(control.getText());
 						graphic.minWidthProperty()
 								.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
@@ -148,10 +147,7 @@ public class Util {
 
 	public static String getAppDir() {
 		try {
-			File directory = new File(Util.class.getResource("../../").toURI());
-			if ("bin".equals(directory.getName())) {
-				directory = directory.getParentFile();
-			}
+			final File directory = new File(Util.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
 			return directory.getCanonicalPath();
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -196,4 +192,6 @@ public class Util {
 		}
 		return false;
 	}
+
+	private Util() {}
 }

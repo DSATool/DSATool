@@ -29,6 +29,7 @@ import javafx.application.Platform;
  * @author Dominik Helm
  */
 public class ErrorLogger {
+
 	public static void log(final String text) {
 		Platform.runLater(() -> Util.alert(text).show());
 		final File log = new File(Util.getAppDir() + "/error.log");
@@ -63,4 +64,6 @@ public class ErrorLogger {
 			e.printStackTrace();
 		}
 	}
+
+	private ErrorLogger() {}
 }
