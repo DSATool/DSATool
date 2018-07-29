@@ -17,7 +17,7 @@ package dsatool.plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -47,36 +47,34 @@ public class PluginLoader {
 	 */
 	private static final String dependencyDir = "dependencies";
 
-	private static URLClassLoader loader;
-
 	/**
 	 * The directory where plugins reside
 	 */
 	private static final String pluginDir = "plugins";
 
-	private static void addJarsToClassPath(File file) {
-		try {
-			final Method addUrlMethod = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
-			addUrlMethod.setAccessible(true);
-			addUrlMethod.invoke(Thread.currentThread().getContextClassLoader(), file.toURI().toURL());
-		} catch (final Exception e) {
-			ErrorLogger.logError(e);
-		}
-	}
-
-	private static void loadDependencies() {
+	private static URLClassLoader loadDependencies() {
 		final File dependencyDirectory = new File(Util.getAppDir() + File.separator + dependencyDir);
 		final File[] dependencies = dependencyDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
-		for (final File file : dependencies) {
-			addJarsToClassPath(file);
+
+		final URL[] jarURLs = new URL[dependencies.length];
+
+		for (int i = 0; i < dependencies.length; ++i) {
+			try {
+				jarURLs[i] = dependencies[i].toURI().toURL();
+			} catch (final MalformedURLException e) {
+				ErrorLogger.logError(e);
+			}
 		}
+
+		return new URLClassLoader(jarURLs);
 	}
 
 	/**
 	 * Loads all classes from all plugin jars, identifies the plugins and initializes them
 	 */
 	public static void loadPlugins() {
-		loadDependencies();
+		@SuppressWarnings("resource")
+		URLClassLoader loader = loadDependencies();
 		final File pluginDirectory = new File(Util.getAppDir() + File.separator + pluginDir);
 
 		final File[] pluginJars = pluginDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
@@ -91,7 +89,7 @@ public class PluginLoader {
 			}
 		}
 
-		loader = new URLClassLoader(jarURLs);
+		loader = new URLClassLoader(jarURLs, loader);
 
 		for (final File pluginJar : pluginJars) {
 			try (JarFile jarFile = new JarFile(pluginJar)) {
@@ -109,11 +107,12 @@ public class PluginLoader {
 						className = className.replace('/', '.');
 						final Class<?> c = loader.loadClass(className);
 						if (className.equals(pluginName)) {
-							final Plugin plugin = (Plugin) c.newInstance();
+							final Plugin plugin = (Plugin) c.getConstructor().newInstance();
 							plugins.put(plugin.getPluginName(), plugin);
 						}
 					}
-				} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+						| NoSuchMethodException | SecurityException e) {
 					ErrorLogger.logError(e);
 				}
 				jarFile.close();
@@ -126,4 +125,6 @@ public class PluginLoader {
 			plugin.initialize();
 		}
 	}
+
+	private PluginLoader() {}
 }
