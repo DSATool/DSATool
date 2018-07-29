@@ -9,7 +9,7 @@
 		<jar destfile="DSATool.jar">
 			<manifest>
 				<attribute name="Main-Class" value="dsatool.gui.Main"/>
-				<attribute name="Class-Path" value=". dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
+				<attribute name="Class-Path" value="dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
 			</manifest>
 			<fileset dir="bin" excludes="dsatool/update/Updater.class,dsatool/update/SignatureTool.class"/>
 			<metainf file="LICENSE"/>
