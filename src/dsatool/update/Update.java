@@ -62,7 +62,7 @@ public class Update {
 		executorThread.setPriority(Thread.MAX_PRIORITY);
 		executorThread.start();
 	}
-		
+
 	private static void executeUpdate() {
 		try {
 			Files.lines(Paths.get(updateListPath)).forEach(line -> {
@@ -238,7 +238,7 @@ public class Update {
 		});
 	}
 
-	public Tuple<JSONObject, String> searchUpdate(final File releaseInfoFile) {
+	private Tuple<JSONObject, String> searchUpdate(final File releaseInfoFile) {
 		JSONObject releaseInfo = null;
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(releaseInfoFile), "UTF-8"))) {
