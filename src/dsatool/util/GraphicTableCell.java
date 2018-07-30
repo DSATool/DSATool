@@ -18,6 +18,8 @@ package dsatool.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.sun.javafx.scene.control.FakeFocusTextField;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -25,8 +27,9 @@ import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
-import javafx.scene.control.ComboBoxBase;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
@@ -87,10 +90,25 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			((ButtonBase) graphic).setOnAction(e -> {
 				requestFocus();
 			});
-		} else if (graphic instanceof ComboBoxBase) {
-			((ComboBoxBase<?>) graphic).setOnAction(e -> {
+		} else if (graphic instanceof ComboBox) {
+			((ComboBox<?>) graphic).setOnAction(e -> {
 				requestFocus();
 			});
+			if (((ComboBox<?>) graphic).getEditor() instanceof FakeFocusTextField) {
+				graphic.focusedProperty().addListener((o, oldV, newV) -> {
+					if (newV) {
+						((FakeFocusTextField) ((ComboBox<?>) graphic).getEditor()).setFakeFocus(true);
+					}
+				});
+			}
+		} else if (graphic instanceof Spinner) {
+			if (((Spinner<?>) graphic).getEditor() instanceof FakeFocusTextField) {
+				graphic.focusedProperty().addListener((o, oldV, newV) -> {
+					if (newV) {
+						((FakeFocusTextField) ((Spinner<?>) graphic).getEditor()).setFakeFocus(true);
+					}
+				});
+			}
 		}
 	}
 
