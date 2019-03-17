@@ -41,6 +41,8 @@ import jsonant.value.JSONObject;
 
 public class Util {
 
+	public final static String javaExecutable = ProcessHandle.current().info().command().orElse("java");
+
 	public static void addReference(final Labeled control, final JSONObject data, final double padding, final ReadOnlyDoubleProperty width) {
 		final JSONObject books = ResourceManager.getResource("settings/Buecher");
 		final JSONObject refs = ResourceManager.getDiscrimination(data);

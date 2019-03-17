@@ -5,10 +5,10 @@
 	<target name="deploy" description="Builds the jar archive">
 		<mkdir dir="plugins"/>
     	<mkdir dir="bin"/>
-    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="1.8" target="1.8"/>
+    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="11" target="9"/>
 		<jar destfile="DSATool.jar">
 			<manifest>
-				<attribute name="Main-Class" value="dsatool.gui.Main"/>
+				<attribute name="Main-Class" value="dsatool.util.Runner"/>
 				<attribute name="Class-Path" value="dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
 			</manifest>
 			<fileset dir="bin" excludes="dsatool/update/Updater.class,dsatool/update/SignatureTool.class"/>
@@ -27,7 +27,6 @@
 		<fileset id="deleted" dir="release/previous" includes="${Includes},${Name}.jar">
 			<present present="srconly" targetdir="."/>
 		</fileset>
-		<resourcecount property="hasDeleted" refId="deleted" when="greater" count="0"/>
 		<echo file="release/current/deleted.txt">${toString:deleted}</echo>
 		<delete>
 			<fileset file="release/current/deleted.txt">

@@ -211,7 +211,7 @@ public class Updater {
 			logError(e);
 		}
 		try {
-			Runtime.getRuntime().exec(new String[] { "java", "-jar", getAppDir() + "/DSATool.jar" });
+			Runtime.getRuntime().exec(new String[] { ProcessHandle.current().info().command().orElse("java"), "-jar", getAppDir() + "/DSATool.jar" });
 		} catch (final IOException e) {
 			logError(e);
 		}

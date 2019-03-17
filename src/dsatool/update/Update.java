@@ -155,7 +155,7 @@ public class Update {
 					ErrorLogger.logError(e);
 				}
 			});
-			Runtime.getRuntime().exec(new String[] { "java", "-jar", Util.getAppDir() + "/update/Updater.jar" });
+			Runtime.getRuntime().exec(new String[] { Util.javaExecutable, "-jar", Util.getAppDir() + "/update/Updater.jar" });
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
 		}
