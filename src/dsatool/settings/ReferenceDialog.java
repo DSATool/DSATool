@@ -18,8 +18,8 @@ package dsatool.settings;
 import java.io.File;
 
 import dsatool.resources.ResourceManager;
+import dsatool.ui.ReactiveSpinner;
 import dsatool.util.ErrorLogger;
-import dsatool.util.ReactiveSpinner;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

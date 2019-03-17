@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dsatool.util;
+package dsatool.ui;
 
+import java.lang.reflect.Method;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.sun.javafx.scene.control.FakeFocusTextField;
-
+import dsatool.util.ErrorLogger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,7 +39,18 @@ import javafx.scene.control.TextField;
 
 public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 
+	static Method setFocused;
+	static {
+		try {
+			setFocused = Node.class.getDeclaredMethod("setFocused", boolean.class);
+			setFocused.setAccessible(true);
+		} catch (final Exception e) {
+			ErrorLogger.logError(e);
+		}
+	}
+
 	private final boolean alwaysVisible;
+
 	protected Node graphic;
 
 	public GraphicTableCell(final boolean alwaysVisible) {
@@ -94,21 +105,23 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			((ComboBox<?>) graphic).setOnAction(e -> {
 				requestFocus();
 			});
-			if (((ComboBox<?>) graphic).getEditor() instanceof FakeFocusTextField) {
-				graphic.focusedProperty().addListener((o, oldV, newV) -> {
-					if (newV) {
-						((FakeFocusTextField) ((ComboBox<?>) graphic).getEditor()).setFakeFocus(true);
+			graphic.focusedProperty().addListener((o, oldV, newV) -> {
+				if (newV) {
+					try {
+						setFocused.invoke(((ComboBox<?>) graphic).getEditor(), true);
+					} catch (final Exception e) {
+						ErrorLogger.logError(e);
 					}
-				});
-			}
+				}
+			});
 		} else if (graphic instanceof Spinner) {
-			if (((Spinner<?>) graphic).getEditor() instanceof FakeFocusTextField) {
-				graphic.focusedProperty().addListener((o, oldV, newV) -> {
-					if (newV) {
-						((FakeFocusTextField) ((Spinner<?>) graphic).getEditor()).setFakeFocus(true);
-					}
-				});
-			}
+			graphic.focusedProperty().addListener((o, oldV, newV) -> {
+				try {
+					setFocused.invoke(((Spinner<?>) graphic).getEditor(), true);
+				} catch (final Exception e) {
+					ErrorLogger.logError(e);
+				}
+			});
 		}
 	}
 

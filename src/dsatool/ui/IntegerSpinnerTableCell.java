@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dsatool.util;
+package dsatool.ui;
 
 import java.util.function.BiFunction;
 
-import javafx.scene.control.SpinnerValueFactory.DoubleSpinnerValueFactory;
+import dsatool.util.Tuple;
+import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
-public class DoubleSpinnerTableCell<S> extends GraphicTableCell<S, Double> {
+public class IntegerSpinnerTableCell<S> extends GraphicTableCell<S, Integer> {
 
-	public static <S> Callback<TableColumn<S, Double>, TableCell<S, Double>> forTableColumn(final double min, final double max, final double step,
-			final boolean alwaysVisible, final BiFunction<DoubleSpinnerTableCell<S>, Boolean, Tuple<Double, Double>> update) {
-		return list -> new DoubleSpinnerTableCell<S>(min, max, step, alwaysVisible) {
+	public static <S> Callback<TableColumn<S, Integer>, TableCell<S, Integer>> forTableColumn(final int min, final int max, final int step,
+			final boolean alwaysVisible, final BiFunction<IntegerSpinnerTableCell<S>, Boolean, Tuple<Integer, Integer>> update) {
+		return list -> new IntegerSpinnerTableCell<>(min, max, step, alwaysVisible) {
 			@Override
-			public void updateItem(final Double item, final boolean empty) {
-				final Tuple<Double, Double> bounds = update.apply(this, empty);
+			public void updateItem(final Integer item, final boolean empty) {
+				final Tuple<Integer, Integer> bounds = update.apply(this, empty);
 				min = bounds._1;
 				max = bounds._2;
 				super.updateItem(item, empty);
@@ -37,17 +38,17 @@ public class DoubleSpinnerTableCell<S> extends GraphicTableCell<S, Double> {
 		};
 	}
 
-	protected double min;
-	protected double max;
-	protected double step;
+	protected int min;
+	protected int max;
+	protected int step;
 
-	public DoubleSpinnerTableCell(final double min, final double max, final boolean alwaysVisible) {
+	public IntegerSpinnerTableCell(final int min, final int max, final boolean alwaysVisible) {
 		super(alwaysVisible);
 		this.min = min;
 		this.max = max;
 	}
 
-	public DoubleSpinnerTableCell(final double min, final double max, final double step, final boolean alwaysVisible) {
+	public IntegerSpinnerTableCell(final int min, final int max, final int step, final boolean alwaysVisible) {
 		super(alwaysVisible);
 		this.min = min;
 		this.max = max;
@@ -60,21 +61,21 @@ public class DoubleSpinnerTableCell<S> extends GraphicTableCell<S, Double> {
 			setGraphic(null);
 			return;
 		}
-		final ReactiveSpinner<Double> spinner = new ReactiveSpinner<>(min, max);
+		final ReactiveSpinner<Integer> spinner = new ReactiveSpinner<>(min, max);
 		spinner.setEditable(true);
-		((DoubleSpinnerValueFactory) spinner.getValueFactory()).setAmountToStepBy(step);
+		((IntegerSpinnerValueFactory) spinner.getValueFactory()).setAmountToStepBy(step);
 		createGraphic(spinner, () -> spinner.getValue(), t -> spinner.getValueFactory().setValue(t));
 	}
 
 	@Override
 	public void startEdit() {
-		if (getItem() == null || min == max) return;
+		if (getItem() == null || getItem() == Integer.MIN_VALUE || min == max) return;
 		super.startEdit();
 	}
 
 	@Override
-	public void updateItem(final Double item, final boolean empty) {
-		if (empty) {
+	public void updateItem(final Integer item, final boolean empty) {
+		if (empty || item.equals(Integer.MIN_VALUE)) {
 			setText("");
 			setGraphic(null);
 		} else {

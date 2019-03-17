@@ -19,9 +19,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import dsatool.ui.ReactiveComboBox;
+import dsatool.ui.ReactiveSpinner;
 import dsatool.util.ErrorLogger;
-import dsatool.util.ReactiveComboBox;
-import dsatool.util.ReactiveSpinner;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

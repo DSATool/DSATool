@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import dsatool.util.ReactiveSpinner?>
+<?import dsatool.ui.ReactiveSpinner?>
 
 <VBox fx:id="pane" xmlns:fx="http://javafx.com/fxml/1" spacing="2" styleClass="background" >
    <padding><Insets top="2" right="2" bottom="2" left="2"/></padding>

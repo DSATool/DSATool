@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package dsatool.util;
+package dsatool.ui;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -40,7 +40,8 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 		T item = null;
 		if (previousCaret > 0 && previousCaret <= text.length()) {
 			final String searchText = editor.getText().substring(0, previousCaret);
-			if (!getSelectionModel().getSelectedItem().toString().toLowerCase().startsWith(searchText.toLowerCase())) {
+			final T selected = getSelectionModel().getSelectedItem();
+			if (selected == null || !selected.toString().toLowerCase().startsWith(searchText.toLowerCase())) {
 				item = findItem(searchText);
 			}
 		}
