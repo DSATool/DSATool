@@ -16,16 +16,12 @@
 package dsatool.plugins;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.ServiceLoader;
 
 import dsatool.util.ErrorLogger;
 import dsatool.util.Util;
@@ -43,38 +39,14 @@ public class PluginLoader {
 	public static final Map<String, Plugin> plugins = new HashMap<>();
 
 	/**
-	 * The directory where dependencies reside
-	 */
-	private static final String dependencyDir = "dependencies";
-
-	/**
 	 * The directory where plugins reside
 	 */
 	private static final String pluginDir = "plugins";
-
-	private static URLClassLoader loadDependencies() {
-		final File dependencyDirectory = new File(Util.getAppDir() + File.separator + dependencyDir);
-		final File[] dependencies = dependencyDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
-
-		final URL[] jarURLs = new URL[dependencies.length];
-
-		for (int i = 0; i < dependencies.length; ++i) {
-			try {
-				jarURLs[i] = dependencies[i].toURI().toURL();
-			} catch (final MalformedURLException e) {
-				ErrorLogger.logError(e);
-			}
-		}
-
-		return new URLClassLoader(jarURLs);
-	}
 
 	/**
 	 * Loads all classes from all plugin jars, identifies the plugins and initializes them
 	 */
 	public static void loadPlugins() {
-		@SuppressWarnings("resource")
-		URLClassLoader loader = loadDependencies();
 		final File pluginDirectory = new File(Util.getAppDir() + File.separator + pluginDir);
 
 		final File[] pluginJars = pluginDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
@@ -89,37 +61,11 @@ public class PluginLoader {
 			}
 		}
 
-		loader = new URLClassLoader(jarURLs, loader);
-
-		for (final File pluginJar : pluginJars) {
-			try (JarFile jarFile = new JarFile(pluginJar)) {
-				final Enumeration<JarEntry> entries = jarFile.entries();
-				String pluginName = pluginJar.getName();
-				pluginName = pluginName.substring(0, pluginName.lastIndexOf('.'));
-				try {
-					while (entries.hasMoreElements()) {
-						final JarEntry je = entries.nextElement();
-						if (je.isDirectory() || !je.getName().endsWith(".class")) {
-							continue;
-						}
-						// -6 because of .class
-						String className = je.getName().substring(0, je.getName().length() - 6);
-						className = className.replace('/', '.');
-						final Class<?> c = loader.loadClass(className);
-						if (className.equals(pluginName)) {
-							final Plugin plugin = (Plugin) c.getConstructor().newInstance();
-							plugins.put(plugin.getPluginName(), plugin);
-						}
-					}
-				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-						| NoSuchMethodException | SecurityException e) {
-					ErrorLogger.logError(e);
-				}
-				jarFile.close();
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-			}
+		final ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class, new URLClassLoader(jarURLs));
+		for (final Plugin plugin : loader) {
+			plugins.put(plugin.getPluginName(), plugin);
 		}
+		loader.reload(); // Clear the ServiceLoader's cache, as we use our own
 
 		for (final Plugin plugin : plugins.values()) {
 			plugin.initialize();
