@@ -43,18 +43,18 @@ public class Tuple<T1, T2> {
 	 * @param _2
 	 *            Second initial value
 	 */
-	public Tuple(T1 _1, T2 _2) {
+	public Tuple(final T1 _1, final T2 _2) {
 		this._1 = _1;
 		this._2 = _2;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof Tuple)) return false;
@@ -75,20 +75,17 @@ public class Tuple<T1, T2> {
 	 *            The index to access
 	 * @return The value at the index or null if the index is outside of 0 < index <= 2
 	 */
-	public Object get(int index) {
-		switch (index) {
-		case 1:
-			return _1;
-		case 2:
-			return _2;
-		default:
-			return null;
-		}
+	public Object get(final int index) {
+		return switch (index) {
+			case 1 -> _1;
+			case 2 -> _2;
+			default -> null;
+		};
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

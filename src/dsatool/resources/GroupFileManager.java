@@ -97,17 +97,14 @@ public class GroupFileManager {
 			if (!result.isPresent()) {
 				continue;
 			}
-			switch (result.get().getText()) {
-			case "Gruppe erstellen":
-				zipFileExists = createNewZipFile();
-				break;
-			case "Gruppe laden":
-				zipFileExists = openNewGroup();
-				break;
-			default:
-				System.exit(0);
-				break;
-			}
+			zipFileExists = switch (result.get().getText()) {
+				case "Gruppe erstellen" -> createNewZipFile();
+				case "Gruppe laden" -> openNewGroup();
+				default -> {
+					System.exit(0);
+					break false;
+				}
+			};
 		}
 	}
 

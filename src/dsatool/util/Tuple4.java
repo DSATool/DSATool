@@ -70,11 +70,11 @@ public class Tuple4<T1, T2, T3, T4> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) return true;
 		if (obj == null) return false;
 		if (!(obj instanceof Tuple4)) return false;
@@ -101,24 +101,19 @@ public class Tuple4<T1, T2, T3, T4> {
 	 *            The index to access
 	 * @return The value at the index or null if the index is outside of 0 < index <= 4
 	 */
-	public Object get(int index) {
-		switch (index) {
-		case 1:
-			return _1;
-		case 2:
-			return _2;
-		case 3:
-			return _3;
-		case 4:
-			return _4;
-		default:
-			return null;
-		}
+	public Object get(final int index) {
+		return switch (index) {
+			case 1 -> _1;
+			case 2 -> _2;
+			case 3 -> _3;
+			case 4 -> _4;
+			default -> null;
+		};
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

@@ -593,34 +593,34 @@ public class ResourceManager {
 			for (final Entry<String, Tuple<JSONObject, Source>> entry : resources.entrySet()) {
 				String path = entry.getKey() + ".json";
 				switch (entry.getValue()._2) {
-				case MOD:
-					if (!path.startsWith("settings")) {
+					case MOD:
+						if (!path.startsWith("settings")) {
+							break;
+						}
+						path = "mod/" + path;
+					case GENERAL:
+						if (!path.startsWith("settings")) {
+							break;
+						}
+						try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Util.getAppDir(), path))) {
+							JSONPrinter.print(writer, entry.getValue()._1);
+						} catch (final IOException e) {
+							ErrorLogger.logError(e);
+						}
 						break;
-					}
-					path = "mod/" + path;
-				case GENERAL:
-					if (!path.startsWith("settings")) {
+					case ZIP:
+						final Path p = zipFile.getPath("/" + path);
+						if (p.getParent() != null) {
+							Files.createDirectories(p.getParent());
+						}
+						try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
+							JSONPrinter.print(zipwriter, entry.getValue()._1);
+						} catch (final IOException e) {
+							ErrorLogger.logError(e);
+						}
 						break;
-					}
-					try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Util.getAppDir(), path))) {
-						JSONPrinter.print(writer, entry.getValue()._1);
-					} catch (final IOException e) {
-						ErrorLogger.logError(e);
-					}
-					break;
-				case ZIP:
-					final Path p = zipFile.getPath("/" + path);
-					if (p.getParent() != null) {
-						Files.createDirectories(p.getParent());
-					}
-					try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
-						JSONPrinter.print(zipwriter, entry.getValue()._1);
-					} catch (final IOException e) {
-						ErrorLogger.logError(e);
-					}
-					break;
-				default:
-					break;
+					default:
+						break;
 				}
 			}
 			zipFile.close();
