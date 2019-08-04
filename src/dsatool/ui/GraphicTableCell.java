@@ -15,9 +15,10 @@
  */
 package dsatool.ui;
 
-import java.lang.reflect.Method;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.sun.javafx.scene.control.FakeFocusTextField;
 
 import dsatool.util.ErrorLogger;
 import javafx.beans.property.ObjectProperty;
@@ -38,16 +39,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
-
-	static Method setFocused;
-	static {
-		try {
-			setFocused = Node.class.getDeclaredMethod("setFocused", boolean.class);
-			setFocused.setAccessible(true);
-		} catch (final Exception e) {
-			ErrorLogger.logError(e);
-		}
-	}
 
 	private final boolean alwaysVisible;
 
@@ -108,7 +99,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			graphic.focusedProperty().addListener((o, oldV, newV) -> {
 				if (newV) {
 					try {
-						setFocused.invoke(((ComboBox<?>) graphic).getEditor(), true);
+						((FakeFocusTextField) ((ComboBox<?>) graphic).getEditor()).setFakeFocus(true);
 					} catch (final Exception e) {
 						ErrorLogger.logError(e);
 					}
@@ -116,10 +107,12 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			});
 		} else if (graphic instanceof Spinner) {
 			graphic.focusedProperty().addListener((o, oldV, newV) -> {
-				try {
-					setFocused.invoke(((Spinner<?>) graphic).getEditor(), true);
-				} catch (final Exception e) {
-					ErrorLogger.logError(e);
+				if (newV) {
+					try {
+						((FakeFocusTextField) ((Spinner<?>) graphic).getEditor()).setFakeFocus(true);
+					} catch (final Exception e) {
+						ErrorLogger.logError(e);
+					}
 				}
 			});
 		}
