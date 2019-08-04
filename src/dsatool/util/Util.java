@@ -172,10 +172,6 @@ public class Util {
 		if (osName.contains("win")) {
 			openedSuccessfully = run("explorer " + file.getAbsolutePath());
 		} else if (osName.contains("linux")) {
-			openedSuccessfully = run("gnome-open " + file.getAbsolutePath());
-			if (openedSuccessfully) return;
-			openedSuccessfully = run("kde-open " + file.getAbsolutePath());
-			if (openedSuccessfully) return;
 			openedSuccessfully = run("xdg-open " + file.getAbsolutePath());
 		} else if (osName.contains("mac")) {
 			openedSuccessfully = run("open " + file.getAbsolutePath());
