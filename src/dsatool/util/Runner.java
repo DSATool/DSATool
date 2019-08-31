@@ -6,6 +6,7 @@ public class Runner {
 
 	public static void main(final String[] args) {
 		final ProcessBuilder pb = new ProcessBuilder(Util.javaExecutable,
+				"--enable-preview", // TODO remove once switch is not preview anymore
 				"--add-opens", "javafx.graphics/javafx.scene=ALL-UNNAMED",
 				"-cp", "DSATool.jar",
 				"dsatool.gui.Main");

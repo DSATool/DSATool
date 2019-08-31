@@ -76,11 +76,22 @@ public class Tuple<T1, T2> {
 	 * @return The value at the index or null if the index is outside of 0 < index <= 2
 	 */
 	public Object get(final int index) {
-		return switch (index) {
-			case 1 -> _1;
-			case 2 -> _2;
-			default -> null;
-		};
+		/*
+		 * TODO once switch is not preview anymore
+		 * return switch (index) {
+		 * case 1 -> _1;
+		 * case 2 -> _2;
+		 * default -> null;
+		 * };
+		 */
+		switch (index) {
+			case 1:
+				return _1;
+			case 2:
+				return _2;
+			default:
+				return null;
+		}
 	}
 
 	/*
