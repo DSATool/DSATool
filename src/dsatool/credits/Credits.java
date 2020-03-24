@@ -40,9 +40,13 @@ public class Credits {
 	static {
 		credits.add(new Credits("DSATool\nCopyright (c) 2017, DSATool Team", "Apache License 2.0", Util.getAppDir() + "/licenses/ALv2.txt",
 				"http://github.com/DSATool/DSATool", null));
-		credits.add(new Credits("ControlsFX\nCopyright (c) 2013, 2014, ControlsFX", "Lizenz", Util.getAppDir() + "/licenses/controlsfx-license.txt",
+		credits.add(new Credits("ControlsFX\nCopyright (c) 2013, ControlsFX", "Lizenz", Util.getAppDir() + "/licenses/controlsfx-license.txt",
 				"http://fxexperience.com/controlsfx/", null));
+		credits.add(new Credits("JavaFX\nCopyright (c) 2008, Oracle", "GPLv2 with Class Path Exception", Util.getAppDir() + "/licenses/GPLv2_CPE.txt",
+				"https://openjfx.io/", null));
 		credits.add(new Credits("Material Icons", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://material.io/icons/", null));
+		credits.add(new Credits("Jsonant", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://github.com/errt/Jsonant", null));
+		credits.add(new Credits("BoxTable", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://github.com/errt/BoxTable", null));
 	}
 
 	private final String text;
