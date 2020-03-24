@@ -261,7 +261,7 @@ public class ResourceManager {
 						ErrorLogger.logError(e);
 						return false;
 					}
-					try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath(), null)) {
+					try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
 						Files.delete(zipFile.getPath("/" + path));
 						zipFile.close();
 						zip = new ZipFile(zipPath);
@@ -509,7 +509,7 @@ public class ResourceManager {
 				return;
 			}
 		}
-		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath(), null)) {
+		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
 			path += ".json";
 			final Path p = zipFile.getPath("/" + path);
 			if (p.getParent() != null) {
@@ -589,7 +589,7 @@ public class ResourceManager {
 				return;
 			}
 		}
-		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath(), null)) {
+		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
 			for (final Entry<String, Tuple<JSONObject, Source>> entry : resources.entrySet()) {
 				String path = entry.getKey() + ".json";
 				switch (entry.getValue()._2) {

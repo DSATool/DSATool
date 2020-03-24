@@ -75,7 +75,8 @@ public class Main extends Application {
 		});
 	}
 
-	public static void main(final String[] args) {
+	@Override
+	public void start(final Stage primaryStage) {
 		Platform.runLater(() -> GroupFileManager.openCurrentGroup());
 
 		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
@@ -87,11 +88,7 @@ public class Main extends Application {
 			updateThread.setPriority(Thread.MIN_PRIORITY);
 			updateThread.start();
 		}
-		launch(args);
-	}
 
-	@Override
-	public void start(final Stage primaryStage) {
 		app = this;
 		try {
 			final FXMLLoader fxmlLoader = new FXMLLoader();
