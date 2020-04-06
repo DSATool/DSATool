@@ -89,25 +89,12 @@ public class Tuple3<T1, T2, T3> {
 	 * @return The value at the index or null if the index is outside of 0 < index <= 3
 	 */
 	public Object get(final int index) {
-		/*
-		 * TODO once switch is not preview anymore
-		 * return switch (index) {
-		 * case 1 -> _1;
-		 * case 2 -> _2;
-		 * case 3 -> _3;
-		 * default -> null;
-		 * };
-		 */
-		switch (index) {
-			case 1:
-				return _1;
-			case 2:
-				return _2;
-			case 3:
-				return _3;
-			default:
-				return null;
-		}
+		return switch (index) {
+			case 1 -> _1;
+			case 2 -> _2;
+			case 3 -> _3;
+			default -> null;
+		};
 	}
 
 	/*
