@@ -33,7 +33,6 @@ import dsatool.update.Update;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Util;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -77,7 +76,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) {
-		Platform.runLater(() -> GroupFileManager.openCurrentGroup());
+		GroupFileManager.openCurrentGroup();
 
 		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
 		if (new File(Update.updateListPath).exists()) {
