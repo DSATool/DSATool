@@ -24,9 +24,12 @@ import dsatool.resources.ResourceManager;
 import dsatool.resources.Settings;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Tuple;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -65,6 +68,7 @@ public class BookSettingsPage {
 	private final Map<String, Tuple<String, CheckBox>> bookCategory = new HashMap<>();
 
 	private JSONArray used;
+	private boolean modified = false;
 
 	public BookSettingsPage(final Window window) {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
@@ -231,6 +235,7 @@ public class BookSettingsPage {
 					}
 					checkBook(toMove.get(i));
 				}
+				modify();
 				e.setDropCompleted(true);
 			});
 
@@ -238,6 +243,18 @@ public class BookSettingsPage {
 
 			return cell;
 		});
+	}
+
+	private void modify() {
+		if (!modified) {
+			Platform.runLater(() -> {
+				final Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Hinweis");
+				alert.setHeaderText("Ein Neustart des Tools ist erforderlich, um diese Änderung wirksam zu machen.");
+				alert.show();
+			});
+			modified = true;
+		}
 	}
 
 	private void moveBook(final String name, final ListView<String> source, final ListView<String> target) {
@@ -250,6 +267,7 @@ public class BookSettingsPage {
 				used.add(name);
 			}
 			checkBook(name);
+			modify();
 		}
 	}
 

@@ -46,6 +46,9 @@
                   </font>
                   <tooltip>
                      <Tooltip text="Benutzen" />
+                     <font>
+	                    <Font />
+	                 </font>
                   </tooltip>
                </Button>
                <Button text="&#xE315;" minWidth="35" onAction="#removeBooks" >
@@ -55,6 +58,9 @@
                   </font>
                   <tooltip>
                      <Tooltip text="Nicht mehr benutzen" />
+                     <font>
+	                    <Font />
+	                 </font>
                   </tooltip>
                </Button>
                <Label prefHeight="25" VBox.vgrow="NEVER" />
