@@ -25,6 +25,7 @@ import dsatool.resources.Settings;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Tuple;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -186,15 +187,11 @@ public class BookSettingsPage {
 			final MenuItem editItem = new MenuItem("Bearbeiten");
 			editItem.setOnAction(e -> {
 				final String item = cell.getItem();
-				if (item != null) {
-					new ReferenceDialog(window, item);
-				}
-			});
-			menu.setOnShowing(e -> {
-				editItem.setVisible(cell.getItem() != null);
+				new ReferenceDialog(window, item);
 			});
 			menu.getItems().add(editItem);
-			cell.setContextMenu(menu);
+
+			cell.contextMenuProperty().bind(Bindings.when(cell.itemProperty().isNotNull()).then(menu).otherwise((ContextMenu) null));
 
 			cell.setOnDragDetected(e -> {
 				if (cell.isEmpty()) return;
