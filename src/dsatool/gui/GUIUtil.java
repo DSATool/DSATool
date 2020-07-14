@@ -30,6 +30,7 @@ public class GUIUtil {
 			}
 		}
 		table.getColumns().get(resizeableCol).prefWidthProperty().bind(width);
+		table.getColumns().get(resizeableCol).maxWidthProperty().bind(width);
 	}
 
 	public static void cellValueFactories(final TableView<?> table, final String... properties) {
