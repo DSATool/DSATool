@@ -26,17 +26,8 @@ public class ColoredProgressBarTableCell<S extends Colorable> extends GraphicTab
 		super(true);
 	}
 
-	private String createColor(Color color) {
-		final StringBuilder string = new StringBuilder("#");
-
-		final String red = Integer.toHexString((int) (color.getRed() * 255));
-		string.append(red.length() < 2 ? "0" + red : red);
-		final String green = Integer.toHexString((int) (color.getGreen() * 255));
-		string.append(green.length() < 2 ? "0" + green : green);
-		final String blue = Integer.toHexString((int) (color.getBlue() * 255));
-		string.append(blue.length() < 2 ? "0" + blue : blue);
-
-		return string.toString();
+	private String createColor(final Color color) {
+		return "#" + color.toString().substring(2, 8);
 	}
 
 	@Override
