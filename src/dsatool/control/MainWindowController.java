@@ -26,6 +26,7 @@ import dsatool.resources.ResourceManager;
 import dsatool.settings.SettingsDialog;
 import dsatool.ui.MenuGroup;
 import dsatool.update.Update;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -142,7 +143,7 @@ public class MainWindowController {
 		file.addSeparator();
 		file.addItem("Schließen").setAction(o -> {
 			if (askSaveChanges()) {
-				window.close();
+				Platform.exit();
 			}
 		});
 
@@ -169,6 +170,7 @@ public class MainWindowController {
 
 		window.setOnCloseRequest(o -> {
 			ResourceManager.saveResources();
+			Platform.exit();
 		});
 	}
 }
