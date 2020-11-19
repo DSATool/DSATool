@@ -27,7 +27,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public class ReactiveComboBox<T> extends ComboBox<T> {
-	private static EventHandler<ActionEvent> filter = e -> e.consume();
+	private static EventHandler<ActionEvent> filter = ActionEvent::consume;
 	private final StringBuilder searchString = new StringBuilder();
 
 	private long lastChange = 0;
@@ -105,8 +105,8 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 
 	private final T findItem(final String prefix) {
 		final ObservableList<T> items = getItems();
-		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).toString().toLowerCase().startsWith(prefix.toLowerCase())) return items.get(i);
+		for (final T item : items) {
+			if (item.toString().toLowerCase().startsWith(prefix.toLowerCase())) return item;
 		}
 		return null;
 	}

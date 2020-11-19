@@ -51,6 +51,11 @@ public class PluginLoader {
 
 		final File[] pluginJars = pluginDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
 
+		if (pluginJars == null) {
+			ErrorLogger.log("No plugins found in dir " + pluginDirectory);
+			return;
+		}
+
 		final URL[] jarURLs = new URL[pluginJars.length];
 
 		for (int i = 0; i < pluginJars.length; ++i) {

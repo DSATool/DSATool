@@ -81,7 +81,7 @@ public class ResourceManager {
 	/**
 	 * The zip file for the current group
 	 */
-	private static ZipFile zip;
+	private volatile static ZipFile zip;
 
 	/**
 	 * The path to the zip file
@@ -151,7 +151,7 @@ public class ResourceManager {
 	 */
 	private static boolean acquireResource(final String path, final boolean discriminate, final boolean notifyPathListeners) {
 		if (resources.containsKey(path)) return true;
-		final JSONParser parser = new JSONParser(discriminate ? discriminator : null, e -> ErrorLogger.logError(e));
+		final JSONParser parser = new JSONParser(discriminate ? discriminator : null, ErrorLogger::logError);
 		final String jsonpath = path + ".json";
 		Source source = null;
 		JSONObject result = new JSONObject(null);
@@ -422,7 +422,7 @@ public class ResourceManager {
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
 				final JSONObject tmp = getNewResource(makeValidFile(internalPath), false);
 				final String tmpPath = paths.get(tmp);
-				final JSONObject result = new JSONParser(discriminator, e -> ErrorLogger.logError(e)).parse(reader);
+				final JSONObject result = new JSONParser(discriminator, ErrorLogger::logError).parse(reader);
 				resources.put(tmpPath, new Tuple<>(result, Source.ZIP));
 				paths.put(result, tmpPath);
 				paths.remove(tmp);
@@ -512,8 +512,9 @@ public class ResourceManager {
 		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
 			path += ".json";
 			final Path p = zipFile.getPath("/" + path);
-			if (p.getParent() != null) {
-				Files.createDirectories(p.getParent());
+			final Path parent = p.getParent();
+			if (parent != null) {
+				Files.createDirectories(parent);
 			}
 			try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
 				JSONPrinter.print(zipwriter, resource);
@@ -610,8 +611,9 @@ public class ResourceManager {
 						break;
 					case ZIP:
 						final Path p = zipFile.getPath("/" + path);
-						if (p.getParent() != null) {
-							Files.createDirectories(p.getParent());
+						final Path parent = p.getParent();
+						if (parent != null) {
+							Files.createDirectories(parent);
 						}
 						try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
 							JSONPrinter.print(zipwriter, entry.getValue()._1);

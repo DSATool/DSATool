@@ -54,7 +54,7 @@ public class ReactiveComboBoxTableCell<S> extends GraphicTableCell<S, String> {
 	protected void createGraphic() {
 		final ReactiveComboBox<String> comboBox = new ReactiveComboBox<>();
 		comboBox.itemsProperty().bind(items);
-		createGraphic(comboBox, () -> comboBox.getValue(), t -> comboBox.setValue(t));
+		createGraphic(comboBox, comboBox::getValue, comboBox::setValue);
 	}
 
 	public void setItems(final ObservableList<String> items) {

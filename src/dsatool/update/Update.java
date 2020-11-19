@@ -58,7 +58,7 @@ public class Update {
 	public final static String updateListPath = Util.getAppDir() + "/update/updateList.txt";
 
 	public static void execute() {
-		final Thread executorThread = new Thread(() -> executeUpdate());
+		final Thread executorThread = new Thread(Update::executeUpdate);
 		executorThread.setPriority(Thread.MAX_PRIORITY);
 		executorThread.start();
 	}
@@ -162,7 +162,7 @@ public class Update {
 		System.exit(0);
 	}
 
-	private final JSONParser parser = new JSONParser(null, e -> ErrorLogger.logError(e));
+	private final JSONParser parser = new JSONParser(null, ErrorLogger::logError);
 
 	private String getSignatureKeySpecification(final JSONObject info) {
 		if (info.containsKey("signatureProviderName") && info.containsKey("signatureKeyAlgorithm") && info.containsKey("signatureAlgorithm")

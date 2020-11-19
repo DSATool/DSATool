@@ -34,28 +34,34 @@ public class DetachableNode {
 	 * The node managed by this DetachableNode
 	 */
 	private Node node;
+
 	/**
 	 * A constructor for building this node
 	 */
 	private final Supplier<Node> constructor;
+
 	/**
 	 * The context menu entry for attaching or detaching this node
 	 */
 	private final MenuItem context;
-	private final int height;
+
 	/**
 	 * The window title for detached windows of this node
 	 */
 	private final String name;
+
 	/**
 	 * The node this node will be displayed on if attached
 	 */
 	private final Pane toolArea;
-	private final int width;
+
 	/**
 	 * The window this node is currently displayed on if detached
 	 */
 	private Stage window;
+
+	private final int height;
+	private final int width;
 
 	/**
 	 * Constructs a DetachableNode
@@ -71,7 +77,7 @@ public class DetachableNode {
 	 * @param toolArea
 	 *            The node the node will be displayed on if attached
 	 */
-	public DetachableNode(Supplier<Node> constructor, MenuItem item, String name, Pane toolArea, int width, int height) {
+	public DetachableNode(final Supplier<Node> constructor, final MenuItem item, final String name, final Pane toolArea, final int width, final int height) {
 		this.constructor = constructor;
 		this.name = name;
 		this.toolArea = toolArea;
@@ -91,15 +97,24 @@ public class DetachableNode {
 	 * @param bringToTop
 	 *            Make the node visible?
 	 */
-	public void attach(boolean bringToTop) {
+	public void attach(final boolean bringToTop) {
 		if (node == null) {
 			if (Platform.isFxApplicationThread()) {
 				node = constructor.get();
 			} else {
 				Platform.runLater(() -> {
 					node = constructor.get();
+					synchronized (this) {
+						notify();
+					}
 				});
-				while (node == null) {}
+				synchronized (this) {
+					while (node == null) {
+						try {
+							wait();
+						} catch (final InterruptedException e) {}
+					}
+				}
 			}
 		}
 		if (bringToTop) {
@@ -114,7 +129,7 @@ public class DetachableNode {
 			window.close();
 			window = null;
 		}
-		Platform.runLater(() -> toolArea.layout());
+		Platform.runLater(toolArea::layout);
 		context.setText("Lösen");
 		context.setAction(event -> {
 			detach();
@@ -157,8 +172,17 @@ public class DetachableNode {
 				} else {
 					Platform.runLater(() -> {
 						node = constructor.get();
+						synchronized (this) {
+							notify();
+						}
 					});
-					while (node == null) {}
+					synchronized (this) {
+						while (node == null) {
+							try {
+								wait();
+							} catch (final InterruptedException e) {}
+						}
+					}
 				}
 			}
 

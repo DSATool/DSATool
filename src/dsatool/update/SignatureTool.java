@@ -140,8 +140,8 @@ public class SignatureTool {
 	private static void zipAndSignDirectory(final int sourcePathLength, final File directory, final ZipOutputStream zipStream, final Signature sig) {
 		final byte[] buffer = new byte[1024];
 
-		for (final File file : directory.listFiles()) {
-			try {
+		try {
+			for (final File file : directory.listFiles()) {
 				String name = file.getPath().substring(sourcePathLength).replaceAll("\\\\", "/");
 				if (file.isDirectory()) {
 					if (!name.endsWith("/")) {
@@ -164,10 +164,10 @@ public class SignatureTool {
 						System.exit(1);
 					}
 				}
-			} catch (final Exception e) {
-				e.printStackTrace();
-				System.exit(1);
 			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

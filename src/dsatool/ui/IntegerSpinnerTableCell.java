@@ -64,7 +64,7 @@ public class IntegerSpinnerTableCell<S> extends GraphicTableCell<S, Integer> {
 		final ReactiveSpinner<Integer> spinner = new ReactiveSpinner<>(min, max);
 		spinner.setEditable(true);
 		((IntegerSpinnerValueFactory) spinner.getValueFactory()).setAmountToStepBy(step);
-		createGraphic(spinner, () -> spinner.getValue(), t -> spinner.getValueFactory().setValue(t));
+		createGraphic(spinner, spinner::getValue, spinner.getValueFactory()::setValue);
 	}
 
 	@Override

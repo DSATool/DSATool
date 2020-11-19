@@ -43,17 +43,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	/**
-	 * The applications main menu
-	 */
-	public static dsatool.ui.Menu mainMenu;
-
 	public static StatusBar statusBar;
-
-	/**
-	 * The menu tools can be selected from
-	 */
-	public static dsatool.ui.Menu toolsMenu;
 
 	private static MainWindowController window;
 
@@ -61,7 +51,7 @@ public class Main extends Application {
 
 	public static void addDetachableToolComposite(final String groupName, final String name, final int width, final int height,
 			final Supplier<Node> constructor) {
-		final MenuGroup group = Main.toolsMenu.addGroup(groupName);
+		final MenuGroup group = window.toolsMenu.addGroup(groupName);
 		final dsatool.ui.MenuItem item = group.addItem(name);
 
 		final DetachableNode composite = new DetachableNode(constructor, item, name, window.getToolArea(), width, height);

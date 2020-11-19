@@ -204,6 +204,7 @@ public class BookSettingsPage {
 				}
 				content.putString(indices.substring(0, indices.length() - 1));
 				dragBoard.setContent(content);
+				e.consume();
 			});
 
 			cell.setOnDragDropped(e -> {

@@ -69,6 +69,7 @@ public class ReferenceDialog {
 		stage.setTitle("Pfad für " + title);
 		stage.setScene(new Scene(pane, 600, 125));
 		stage.initModality(Modality.WINDOW_MODAL);
+		stage.setResizable(false);
 		stage.initOwner(window);
 
 		books = ResourceManager.getResource("settings/Buecher");

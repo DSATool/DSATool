@@ -20,7 +20,6 @@ import java.util.Optional;
 import org.controlsfx.control.StatusBar;
 
 import dsatool.credits.CreditsDialog;
-import dsatool.gui.Main;
 import dsatool.resources.GroupFileManager;
 import dsatool.resources.ResourceManager;
 import dsatool.settings.SettingsDialog;
@@ -45,6 +44,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainWindowController {
+	/**
+	 * The applications main menu
+	 */
+	public dsatool.ui.Menu mainMenu;
+
+	/**
+	 * The menu tools can be selected from
+	 */
+	public dsatool.ui.Menu toolsMenu;
+
 	@FXML
 	private BorderPane mainPane;
 
@@ -96,7 +105,7 @@ public class MainWindowController {
 
 	public void initializeMenus() {
 		final MenuBar menuBar = menu;
-		Main.mainMenu = new dsatool.ui.Menu(groupName -> {
+		mainMenu = new dsatool.ui.Menu(groupName -> {
 			final Menu group = new Menu(groupName);
 			menuBar.getMenus().add(group);
 			return new MenuGroup(itemName -> {
@@ -107,7 +116,7 @@ public class MainWindowController {
 				group.getItems().add(new SeparatorMenuItem());
 			});
 		});
-		Main.toolsMenu = new dsatool.ui.Menu(groupName -> {
+		toolsMenu = new dsatool.ui.Menu(groupName -> {
 			final TitledPane menu = new TitledPane();
 			menu.setAnimated(false);
 			menu.setText(groupName);
@@ -122,7 +131,7 @@ public class MainWindowController {
 				return new dsatool.ui.MenuItem(item);
 			});
 		});
-		final MenuGroup file = Main.mainMenu.addGroup("Datei");
+		final MenuGroup file = mainMenu.addGroup("Datei");
 		file.addItem("Neu").setAction(o -> {
 			if (askSaveChanges()) {
 				GroupFileManager.createNewZipFile();
@@ -147,12 +156,12 @@ public class MainWindowController {
 			}
 		});
 
-		final MenuGroup edit = Main.mainMenu.addGroup("Bearbeiten");
+		final MenuGroup edit = mainMenu.addGroup("Bearbeiten");
 		edit.addItem("Einstellungen").setAction(o -> {
 			new SettingsDialog(window);
 		});
 
-		final MenuGroup help = Main.mainMenu.addGroup("Hilfe");
+		final MenuGroup help = mainMenu.addGroup("Hilfe");
 		help.addItem("Nach Updates suchen").setAction(o -> {
 			new Thread(() -> new Update().searchUpdates(true)).start();
 		});

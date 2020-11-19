@@ -31,7 +31,7 @@ import javafx.application.Platform;
 public class ErrorLogger {
 
 	public static void log(final String text) {
-		Platform.runLater(() -> Util.alert(text).show());
+		Platform.runLater(Util.alert(text)::show);
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
 			writer.write(text);
@@ -50,7 +50,7 @@ public class ErrorLogger {
 	 *            The exception that happened
 	 */
 	public static void logError(final Exception e) {
-		Platform.runLater(() -> Util.exceptionAlert(e).show());
+		Platform.runLater(Util.exceptionAlert(e)::show);
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
 			if (e.getMessage() != null) {
