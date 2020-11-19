@@ -20,10 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
 import dsatool.resources.ResourceManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -136,6 +139,13 @@ public class Util {
 		alert.getDialogPane().setExpandableContent(textArea);
 
 		return alert;
+	}
+
+	public static <T> ChangeListener<T> changeListener(final BooleanSupplier check, final Consumer<T> listener) {
+		return (observable, oldV, newV) -> {
+			if (newV == null || oldV == null || oldV.equals(newV) || check.getAsBoolean()) return;
+			listener.accept(newV);
+		};
 	}
 
 	public static Alert exceptionAlert(final Exception e) {
