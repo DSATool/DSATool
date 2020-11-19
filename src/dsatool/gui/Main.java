@@ -17,6 +17,7 @@ package dsatool.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.controlsfx.control.StatusBar;
@@ -28,6 +29,7 @@ import dsatool.resources.GroupFileManager;
 import dsatool.resources.Settings;
 import dsatool.settings.BooleanSetting;
 import dsatool.ui.DetachableNode;
+import dsatool.ui.DetachedNode;
 import dsatool.ui.MenuGroup;
 import dsatool.update.Update;
 import dsatool.util.ErrorLogger;
@@ -60,6 +62,21 @@ public class Main extends Application {
 
 		item.setAction(event -> {
 			composite.bringToTop();
+			event.consume();
+		});
+	}
+
+	public static void addDetachedToolComposite(final String groupName, final String name, final int width, final int height,
+			final Supplier<Node> constructor, final Consumer<Stage> windowHandler) {
+		final MenuGroup group = window.toolsMenu.addGroup(groupName);
+		final dsatool.ui.MenuItem item = group.addItem(name);
+
+		final DetachedNode composite = new DetachedNode(constructor, name, width, height, windowHandler);
+
+		window.resizeToolSelector();
+
+		item.setAction(event -> {
+			composite.open();
 			event.consume();
 		});
 	}
