@@ -15,6 +15,7 @@
  */
 package dsatool.gui;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -29,8 +30,13 @@ public class GUIUtil {
 				width = width.subtract(table.getColumns().get(i).widthProperty());
 			}
 		}
+
 		table.getColumns().get(resizeableCol).prefWidthProperty().bind(width);
 		table.getColumns().get(resizeableCol).maxWidthProperty().bind(width);
+
+		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(26);
+		table.minHeightProperty().bind(height);
+		table.maxHeightProperty().bind(height);
 	}
 
 	public static void cellValueFactories(final TableView<?> table, final String... properties) {
