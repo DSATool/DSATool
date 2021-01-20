@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 
 import org.controlsfx.control.StatusBar;
 
+import com.sun.javafx.css.StyleManager;
+
 import dsatool.control.MainWindowController;
 import dsatool.plugins.Plugin;
 import dsatool.plugins.PluginLoader;
@@ -109,7 +111,8 @@ public class Main extends Application {
 			primaryStage.setMaxHeight(resolution.getHeight());
 			final Scene scene = new Scene(root, Math.min(1100, resolution.getWidth()), Math.min(880, resolution.getHeight()));
 
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+			StyleManager.getInstance().addUserAgentStylesheet(getClass().getResource("application.css").toExternalForm());
 
 			primaryStage.setTitle("DSA Tool");
 			primaryStage.setScene(scene);
