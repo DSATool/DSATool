@@ -62,6 +62,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 	protected abstract void createGraphic();
 
 	protected void createGraphic(final Control graphic, final Supplier<T> getText, final Consumer<T> setText) {
+		if (getGraphic() != null) return;
 		setPadding(Insets.EMPTY);
 		graphic.setMaxWidth(Double.MAX_VALUE);
 		graphic.setContextMenu(getContextMenu());
@@ -75,12 +76,14 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			@Override
 			public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
 				if (oldValue && !newValue) {
+					final int index = getTableRow().getIndex();
 					graphic.focusedProperty().removeListener(this);
-					final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, getTableRow().getIndex(), column),
-							TableColumn.editCommitEvent(),
-							getText.get());
-					Event.fireEvent(getTableColumn(), editEvent);
-					cancelEdit();
+					if (index != -1) {
+						final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, index, column),
+								TableColumn.editCommitEvent(), getText.get());
+						Event.fireEvent(getTableColumn(), editEvent);
+						cancelEdit();
+					}
 				}
 			}
 		});

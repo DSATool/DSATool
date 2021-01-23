@@ -17,22 +17,16 @@ package dsatool.gui;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class GUIUtil {
 
-	public static void autosizeTable(final TableView<?> table, final int resizeableCol, final double additionalSpace) {
-		DoubleBinding width = table.widthProperty().subtract(additionalSpace);
-
-		for (int i = 0; i < table.getColumns().size(); ++i) {
-			if (i != resizeableCol) {
-				width = width.subtract(table.getColumns().get(i).widthProperty());
-			}
-		}
-
-		table.getColumns().get(resizeableCol).prefWidthProperty().bind(width);
-		table.getColumns().get(resizeableCol).maxWidthProperty().bind(width);
+	public static <T> void autosizeTable(final TableView<T> table) {
+		table.setColumnResizePolicy(GUIUtil::fixedWidthPolicy);
 
 		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(26);
 		table.minHeightProperty().bind(height);
@@ -43,6 +37,103 @@ public class GUIUtil {
 		for (int i = 0; i < table.getColumns().size(); ++i) {
 			table.getColumns().get(i).setCellValueFactory(new PropertyValueFactory<>(properties[i]));
 		}
+	}
+
+	private static <T> boolean fixedWidthPolicy(final ResizeFeatures<T> rf) {
+		final TableView<T> table = rf.getTable();
+		if (table.getWidth() == 0) return false;
+
+		TableColumn<T, ?> toResize = rf.getColumn();
+		double delta = rf.getDelta();
+
+		final ObservableList<TableColumn<T, ?>> columns = table.getVisibleLeafColumns();
+
+		double minWidth = 0;
+		double maxWidth = 0;
+		double resizableColumnsTotal = 0;
+		for (final TableColumn<?, ?> col : columns) {
+			final double min = col.getMinWidth();
+			final double max = col.getMaxWidth();
+
+			minWidth += min;
+			maxWidth += max;
+
+			if (min != max) {
+				resizableColumnsTotal += col.getPrefWidth();
+			}
+		}
+
+		final double slackUp = table.getWidth() - 1 - minWidth;
+		final double slackDown = maxWidth - table.getWidth() + 1;
+
+		if (resizableColumnsTotal == 0) {
+			columns.get(0).setPrefWidth(columns.get(0).getWidth() + slackUp);
+			return true;
+		}
+
+		double remainingTotal;
+
+		if (delta == 0 || slackUp <= 0 || slackDown <= 0) {
+			delta = table.getWidth() - 1;
+			for (final TableColumn<?, ?> col : columns) {
+				delta -= col.getWidth();
+			}
+
+			remainingTotal = resizableColumnsTotal;
+		} else {
+			// A fixed-width column can be marked resizable in order to get a resize-control on the left side of the column that actually should be resized
+			if (toResize.getMinWidth() == toResize.getMaxWidth()) {
+				toResize = table.getColumns().get(table.getColumns().indexOf(toResize) + 1);
+				delta = -delta;
+			}
+
+			if (delta > 0) {
+				delta = -Math.min(Math.min(delta, toResize.getMaxWidth() - toResize.getWidth()), slackUp - toResize.getWidth() + toResize.getMinWidth());
+			} else {
+				delta = -Math.max(Math.max(delta, toResize.getMinWidth() - toResize.getWidth()), toResize.getMaxWidth() - toResize.getWidth() - slackDown);
+			}
+
+			remainingTotal = resizableColumnsTotal - toResize.getPrefWidth();
+
+			resizeTableColumn(table, toResize, -delta);
+		}
+
+		while (Math.abs(delta) > 0.00001) {
+			double remainingDelta = 0;
+			for (final TableColumn<T, ?> col : columns) {
+				final double min = col.getMinWidth();
+				final double max = col.getMaxWidth();
+				if (min != max) {
+					if (col != toResize && (delta > 0 && col.getWidth() < max || delta < 0 && col.getWidth() > min)) {
+
+						final double colDelta = delta * (col.getPrefWidth() / remainingTotal);
+
+						double newDelta;
+						if (colDelta > 0) {
+							newDelta = Math.min(colDelta, col.getMaxWidth() - col.getWidth());
+						} else {
+							newDelta = Math.max(colDelta, col.getMinWidth() - col.getWidth());
+						}
+						if (colDelta != newDelta) {
+							remainingDelta += colDelta - newDelta;
+							remainingTotal -= col.getPrefWidth();
+						}
+
+						resizeTableColumn(table, col, newDelta);
+					}
+				}
+			}
+			delta = remainingDelta;
+		}
+
+		return true;
+	}
+
+	private static <T> void resizeTableColumn(final TableView<T> table, final TableColumn<T, ?> col, final double delta) {
+		final boolean resizable = col.isResizable();
+		col.setResizable(true);
+		TableView.UNCONSTRAINED_RESIZE_POLICY.call(new ResizeFeatures<>(table, col, delta));
+		col.setResizable(resizable);
 	}
 
 	private GUIUtil() {}

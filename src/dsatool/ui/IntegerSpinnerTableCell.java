@@ -42,10 +42,12 @@ public class IntegerSpinnerTableCell<S> extends GraphicTableCell<S, Integer> {
 	protected int max;
 	protected int step;
 
+	public IntegerSpinnerTableCell(final int min, final int max) {
+		this(min, max, 1, false);
+	}
+
 	public IntegerSpinnerTableCell(final int min, final int max, final boolean alwaysVisible) {
-		super(alwaysVisible);
-		this.min = min;
-		this.max = max;
+		this(min, max, 1, alwaysVisible);
 	}
 
 	public IntegerSpinnerTableCell(final int min, final int max, final int step, final boolean alwaysVisible) {
