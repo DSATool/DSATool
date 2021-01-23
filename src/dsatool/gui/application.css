@@ -90,3 +90,8 @@
 .flat-link:hover {
 	-fx-underline: true;
 }
+
+.tabPaneButton {
+	-fx-translate-x: -3;
+	-fx-translate-y: 2;
+}
