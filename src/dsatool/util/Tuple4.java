@@ -111,6 +111,42 @@ public class Tuple4<T1, T2, T3, T4> {
 		};
 	}
 
+	/**
+	 * Access the first value in a typesafe way
+	 *
+	 * @return The first value
+	 */
+	public T1 get_1() {
+		return _1;
+	}
+
+	/**
+	 * Access the second value in a typesafe way
+	 *
+	 * @return The second value
+	 */
+	public T2 get_2() {
+		return _2;
+	}
+
+	/**
+	 * Access the third value in a typesafe way
+	 *
+	 * @return The third value
+	 */
+	public T3 get_3() {
+		return _3;
+	}
+
+	/**
+	 * Access the fourth value in a typesafe way
+	 *
+	 * @return The fourth value
+	 */
+	public T4 get_4() {
+		return _4;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *

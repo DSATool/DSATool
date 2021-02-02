@@ -97,6 +97,33 @@ public class Tuple3<T1, T2, T3> {
 		};
 	}
 
+	/**
+	 * Access the first value in a typesafe way
+	 *
+	 * @return The first value
+	 */
+	public T1 get_1() {
+		return _1;
+	}
+
+	/**
+	 * Access the second value in a typesafe way
+	 *
+	 * @return The second value
+	 */
+	public T2 get_2() {
+		return _2;
+	}
+
+	/**
+	 * Access the third value in a typesafe way
+	 *
+	 * @return The third value
+	 */
+	public T3 get_3() {
+		return _3;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *
