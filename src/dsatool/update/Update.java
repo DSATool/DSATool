@@ -187,7 +187,19 @@ public class Update {
 			if (releaseInfo == null) return null;
 			final JSONObject info = parser.parse(new BufferedReader(new InputStreamReader(zipFile.getInputStream(releaseInfo))));
 			String signatureKeySpecification;
-			if (info.containsKey("previousReleaseDate") && info.getString("previousReleaseDate").compareTo(previousTime) > 0) {
+			final String previousReleaseDate = info.getString("previousReleaseDate");
+			if (previousReleaseDate != null && previousReleaseDate.compareTo(previousTime) > 0) {
+				if (previousReleaseDate.compareTo(info.getStringOrDefault("releaseDate", previousReleaseDate)) >= 0) {
+					final StringBuilder error = new StringBuilder();
+					error.append("Inkonsistente Update-Hierarchie für ");
+					error.append(link.substring(link.lastIndexOf('/'), link.lastIndexOf('.')));
+					error.append('\n');
+					error.append(previousReleaseDate);
+					error.append(" ist nicht vor ");
+					error.append(info.getStringOrDefault("releaseDate", previousReleaseDate));
+					ErrorLogger.log(error.toString());
+					return null;
+				}
 				final String oldKeySpec = performUpdate(oldReleaseInfo, info.getString("previousReleaseLink"), files);
 				if (oldKeySpec != null) {
 					signatureKeySpecification = oldKeySpec;
