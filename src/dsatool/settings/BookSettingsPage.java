@@ -15,11 +15,13 @@
  */
 package dsatool.settings;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import dsatool.gui.GUIUtil;
 import dsatool.resources.ResourceManager;
 import dsatool.resources.Settings;
 import dsatool.ui.ReactiveSpinner;
@@ -44,9 +46,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -54,7 +53,10 @@ import javafx.stage.Window;
 import jsonant.value.JSONArray;
 import jsonant.value.JSONObject;
 
-public class BookSettingsPage {
+public class BookSettingsPage implements Serializable {
+
+	private static final long serialVersionUID = 5125665276749218151L;
+
 	@FXML
 	protected VBox box;
 	@FXML
@@ -80,7 +82,7 @@ public class BookSettingsPage {
 	private final Map<String, Tuple<String, CheckBox>> bookCategory = new HashMap<>();
 
 	private JSONArray used;
-	private boolean modified = false;
+	private boolean modified = true;
 
 	/*
 	 * Typical commands are:
@@ -160,9 +162,9 @@ public class BookSettingsPage {
 			HBox.setHgrow(label, Priority.ALWAYS);
 			final CheckBox check = new CheckBox();
 			box.getChildren().add(box.getChildren().size() - 2, new HBox(2, label, check));
-			check.selectedProperty().addListener((o, oldV, newV) -> {
+			check.setOnAction(e -> {
 				for (final String bookName : categoryBooks) {
-					moveBook(bookName, newV ? unusedBooks : usedBooks, newV ? usedBooks : unusedBooks);
+					moveBook(bookName, check.isSelected() ? unusedBooks : usedBooks, check.isSelected() ? usedBooks : unusedBooks);
 				}
 			});
 
@@ -190,6 +192,8 @@ public class BookSettingsPage {
 				checkBook(name);
 			}
 		}
+
+		modified = false;
 	}
 
 	private void checkBook(final String name) {
@@ -197,9 +201,9 @@ public class BookSettingsPage {
 		boolean allUsed = true;
 		boolean allUnused = true;
 		for (final String bookName : categories.get(categoryCheck._1)) {
-			if (usedBooks.getItems().contains(bookName)) {
+			if (used.contains(bookName)) {
 				allUnused = false;
-			} else if (unusedBooks.getItems().contains(bookName)) {
+			} else {
 				allUsed = false;
 			}
 		}
@@ -249,51 +253,18 @@ public class BookSettingsPage {
 
 			cell.contextMenuProperty().bind(Bindings.when(cell.itemProperty().isNotNull()).then(menu).otherwise((ContextMenu) null));
 
-			cell.setOnDragDetected(e -> {
-				if (cell.isEmpty()) return;
-				final Dragboard dragBoard = list.startDragAndDrop(TransferMode.MOVE);
-				final ClipboardContent content = new ClipboardContent();
-				final StringBuilder indices = new StringBuilder(list == usedBooks ? "used," : "unused,");
-				for (final int index : list.getSelectionModel().getSelectedIndices()) {
-					indices.append(index);
-					indices.append(',');
-				}
-				content.putString(indices.substring(0, indices.length() - 1));
-				dragBoard.setContent(content);
-				e.consume();
-			});
-
-			cell.setOnDragDropped(e -> {
-				final String[] indices = e.getDragboard().getString().split(",");
-				final List<String> toMove = new LinkedList<>();
-				ListView<String> source = null;
-				for (final String index : indices) {
-					if (source == null) {
-						source = "used".equals(index) ? usedBooks : unusedBooks;
-					} else {
-						toMove.add(source.getItems().get(Integer.parseInt(index)));
+			GUIUtil.dragDropReorder(cell, moved -> {
+				if (moved.length > 0) {
+					used.clear();
+					for (final String usedBook : usedBooks.getItems()) {
+						used.add(usedBook);
 					}
-				}
-				final String item = cell.getItem();
-				for (final String name : toMove) {
-					source.getItems().remove(name);
-					if (source == usedBooks) {
-						used.remove(name);
+					for (final Object movedBook : moved) {
+						checkBook((String) movedBook);
 					}
+					modify();
 				}
-				final int index = item == null ? list.getItems().size() : list.getItems().indexOf(item);
-				for (int i = 0; i < toMove.size(); ++i) {
-					list.getItems().add(index + i, toMove.get(i));
-					if (list == usedBooks) {
-						used.add(index + i, toMove.get(i));
-					}
-					checkBook(toMove.get(i));
-				}
-				modify();
-				e.setDropCompleted(true);
-			});
-
-			cell.setOnDragOver(e -> e.acceptTransferModes(TransferMode.MOVE));
+			}, list, list == usedBooks ? unusedBooks : usedBooks);
 
 			return cell;
 		});

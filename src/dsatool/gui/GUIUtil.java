@@ -15,15 +15,31 @@
  */
 package dsatool.gui;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Control;
+import javafx.scene.control.IndexedCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 
 public class GUIUtil {
+
+	private static DataFormat dragDropDataFormat = new DataFormat("application/x-dropdata");
+
+	private static Object[] dragDropBuffer;
 
 	public static <T> void autosizeTable(final TableView<T> table) {
 		table.setColumnResizePolicy(GUIUtil::fixedWidthPolicy);
@@ -37,6 +53,85 @@ public class GUIUtil {
 		for (int i = 0; i < table.getColumns().size(); ++i) {
 			table.getColumns().get(i).setCellValueFactory(new PropertyValueFactory<>(properties[i]));
 		}
+	}
+
+	public static <T> void dragDropReorder(final IndexedCell<T> cell, final Consumer<Object[]> afterDrop, final Control... allowedSources) {
+		dragDropReorder(cell, () -> {}, () -> {}, afterDrop, allowedSources);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> void dragDropReorder(final IndexedCell<T> cell, final Runnable beforeDrag, final Runnable onDrag, final Consumer<Object[]> afterDrop,
+			final Control... allowedSources) {
+
+		final Control source = allowedSources[0];
+		final List<Control> allowedSourcesList = Arrays.asList(allowedSources);
+		final ObservableList<T> items = source instanceof ListView ? ((ListView<T>) source).getItems() : ((TableView<T>) source).getItems();
+		final MultipleSelectionModel<T> selectionModel = source instanceof ListView ? ((ListView<T>) source).getSelectionModel()
+				: ((TableView<T>) source).getSelectionModel();
+
+		cell.setOnDragDetected(e -> {
+			if (cell.isEmpty()) return;
+			final Dragboard dragBoard = source.startDragAndDrop(TransferMode.MOVE);
+			final ClipboardContent content = new ClipboardContent();
+			dragDropBuffer = selectionModel.getSelectedItems().toArray();
+			content.put(dragDropDataFormat, selectionModel.getSelectedIndices().toArray(new Integer[0]));
+			dragBoard.setContent(content);
+			beforeDrag.run();
+			for (final Object moved : dragDropBuffer) {
+				items.remove(moved);
+			}
+			e.consume();
+		});
+
+		source.setOnDragDone(e -> {
+			if (e.getTransferMode() != TransferMode.MOVE) {
+				selectionModel.clearSelection();
+				final Integer[] indices = (Integer[]) e.getDragboard().getContent(dragDropDataFormat);
+				for (int i = 0; i < dragDropBuffer.length; ++i) {
+					items.add(indices[i], (T) dragDropBuffer[i]);
+					selectionModel.select(indices[i]);
+				}
+				onDrag.run();
+				afterDrop.accept(new Object[0]);
+			}
+		});
+
+		cell.setOnDragDropped(e -> {
+			afterDrop.accept(dragDropBuffer);
+			e.setDropCompleted(true);
+			e.consume();
+		});
+
+		cell.setOnDragOver(e -> {
+			if (allowedSourcesList.contains(e.getGestureSource())) {
+				e.acceptTransferModes(TransferMode.MOVE);
+			}
+		});
+
+		cell.setOnDragEntered(e -> {
+			if (allowedSourcesList.contains(e.getGestureSource())) {
+				cell.requestFocus();
+				selectionModel.clearSelection();
+				int index = cell.isEmpty() ? items.size() : cell.getIndex();
+				for (final Object moved : dragDropBuffer) {
+					items.add(index, (T) moved);
+					++index;
+					selectionModel.select((T) moved);
+				}
+				onDrag.run();
+			}
+		});
+
+		cell.setOnDragExited(e -> {
+			if (!e.isDropCompleted()) {
+				if (allowedSourcesList.contains(e.getGestureSource())) {
+					selectionModel.clearSelection();
+					for (final Object moved : dragDropBuffer) {
+						items.remove(moved);
+					}
+				}
+			}
+		});
 	}
 
 	private static <T> boolean fixedWidthPolicy(final ResizeFeatures<T> rf) {
