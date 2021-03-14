@@ -33,9 +33,11 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.skin.LabeledSkinBase;
@@ -61,49 +63,37 @@ public class Util {
 			if (name == null) {
 				name = refs.keySet().iterator().next();
 			}
+
 			final String finalName = name;
 			final Label iconLabel = new Label("\uE54B");
 			iconLabel.getStyleClass().add("icon-font");
 			iconLabel.setTextFill(Color.DIMGREY);
 			final String page = Integer.toString(refs.getInt(name));
+
 			final Hyperlink label = new Hyperlink(page, iconLabel);
 			label.setGraphicTextGap(0);
 			label.setTextFill(Color.DIMGREY);
 			label.getStyleClass().add("flat-link");
-			label.setOnAction(o -> {
-				final JSONObject book = books.getObj(finalName);
-				final File file = new File(book.getStringOrDefault("Pfad", ""));
-				if (file.exists()) {
-					try {
-						if (book.containsKey("Befehl")) {
-							openWith(file, refs.getInt(finalName) + book.getIntOrDefault("Seitenoffset", 0), book.getString("Befehl"));
-						} else {
-							final String commandString = Settings.getSettingString("Allgemein", "Bücher:Befehl");
-							if (commandString != null) {
-								final int offset = book.getIntOrDefault("Seitenoffset", Settings.getSettingIntOrDefault(0, "Allgemein", "Bücher:Seitenoffset"));
-								openWith(file, refs.getInt(finalName) + offset, commandString);
-							} else {
-								openFile(file);
-							}
-						}
-					} catch (final IOException e) {
-						ErrorLogger.logError(e);
-					}
-				}
-			});
+			label.setOnAction(o -> openBook(finalName, books.getObj(finalName), refs.getInt(finalName)));
+
 			boolean first = true;
+			final ContextMenu openMenu = new ContextMenu();
 			final StringBuilder tooltip = new StringBuilder();
 			for (final String bookName : refs.keySet()) {
+				final String reference = bookName + " S. " + refs.getInt(bookName);
+				final MenuItem openItem = new MenuItem(reference);
+				openItem.setOnAction(e -> openBook(bookName, books.getObj(bookName), refs.getInt(bookName)));
+				openMenu.getItems().add(openItem);
+
 				if (first) {
 					first = false;
 				} else {
 					tooltip.append("\n");
 				}
-				tooltip.append(bookName);
-				tooltip.append(" S. ");
-				tooltip.append(refs.getInt(bookName));
+				tooltip.append(reference);
 			}
 			label.setTooltip(new Tooltip(tooltip.toString()));
+
 			final Label graphic = new Label("", label);
 			graphic.setAlignment(Pos.CENTER_RIGHT);
 			graphic.setPadding(new Insets(0, (3 - page.length()) * 6, 0, 0));
@@ -123,6 +113,9 @@ public class Util {
 								.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
 					}
 				});
+			}
+			if (refs.size() > 1) {
+				graphic.setContextMenu(openMenu);
 			}
 		} else {
 			control.setGraphic(null);
@@ -180,6 +173,27 @@ public class Util {
 			return "+" + i;
 		else
 			return Long.toString(i);
+	}
+
+	private static void openBook(final String bookName, final JSONObject book, final int page) {
+		final File file = new File(book.getStringOrDefault("Pfad", ""));
+		if (file.exists()) {
+			try {
+				if (book.containsKey("Befehl")) {
+					openWith(file, page + book.getIntOrDefault("Seitenoffset", 0), book.getString("Befehl"));
+				} else {
+					final String commandString = Settings.getSettingString("Allgemein", "Bücher:Befehl");
+					if (commandString != null) {
+						final int offset = book.getIntOrDefault("Seitenoffset", Settings.getSettingIntOrDefault(0, "Allgemein", "Bücher:Seitenoffset"));
+						openWith(file, page + offset, commandString);
+					} else {
+						openFile(file);
+					}
+				}
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+		}
 	}
 
 	public static void openFile(final File file) throws IOException {
