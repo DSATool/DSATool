@@ -22,6 +22,7 @@ import java.util.Map;
 
 import dsatool.resources.ResourceManager;
 import dsatool.resources.Settings;
+import dsatool.ui.ReactiveSpinner;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Tuple;
 import javafx.application.Platform;
@@ -38,8 +39,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -62,6 +65,14 @@ public class BookSettingsPage {
 	private ListView<String> unusedBooks;
 	@FXML
 	private Button edit;
+	@FXML
+	private RadioButton defaultApp;
+	@FXML
+	private RadioButton specified;
+	@FXML
+	private TextField command;
+	@FXML
+	private ReactiveSpinner<Integer> offset;
 
 	private final Window window;
 
@@ -70,6 +81,12 @@ public class BookSettingsPage {
 
 	private JSONArray used;
 	private boolean modified = false;
+
+	/*
+	 * Typical commands are:
+	 * Acrobat Reader: AcroRd32.exe /A page=%p %f
+	 * Evince: evince.exe --page-label=%p %f
+	 */
 
 	public BookSettingsPage(final Window window) {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
@@ -94,6 +111,45 @@ public class BookSettingsPage {
 			edit.setDisable(usedBooks.getSelectionModel().getSelectedIndices().size() != 1);
 		});
 
+		final String commandString = Settings.getSettingString("Allgemein", "Bücher:Befehl");
+		if (commandString != null) {
+			specified.setSelected(true);
+			command.setDisable(false);
+			command.setText(commandString);
+			offset.setDisable(false);
+			offset.getValueFactory().setValue(Settings.getSettingIntOrDefault(0, "Allgemein", "Bücher:Seitenoffset"));
+		}
+
+		specified.selectedProperty().addListener((o, oldV, newV) -> {
+			command.setDisable(!newV);
+			offset.setDisable(!newV);
+			if (newV) {
+				Settings.setSetting(command.getText().trim(), "Allgemein", "Bücher:Befehl");
+				if (offset.getValue() != 0) {
+					Settings.setSetting(offset.getValue(), "Allgemein", "Bücher:Seitenoffset");
+				}
+			} else {
+				Settings.removeSetting("Allgemein", "Bücher:Befehl");
+				Settings.removeSetting("Allgemein", "Bücher:Seitenoffset");
+			}
+		});
+
+		command.textProperty().addListener((o, oldV, newV) -> {
+			if ("".equals(newV.trim())) {
+				Settings.removeSetting("Allgemein", "Bücher:Befehl");
+			} else {
+				Settings.setSetting(newV.trim(), "Allgemein", "Bücher:Befehl");
+			}
+		});
+
+		offset.valueProperty().addListener((o, oldV, newV) -> {
+			if (newV == 0) {
+				Settings.removeSetting("Allgemein", "Bücher:Seitenoffset");
+			} else {
+				Settings.setSetting(newV, "Allgemein", "Bücher:Seitenoffset");
+			}
+		});
+
 		final JSONObject books = ResourceManager.getResource("data/Buecher");
 		for (final String categoryName : books.keySet()) {
 			final List<String> categoryBooks = new LinkedList<>();
@@ -103,7 +159,7 @@ public class BookSettingsPage {
 			label.setMaxWidth(Double.POSITIVE_INFINITY);
 			HBox.setHgrow(label, Priority.ALWAYS);
 			final CheckBox check = new CheckBox();
-			box.getChildren().add(box.getChildren().size() - 1, new HBox(2, label, check));
+			box.getChildren().add(box.getChildren().size() - 2, new HBox(2, label, check));
 			check.selectedProperty().addListener((o, oldV, newV) -> {
 				for (final String bookName : categoryBooks) {
 					moveBook(bookName, newV ? unusedBooks : usedBooks, newV ? usedBooks : unusedBooks);

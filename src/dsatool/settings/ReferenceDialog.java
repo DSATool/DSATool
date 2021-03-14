@@ -42,6 +42,8 @@ public class ReferenceDialog {
 	@FXML
 	private RadioButton specified;
 	@FXML
+	private RadioButton withOffset;
+	@FXML
 	private TextField command;
 	@FXML
 	private ReactiveSpinner<Integer> offset;
@@ -75,12 +77,16 @@ public class ReferenceDialog {
 		books = ResourceManager.getResource("settings/Buecher");
 		book = books.getObj(title);
 
+		offset.disableProperty().bind(defaultApp.selectedProperty());
+
 		path.setText(book.getStringOrDefault("Pfad", ""));
-		if (book.containsKey("Befehl")) {
+		if (book.getStringOrDefault("Befehl", null) != null) {
 			specified.setSelected(true);
 			command.setDisable(false);
 			command.setText(book.getString("Befehl"));
-			offset.setDisable(false);
+			offset.getValueFactory().setValue(book.getIntOrDefault("Seitenoffset", 0));
+		} else if (book.getIntOrDefault("Seitenoffset", null) != null) {
+			withOffset.setSelected(true);
 			offset.getValueFactory().setValue(book.getIntOrDefault("Seitenoffset", 0));
 		}
 
@@ -94,32 +100,35 @@ public class ReferenceDialog {
 
 		specified.selectedProperty().addListener((o, oldV, newV) -> {
 			command.setDisable(!newV);
-			offset.setDisable(!newV);
 			if (newV) {
 				book.put("Befehl", command.getText().trim());
-				if (offset.getValue() != 0) {
-					book.put("Seitenoffset", offset.getValue());
-				}
+				book.put("Seitenoffset", offset.getValue());
 			} else {
-				book.removeKey("Befehl");
-				book.removeKey("Seitenoffset");
+				book.putNull("Befehl");
+				if (!withOffset.isSelected()) {
+					book.putNull("Seitenoffset");
+				}
+			}
+		});
+
+		withOffset.selectedProperty().addListener((o, oldV, newV) -> {
+			if (newV) {
+				book.put("Seitenoffset", offset.getValue());
+			} else if (!specified.isSelected()) {
+				book.putNull("Seitenoffset");
 			}
 		});
 
 		command.textProperty().addListener((o, oldV, newV) -> {
 			if ("".equals(newV.trim())) {
-				book.removeKey("Befehl");
+				book.putNull("Befehl");
 			} else {
 				book.put("Befehl", newV.trim());
 			}
 		});
 
 		offset.valueProperty().addListener((o, oldV, newV) -> {
-			if (newV == 0) {
-				book.removeKey("Seitenoffset");
-			} else {
-				book.put("Seitenoffset", newV);
-			}
+			book.put("Seitenoffset", newV);
 		});
 
 		stage.show();

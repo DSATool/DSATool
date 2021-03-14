@@ -4,12 +4,16 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import dsatool.ui.ReactiveSpinner?>
 
 <ScrollPane fx:id="pane" fitToWidth="true" styleClass="background" xmlns:fx="http://javafx.com/fxml/1">
    <content>
@@ -21,7 +25,7 @@
                     <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
                   </tooltip>
                </Label>
-               <ListView fx:id="usedBooks" maxHeight="211" >
+               <ListView fx:id="usedBooks" maxHeight="163" >
                   <tooltip>
                     <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
                   </tooltip>
@@ -72,12 +76,38 @@
                     <Tooltip text="Diese Regelwerke werden aktuell nicht verwendet"/>
                   </tooltip>
                </Label>
-               <ListView fx:id="unusedBooks" maxHeight="211" >
+               <ListView fx:id="unusedBooks" maxHeight="163" >
                   <tooltip>
                     <Tooltip text="Diese Regelwerke werden aktuell nicht verwendet"/>
                   </tooltip>
                </ListView>
             </VBox>
+         </HBox>
+         <HBox spacing="15" >
+            <Label text="Standardmäßig öffnen mit" />
+            <RadioButton fx:id="defaultApp" selected="true" text="Standardanwendung">
+               <toggleGroup>
+                  <ToggleGroup fx:id="applicationGroup" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="specified" text="folgendem Befehl" toggleGroup="$applicationGroup" />
+         </HBox>
+         <HBox alignment="CENTER" spacing="2" >
+            <TextField fx:id="command" disable="true" HBox.hgrow="ALWAYS" >
+               <tooltip>
+                  <Tooltip text="${'Eigener Befehl zum Öffnen der Datei\nPlatzhalter:\n%f für Dateipfad\n%p für Seitennummer'}"/>
+               </tooltip>
+            </TextField>
+            <Label text="Seitenoffset:" >
+               <tooltip>
+                  <Tooltip text="Wird zur Seitennummer addiert"/>
+               </tooltip>
+            </Label>
+            <ReactiveSpinner fx:id="offset" imin="-99" imax="99" initialValue="0" disable="true" prefWidth="60" >
+               <tooltip>
+                  <Tooltip text="Wird zur Seitennummer addiert"/>
+               </tooltip>
+            </ReactiveSpinner>
          </HBox>
       </VBox>
    </content>

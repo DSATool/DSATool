@@ -109,6 +109,11 @@ public class Settings {
 		return setting.getStringOrDefault(path[path.length - 1], def);
 	}
 
+	public static void removeSetting(final String... path) {
+		final JSONObject setting = getSetting(path, false);
+		setting.getParent().remove(setting);
+	}
+
 	public static void setSetting(final boolean value, final String... path) {
 		final JSONObject setting = getSetting(path, true);
 		setting.put(path[path.length - 1], value);

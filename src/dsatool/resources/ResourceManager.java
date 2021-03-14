@@ -461,9 +461,7 @@ public class ResourceManager {
 		for (final String key : modification.keySet()) {
 			final Object value = modification.getUnsafe(key);
 			if (value instanceof JSONObject) {
-				if (((JSONObject) value).getBoolOrDefault("gelöscht", false)) {
-					resource.removeKey(key);
-				} else if (resource.containsKey(key)) {
+				if (resource.containsKey(key)) {
 					modifyResource(resource.getObj(key), (JSONObject) value);
 				} else {
 					resource.put(key, ((JSONObject) value).clone(resource));
@@ -479,7 +477,7 @@ public class ResourceManager {
 			} else if (value instanceof String) {
 				resource.put(key, (String) value);
 			} else {
-				resource.putNull(key);
+				resource.removeKey(key);
 			}
 		}
 	}

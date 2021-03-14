@@ -24,6 +24,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import dsatool.resources.ResourceManager;
+import dsatool.resources.Settings;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -75,10 +76,15 @@ public class Util {
 				if (file.exists()) {
 					try {
 						if (book.containsKey("Befehl")) {
-							Runtime.getRuntime().exec(book.getString("Befehl").replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p",
-									Integer.toString(refs.getInt(finalName) + book.getIntOrDefault("Seitenoffset", 0))));
+							openWith(file, refs.getInt(finalName) + book.getIntOrDefault("Seitenoffset", 0), book.getString("Befehl"));
 						} else {
-							openFile(file);
+							final String commandString = Settings.getSettingString("Allgemein", "Bücher:Befehl");
+							if (commandString != null) {
+								final int offset = book.getIntOrDefault("Seitenoffset", Settings.getSettingIntOrDefault(0, "Allgemein", "Bücher:Seitenoffset"));
+								openWith(file, refs.getInt(finalName) + offset, commandString);
+							} else {
+								openFile(file);
+							}
 						}
 					} catch (final IOException e) {
 						ErrorLogger.logError(e);
@@ -189,6 +195,10 @@ public class Util {
 		if (!openedSuccessfully && Desktop.isDesktopSupported()) {
 			Desktop.getDesktop().open(file);
 		}
+	}
+
+	private static void openWith(final File file, final int page, final String command) throws IOException {
+		Runtime.getRuntime().exec(command.replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p", Integer.toString(page)));
 	}
 
 	private static boolean run(final String command) throws IOException {

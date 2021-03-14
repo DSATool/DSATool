@@ -39,6 +39,7 @@
          </toggleGroup>
       </RadioButton>
       <RadioButton fx:id="specified" text="folgendem Befehl" toggleGroup="$applicationGroup" />
+      <RadioButton fx:id="withOffset" text="Standardanwendung + Offset" toggleGroup="$applicationGroup" />
    </HBox>
    <HBox alignment="CENTER" spacing="2" >
       <TextField fx:id="command" disable="true" HBox.hgrow="ALWAYS" >
