@@ -51,7 +51,7 @@ public class Util {
 
 	public static void addReference(final Labeled control, final JSONObject data, final double padding, final ReadOnlyDoubleProperty width) {
 		final JSONObject books = ResourceManager.getResource("settings/Buecher");
-		final JSONObject refs = ResourceManager.getDiscrimination(data);
+		final JSONObject refs = data.containsKey("Regelwerke") ? data.getObj("Regelwerke") : ResourceManager.getDiscrimination(data);
 		if (refs != null && refs.size() > 0) {
 			String name = null;
 			for (final String bookName : refs.keySet()) {
@@ -115,7 +115,7 @@ public class Util {
 				});
 			}
 			if (refs.size() > 1) {
-				graphic.setContextMenu(openMenu);
+				label.setContextMenu(openMenu);
 			}
 		} else {
 			control.setGraphic(null);
