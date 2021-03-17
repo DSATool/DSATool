@@ -176,12 +176,16 @@ public class BookSettingsPage implements Serializable {
 			}
 		}
 
-		used = Settings.getSettingArrayOrDefault(null, "Allgemein", "Bücher");
+		used = Settings.getSettingArray("Allgemein", "Bücher");
 		if (used == null) {
-			used = new JSONArray(ResourceManager.getResource("settings/Einstellungen").getObj("Allgemein"));
+			ErrorLogger.log(
+					"Einstellung für zu verwendende Bücher fehlt.\nAuf Standardeinstellung zurückgesetzt.\nBitte unter Einstellungen -> Regelwerke überprüfen.");
+			final JSONObject general = ResourceManager.getResource("settings/Einstellungen").getObj("Allgemein");
+			used = new JSONArray(general);
 			for (final String bookName : books.getObj(books.keySet().iterator().next()).keySet()) {
 				used.add(bookName);
 			}
+			general.put("Bücher", used);
 		}
 
 		for (int i = 0; i < used.size(); ++i) {
