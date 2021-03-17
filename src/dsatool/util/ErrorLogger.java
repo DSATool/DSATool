@@ -34,8 +34,7 @@ public class ErrorLogger {
 		Platform.runLater(Util.alert(text)::show);
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
-			writer.write(text);
-			writer.println();
+			writer.println(text);
 		} catch (final IOException e1) {
 			e1.printStackTrace();
 		} finally {
@@ -54,8 +53,7 @@ public class ErrorLogger {
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
 			if (e.getMessage() != null) {
-				writer.write(e.getMessage());
-				writer.println();
+				writer.println(e.getMessage());
 			}
 			e.printStackTrace(writer);
 		} catch (final IOException e1) {
