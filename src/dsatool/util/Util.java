@@ -92,6 +92,7 @@ public class Util {
 				}
 				tooltip.append(reference);
 			}
+			label.setContextMenu(openMenu);
 			label.setTooltip(new Tooltip(tooltip.toString()));
 
 			final Label graphic = new Label("", label);
@@ -113,9 +114,6 @@ public class Util {
 								.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
 					}
 				});
-			}
-			if (refs.size() > 1) {
-				label.setContextMenu(openMenu);
 			}
 		} else {
 			control.setGraphic(null);
@@ -147,7 +145,7 @@ public class Util {
 		};
 	}
 
-	public static Alert exceptionAlert(final Exception e) {
+	public static Alert exceptionAlert(final Throwable e) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
