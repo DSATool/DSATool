@@ -48,7 +48,7 @@ public class ErrorLogger {
 	 * @param e
 	 *            The exception that happened
 	 */
-	public static void logError(final Exception e) {
+	public static void logError(final Throwable e) {
 		Platform.runLater(Util.exceptionAlert(e)::show);
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {

@@ -85,6 +85,8 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) {
+		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ErrorLogger.logError(e));
+
 		GroupFileManager.openCurrentGroup();
 
 		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
