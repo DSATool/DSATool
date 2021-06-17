@@ -52,16 +52,20 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 		super(min, max, initialValue, amountToStepBy);
 
 		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-			final String text = getEditor().getText();
 			final SpinnerValueFactory<Double> valueFactory = (SpinnerValueFactory<Double>) getValueFactory();
 			if (valueFactory != null) {
 				final StringConverter<Double> converter = valueFactory.getConverter();
 				if (converter != null) {
-					Double value = 0.0;
-					try {
-						value = converter.fromString(text);
-					} catch (final Exception e) {}
-					valueFactory.setValue(value != null ? value : 0.0);
+					final String text = getEditor().getText();
+					if (text.isBlank()) {
+						getEditor().setText(converter.toString(0.0));
+					} else {
+						Double value = 0.0;
+						try {
+							value = converter.fromString(text);
+						} catch (final Exception e) {}
+						valueFactory.setValue(value != null ? value : 0.0);
+					}
 				}
 			}
 		});
@@ -81,16 +85,20 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 		super(min, max, initialValue, amountToStepBy);
 
 		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-			final String text = getEditor().getText();
 			final SpinnerValueFactory<Integer> valueFactory = (SpinnerValueFactory<Integer>) getValueFactory();
 			if (valueFactory != null) {
 				final StringConverter<Integer> converter = valueFactory.getConverter();
 				if (converter != null) {
-					Integer value = 0;
-					try {
-						value = converter.fromString(text);
-					} catch (final Exception e) {}
-					valueFactory.setValue(value != null ? value : 0);
+					final String text = getEditor().getText();
+					if (text.isBlank()) {
+						getEditor().setText(converter.toString(0));
+					} else {
+						Integer value = 0;
+						try {
+							value = converter.fromString(text);
+						} catch (final Exception e) {}
+						valueFactory.setValue(value != null ? value : 0);
+					}
 				}
 			}
 		});
