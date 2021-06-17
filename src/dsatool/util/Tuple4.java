@@ -15,6 +15,8 @@
  */
 package dsatool.util;
 
+import java.util.Objects;
+
 /**
  * A handy class for two typed values
  *
@@ -76,21 +78,20 @@ public class Tuple4<T1, T2, T3, T4> {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Tuple4)) return false;
+		if ((obj == null) || !(obj instanceof Tuple4)) return false;
 		final Tuple4<?, ?, ?, ?> other = (Tuple4<?, ?, ?, ?>) obj;
-		if (_1 == null) {
-			if (other._1 != null) return false;
-		} else if (!_1.equals(other._1)) return false;
-		if (_2 == null) {
-			if (other._2 != null) return false;
-		} else if (!_2.equals(other._2)) return false;
-		if (_3 == null) {
-			if (other._3 != null) return false;
-		} else if (!_3.equals(other._3)) return false;
-		if (_4 == null) {
-			if (other._4 != null) return false;
-		} else if (!_4.equals(other._4)) return false;
+		if (!Objects.equals(_1, other._1)) {
+			return false;
+		}
+		if (!Objects.equals(_2, other._2)) {
+			return false;
+		}
+		if (!Objects.equals(_3, other._3)) {
+			return false;
+		}
+		if (!Objects.equals(_4, other._4)) {
+			return false;
+		}
 		return true;
 	}
 

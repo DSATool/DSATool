@@ -96,7 +96,7 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 		});
 	}
 
-	public ReactiveSpinner(@NamedArg("items") ObservableList<T> items) {
+	public ReactiveSpinner(@NamedArg("items") final ObservableList<T> items) {
 		super(items);
 
 		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {

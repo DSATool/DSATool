@@ -16,12 +16,13 @@
 package dsatool.settings;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public abstract class Setting {
 	protected final String name;
 	protected final String[] path;
 
-	public Setting(String name, String[] path) {
+	public Setting(final String name, final String[] path) {
 		this.name = name;
 		this.path = path;
 	}
@@ -30,18 +31,17 @@ public abstract class Setting {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if (obj == null) return false;
-		if (!(obj instanceof Setting)) return false;
+		if ((obj == null) || !(obj instanceof Setting)) return false;
 		final Setting other = (Setting) obj;
-		if (name == null) {
-			if (other.name != null) return false;
-		} else if (!name.equals(other.name)) return false;
+		if (!Objects.equals(name, other.name)) {
+			return false;
+		}
 		if (!Arrays.equals(path, other.path)) return false;
 		return true;
 	}
@@ -52,7 +52,7 @@ public abstract class Setting {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override

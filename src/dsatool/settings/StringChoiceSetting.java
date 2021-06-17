@@ -26,14 +26,14 @@ public class StringChoiceSetting extends Setting {
 	private final String defaultVal;
 	private final Collection<String> choices;
 
-	public StringChoiceSetting(String name, String defaultVal, Collection<String> choices, String... path) {
+	public StringChoiceSetting(final String name, final String defaultVal, final Collection<String> choices, final String... path) {
 		super(name, path);
 		this.defaultVal = defaultVal;
 		this.choices = choices;
 	}
 
 	@Override
-	public void create(SettingsPage page) {
+	public void create(final SettingsPage page) {
 		final StringProperty property = new SimpleStringProperty(Settings.getSettingStringOrDefault(defaultVal, path));
 		property.addListener((o, oldV, newV) -> {
 			Settings.setSetting(newV, path);

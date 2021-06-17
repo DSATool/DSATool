@@ -41,7 +41,7 @@ public class Menu {
 	 * @param addGroup
 	 *            The function used to add groups to this menu
 	 */
-	public Menu(Function<String, MenuGroup> addGroup) {
+	public Menu(final Function<String, MenuGroup> addGroup) {
 		this.addGroup = addGroup;
 	}
 
@@ -54,7 +54,7 @@ public class Menu {
 	 *            The group to be associated with this name
 	 * @return The group associated with the given name
 	 */
-	public MenuGroup addGroup(String name) {
+	public MenuGroup addGroup(final String name) {
 		if (groups.containsKey(name)) return groups.get(name);
 		final MenuGroup group = addGroup.apply(name);
 		groups.put(name, group);

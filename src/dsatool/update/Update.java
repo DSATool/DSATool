@@ -37,6 +37,7 @@ import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -224,7 +225,7 @@ public class Update {
 			performUpdate(update._1, update._2, files);
 		}
 
-		files.sort((t1, t2) -> t1._1.compareTo(t2._1));
+		files.sort(Comparator.comparing(t -> t._1));
 		final List<String> fileNames = new ArrayList<>(files.size());
 		for (final Tuple<String, String> file : files) {
 			fileNames.add(file._2);

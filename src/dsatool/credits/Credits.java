@@ -94,13 +94,13 @@ public class Credits {
 			licenseLink.setText(license);
 			licenseLink.setTooltip(new Tooltip(licenseUrl));
 			licenseLink.setOnAction(e -> Main.app.getHostServices().showDocument(licenseUrl));
-		} else if (license != null) {
-			licenseLabel.setText(license);
-			licenseLink.setVisible(false);
-			licenseLink.setManaged(false);
 		} else {
-			licenseLabel.setVisible(false);
-			licenseLabel.setManaged(false);
+			if (license != null) {
+				licenseLabel.setText(license);
+			} else {
+				licenseLabel.setVisible(false);
+				licenseLabel.setManaged(false);
+			}
 			licenseLink.setVisible(false);
 			licenseLink.setManaged(false);
 		}

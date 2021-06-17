@@ -98,8 +98,6 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 	};
 
 	public ReactiveComboBox() {
-		super();
-
 		getEditor().textProperty().addListener(textListener);
 		setOnKeyPressed(searchHandler);
 	}

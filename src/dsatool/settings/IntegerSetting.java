@@ -25,7 +25,7 @@ public class IntegerSetting extends Setting {
 	private final int min;
 	private final int max;
 
-	public IntegerSetting(String name, int defaultVal, int min, int max, String... path) {
+	public IntegerSetting(final String name, final int defaultVal, final int min, final int max, final String... path) {
 		super(name, path);
 		this.defaultVal = defaultVal;
 		this.min = min;
@@ -33,7 +33,7 @@ public class IntegerSetting extends Setting {
 	}
 
 	@Override
-	public void create(SettingsPage page) {
+	public void create(final SettingsPage page) {
 		final IntegerProperty property = new SimpleIntegerProperty(Settings.getSettingIntOrDefault(defaultVal, path));
 		property.addListener((o, oldV, newV) -> {
 			Settings.setSetting(newV.intValue(), path);

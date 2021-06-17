@@ -303,9 +303,7 @@ public class BookSettingsPage implements Serializable {
 	@FXML
 	public void removeBooks() {
 		final List<String> toMove = new LinkedList<>();
-		for (final String name : usedBooks.getSelectionModel().getSelectedItems()) {
-			toMove.add(name);
-		}
+		toMove.addAll(usedBooks.getSelectionModel().getSelectedItems());
 		for (final String name : toMove) {
 			moveBook(name, usedBooks, unusedBooks);
 		}
@@ -314,9 +312,7 @@ public class BookSettingsPage implements Serializable {
 	@FXML
 	public void useBooks() {
 		final List<String> toMove = new LinkedList<>();
-		for (final String name : unusedBooks.getSelectionModel().getSelectedItems()) {
-			toMove.add(name);
-		}
+		toMove.addAll(unusedBooks.getSelectionModel().getSelectedItems());
 		for (final String name : toMove) {
 			moveBook(name, unusedBooks, usedBooks);
 		}

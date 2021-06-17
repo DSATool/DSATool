@@ -19,7 +19,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.scene.paint.Color;
 
 public interface Colorable {
-	public Color getColor();
+	Color getColor();
 
-	public ReadOnlyStringProperty textProperty();
+	ReadOnlyStringProperty textProperty();
 }

@@ -47,7 +47,7 @@ public class MenuGroup {
 	 * @param addItem
 	 *            A function that adds new items to this MenuGroup
 	 */
-	public MenuGroup(Function<String, MenuItem> addItem) {
+	public MenuGroup(final Function<String, MenuItem> addItem) {
 		this.addItem = addItem;
 		addSeparator = o -> {};
 	}
@@ -60,7 +60,7 @@ public class MenuGroup {
 	 * @param addSeparator
 	 *            A function that adds separators (will be called with null!)
 	 */
-	public MenuGroup(Function<String, MenuItem> addItem, Consumer<Object> addSeparator) {
+	public MenuGroup(final Function<String, MenuItem> addItem, final Consumer<Object> addSeparator) {
 		this.addItem = addItem;
 		this.addSeparator = addSeparator;
 	}
@@ -72,7 +72,7 @@ public class MenuGroup {
 	 *            The name of the item that will be displayed
 	 * @return The MenuItem that corresponds to the given name
 	 */
-	public MenuItem addItem(String name) {
+	public MenuItem addItem(final String name) {
 		if (items.containsKey(name)) return items.get(name);
 		final MenuItem item = addItem.apply(name);
 		items.put(name, item);

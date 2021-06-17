@@ -39,7 +39,7 @@ public class MenuItem {
 	 * @param widget
 	 *            The widget managed by this MenuItem
 	 */
-	public MenuItem(Object item) {
+	public MenuItem(final Object item) {
 		this.item = item;
 	}
 
@@ -82,7 +82,7 @@ public class MenuItem {
 	 * @param name
 	 *            The new text
 	 */
-	public void setText(String name) {
+	public void setText(final String name) {
 		if (item instanceof javafx.scene.control.MenuItem) {
 			((javafx.scene.control.MenuItem) item).setText(name);
 		} else if (item instanceof Button) {

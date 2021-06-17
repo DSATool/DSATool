@@ -98,7 +98,7 @@ public class SignatureTool {
 	private static void zipAndSign(final String sourcePath, final String zipPath, final String privateKeyPath, final String signatureProviderName,
 			final String keyAlgorithm, final String signatureAlgorithm) {
 		// Read the private key bytes
-		byte[] keyBytes = new byte[0];
+		byte[] keyBytes = {};
 		try (FileInputStream keyStream = new FileInputStream(privateKeyPath)) {
 			keyBytes = new byte[keyStream.available()];
 			keyStream.read(keyBytes);
@@ -142,7 +142,7 @@ public class SignatureTool {
 
 		try {
 			for (final File file : directory.listFiles()) {
-				String name = file.getPath().substring(sourcePathLength).replaceAll("\\\\", "/");
+				String name = file.getPath().substring(sourcePathLength).replace('\\', '/');
 				if (file.isDirectory()) {
 					if (!name.endsWith("/")) {
 						name += "/"; // Directory names in zip files have to end in "/"
