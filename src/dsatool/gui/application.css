@@ -95,3 +95,15 @@
 	-fx-translate-x: -3;
 	-fx-translate-y: 2;
 }
+
+.bold {
+	-fx-font-weight: bold;
+}
+
+.italic {
+	-fx-font-style: italic;
+}
+
+.boldTitledPane > .title {
+	-fx-font-weight: bold;
+}
