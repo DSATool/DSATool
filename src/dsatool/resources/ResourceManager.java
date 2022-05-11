@@ -519,8 +519,14 @@ public class ResourceManager {
 			} catch (final IOException e) {
 				ErrorLogger.logError(e);
 			}
-			zipFile.close();
+		} catch (final IOException e) {
+			ErrorLogger.logError(e);
+		}
+		try {
 			zip = new ZipFile(zipPath);
+		} catch (final ZipException e) {
+			// This can happen if the zip is empty, just ignore it
+			zip = null;
 		} catch (final IOException e) {
 			ErrorLogger.logError(e);
 		}
@@ -623,7 +629,10 @@ public class ResourceManager {
 						break;
 				}
 			}
-			zipFile.close();
+		} catch (final IOException e) {
+			ErrorLogger.logError(e);
+		}
+		try {
 			zip = new ZipFile(zipPath);
 		} catch (final ZipException e) {
 			// This can happen if the zip is empty, just ignore it
