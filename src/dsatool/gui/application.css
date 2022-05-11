@@ -1,17 +1,35 @@
 .background {
-    -fx-padding: 2, 2, 2, 2;
+	-fx-padding: 2, 2, 2, 2;
 }
 
 .column-header.left-aligned > .label {
-    -fx-alignment: baseline-left;
+	-fx-alignment: baseline-left;
+}
+
+.check-box {
+	-fx-background-insets: 0 0 0 20;
+	-fx-background-radius: 3;
+}
+
+.radio-button {
+	-fx-background-insets: 0 0 0 20;
+	-fx-background-radius: 3;
 }
 
 .invalid {
-    -fx-background-color: lightcoral;
+	-fx-background-color: lightcoral;
 }
 
 .invalid:selected {
-    -fx-background-color: #E2AAAA;
+	-fx-background-color: #E2AAAA;
+}
+
+.invalid:selected.check-box {
+	-fx-background-color: lightcoral;
+}
+
+.invalid:selected.radio-button {
+	-fx-background-color: lightcoral;
 }
 
 .valid {
@@ -19,7 +37,15 @@
 }
 
 .valid:selected {
-    -fx-background-color: #B2E0B2;
+	-fx-background-color: #B2E0B2;
+}
+
+.valid:selected.check-box {
+	-fx-background-color: lightgreen;
+}
+
+.valid:selected.radio-button {
+	-fx-background-color: lightgreen;
 }
 
 .disabled-opaque:disabled {
@@ -53,23 +79,23 @@
 }
 
 .remove-vertical-scrollbar .scroll-bar:vertical {
-    -fx-max-width: 0;
-    -fx-pref-width: 0;
-    -fx-min-width: 0;
-    -fx-opacity: 0.0;
+	-fx-max-width: 0;
+	-fx-pref-width: 0;
+	-fx-min-width: 0;
+	-fx-opacity: 0.0;
 }
 
 .remove-horizontal-scrollbar .scroll-bar:horizontal {
-    -fx-max-height: 0;
-    -fx-pref-height: 0;
-    -fx-min-height: 0;
-    -fx-opacity: 0.0;
+	-fx-max-height: 0;
+	-fx-pref-height: 0;
+	-fx-min-height: 0;
+	-fx-opacity: 0.0;
 }
 
 .remove-header .column-header-background {
-    -fx-max-height: 0;
-    -fx-pref-height: 0;
-    -fx-min-height: 0;
+	-fx-max-height: 0;
+	-fx-pref-height: 0;
+	-fx-min-height: 0;
 }
 
 .tooltip {
