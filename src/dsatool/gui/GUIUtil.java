@@ -178,7 +178,9 @@ public class GUIUtil {
 		} else {
 			// A fixed-width column can be marked resizable in order to get a resize-control on the left side of the column that actually should be resized
 			if (toResize.getMinWidth() == toResize.getMaxWidth()) {
-				toResize = table.getColumns().get(table.getColumns().indexOf(toResize) + 1);
+				final int index = table.getColumns().indexOf(toResize) + 1;
+				if (index >= table.getColumns().size()) return true;
+				toResize = table.getColumns().get(index);
 				delta = -delta;
 			}
 
