@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.control.IndexedCell;
 import javafx.scene.control.ListView;
@@ -34,6 +35,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 
 public class GUIUtil {
 
@@ -131,6 +133,59 @@ public class GUIUtil {
 					}
 				}
 			}
+		});
+	}
+
+	public static void dragDropReorder(final Node node, final Consumer<Node> afterDrop, final Pane... allowedSources) {
+		dragDropReorder(node, () -> {}, () -> {}, afterDrop, allowedSources);
+	}
+
+	public static void dragDropReorder(final Node node, final Runnable beforeDrag, final Runnable onDrag, final Consumer<Node> afterDrop,
+			final Pane... allowedSources) {
+
+		final Pane source = allowedSources[0];
+		final List<Pane> allowedSourcesList = Arrays.asList(allowedSources);
+		final ObservableList<Node> items = source.getChildren();
+
+		node.setOnDragDetected(e -> {
+			final Dragboard dragBoard = source.startDragAndDrop(TransferMode.MOVE);
+			final ClipboardContent content = new ClipboardContent();
+			dragDropBuffer = new Object[] { node };
+			content.put(dragDropDataFormat, items.indexOf(node));
+			dragBoard.setContent(content);
+			beforeDrag.run();
+			e.consume();
+		});
+
+		source.setOnDragDropped(e -> {
+			source.requestFocus();
+			afterDrop.accept((Node) dragDropBuffer[0]);
+			e.setDropCompleted(true);
+			e.consume();
+		});
+
+		node.setOnDragOver(e -> {
+			if (allowedSourcesList.contains(e.getGestureSource())) {
+				e.acceptTransferModes(TransferMode.MOVE);
+
+				if (node != dragDropBuffer[0]) {
+					final boolean above = e.getSceneY() < node.localToScene(node.getBoundsInLocal()).getCenterY();
+					items.remove(dragDropBuffer[0]);
+					final int index = items.indexOf(node);
+					if (index >= 0) {
+						items.add(above ? index : index + 1, (Node) dragDropBuffer[0]);
+						onDrag.run();
+					}
+				}
+			}
+			e.consume();
+		});
+
+		source.setOnDragOver(e -> {
+			if (allowedSourcesList.contains(e.getGestureSource())) {
+				e.acceptTransferModes(TransferMode.MOVE);
+			}
+			e.consume();
 		});
 	}
 
