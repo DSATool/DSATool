@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -162,6 +163,15 @@ public class Util {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static String getSignedDoubleString(final double d, final DecimalFormat format) {
+		if (d == 0.0)
+			return "±0";
+		else if (d > 0)
+			return "+" + format.format(d);
+		else
+			return format.format(d);
 	}
 
 	public static String getSignedIntegerString(final long i) {
