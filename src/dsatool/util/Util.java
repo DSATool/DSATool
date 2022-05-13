@@ -198,11 +198,11 @@ public class Util {
 		final String osName = System.getProperty("os.name").toLowerCase();
 		boolean openedSuccessfully = false;
 		if (osName.contains("win")) {
-			openedSuccessfully = run("explorer " + file.getAbsolutePath());
+			openedSuccessfully = run(new String[] { "explorer", file.getAbsolutePath() });
 		} else if (osName.contains("linux")) {
-			openedSuccessfully = run("xdg-open " + file.getAbsolutePath());
+			openedSuccessfully = run(new String[] { "xdg-open", file.getAbsolutePath() });
 		} else if (osName.contains("mac")) {
-			openedSuccessfully = run("open " + file.getAbsolutePath());
+			openedSuccessfully = run(new String[] { "open", file.getAbsolutePath() });
 		}
 		if (!openedSuccessfully && Desktop.isDesktopSupported()) {
 			Desktop.getDesktop().open(file);
@@ -210,10 +210,14 @@ public class Util {
 	}
 
 	private static void openWith(final File file, final int page, final String command) throws IOException {
-		Runtime.getRuntime().exec(command.replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p", Integer.toString(page)));
+		final String[] arguments = command.split(" ");
+		for (int i = 1; i < arguments.length; ++i) {
+			arguments[i] = arguments[i].replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p", Integer.toString(page));
+		}
+		Runtime.getRuntime().exec(arguments);
 	}
 
-	private static boolean run(final String command) throws IOException {
+	private static boolean run(final String[] command) throws IOException {
 		final Process process = Runtime.getRuntime().exec(command);
 		try {
 			process.exitValue();
