@@ -49,6 +49,9 @@ public class ErrorLogger {
 	 *            The exception that happened
 	 */
 	public static void logError(final Throwable e) {
+		if (e instanceof IllegalArgumentException && "The start must be <= the end".equals(e.getMessage()))
+			return;
+
 		Platform.runLater(Util.exceptionAlert(e)::show);
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
