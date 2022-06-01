@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
@@ -82,6 +83,8 @@ public class ResourceManager {
 	 * The zip file for the current group
 	 */
 	private volatile static ZipFile zip;
+
+	private volatile static ReentrantReadWriteLock zipLock = new ReentrantReadWriteLock();
 
 	/**
 	 * The path to the zip file
@@ -177,16 +180,21 @@ public class ResourceManager {
 			}
 		}
 		if (zip != null) {
-			final ZipEntry entry = zip.getEntry(jsonpath);
-			if (entry != null) {
-				source = Source.ZIP;
-				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"))) {
-					final JSONObject mod = parser.parse(reader);
-					modifyResource(result, mod);
-				} catch (final IOException e) {
-					ErrorLogger.logError(e);
-					return false;
+			zipLock.readLock().lock();
+			try {
+				final ZipEntry entry = zip.getEntry(jsonpath);
+				if (entry != null) {
+					source = Source.ZIP;
+					try (final BufferedReader reader = new BufferedReader(new InputStreamReader(zip.getInputStream(entry), "UTF-8"))) {
+						final JSONObject mod = parser.parse(reader);
+						modifyResource(result, mod);
+					} catch (final IOException e) {
+						ErrorLogger.logError(e);
+						return false;
+					}
 				}
+			} finally {
+				zipLock.readLock().unlock();
 			}
 		}
 
@@ -253,29 +261,34 @@ public class ResourceManager {
 				return false;
 			}
 			if (zip != null) {
-				final ZipEntry entry = zip.getEntry(path);
-				if (entry != null) {
-					try {
-						zip.close();
-					} catch (final IOException e) {
-						ErrorLogger.logError(e);
-						return false;
-					}
-					try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
-						Files.delete(zipFile.getPath("/" + path));
-						zipFile.close();
-						zip = new ZipFile(zipPath);
+				zipLock.writeLock().lock();
+				try {
+					final ZipEntry entry = zip.getEntry(path);
+					if (entry != null) {
+						try {
+							zip.close();
+						} catch (final IOException e) {
+							ErrorLogger.logError(e);
+							return false;
+						}
+						try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
+							Files.delete(zipFile.getPath("/" + path));
+							zipFile.close();
+							zip = new ZipFile(zipPath);
+							if (notifyPathListeners) {
+								notifyPathListeners(path);
+							}
+							return true;
+						} catch (final IOException e) {
+							ErrorLogger.logError(e);
+						}
+					} else {
 						if (notifyPathListeners) {
 							notifyPathListeners(path);
 						}
-						return true;
-					} catch (final IOException e) {
-						ErrorLogger.logError(e);
 					}
-				} else {
-					if (notifyPathListeners) {
-						notifyPathListeners(path);
-					}
+				} finally {
+					zipLock.writeLock().unlock();
 				}
 			}
 		}
@@ -320,18 +333,24 @@ public class ResourceManager {
 			}
 		}
 		if (zip != null) {
-			final ZipEntry entry = zip.getEntry(path);
-			if (entry != null && entry.isDirectory()) {
-				final Enumeration<? extends ZipEntry> entries = zip.entries();
-				while (entries.hasMoreElements()) {
-					final ZipEntry current = entries.nextElement();
-					if (!current.isDirectory()) {
-						final Path currentPath = Paths.get(current.getName());
-						if (currentPath.startsWith(path)) {
-							result.put(currentPath.getFileName().toString(), getResource(current.getName().substring(0, current.getName().lastIndexOf('.'))));
+			zipLock.readLock().lock();
+			try {
+				final ZipEntry entry = zip.getEntry(path);
+				if (entry != null && entry.isDirectory()) {
+					final Enumeration<? extends ZipEntry> entries = zip.entries();
+					while (entries.hasMoreElements()) {
+						final ZipEntry current = entries.nextElement();
+						if (!current.isDirectory()) {
+							final Path currentPath = Paths.get(current.getName());
+							if (currentPath.startsWith(path)) {
+								result.put(currentPath.getFileName().toString(),
+										getResource(current.getName().substring(0, current.getName().lastIndexOf('.'))));
+							}
 						}
 					}
 				}
+			} finally {
+				zipLock.readLock().unlock();
 			}
 		}
 		return new ArrayList<>(result.values());
@@ -499,36 +518,41 @@ public class ResourceManager {
 		paths.put(resource, path);
 		paths.remove(tmp);
 		notifyPathListeners(path);
-		if (zip != null) {
-			try {
-				zip.close();
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-				return;
-			}
-		}
-		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
-			path += ".json";
-			final Path p = zipFile.getPath("/" + path);
-			final Path parent = p.getParent();
-			if (parent != null) {
-				Files.createDirectories(parent);
-			}
-			try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
-				JSONPrinter.print(zipwriter, resource);
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-			}
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
-		}
+		zipLock.writeLock().lock();
 		try {
-			zip = new ZipFile(zipPath);
-		} catch (final ZipException e) {
-			// This can happen if the zip is empty, just ignore it
-			zip = null;
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
+			if (zip != null) {
+				try {
+					zip.close();
+				} catch (final IOException e) {
+					ErrorLogger.logError(e);
+					return;
+				}
+			}
+			try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
+				path += ".json";
+				final Path p = zipFile.getPath("/" + path);
+				final Path parent = p.getParent();
+				if (parent != null) {
+					Files.createDirectories(parent);
+				}
+				try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
+					JSONPrinter.print(zipwriter, resource);
+				} catch (final IOException e) {
+					ErrorLogger.logError(e);
+				}
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+			try {
+				zip = new ZipFile(zipPath);
+			} catch (final ZipException e) {
+				// This can happen if the zip is empty, just ignore it
+				zip = null;
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+		} finally {
+			zipLock.writeLock().unlock();
 		}
 	}
 
@@ -586,59 +610,64 @@ public class ResourceManager {
 	 * Saves all changed resources
 	 */
 	public static void saveResources() {
-		if (zip != null) {
-			try {
-				zip.close();
-			} catch (final IOException e) {
-				ErrorLogger.logError(e);
-				return;
-			}
-		}
-		try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
-			for (final Entry<String, Tuple<JSONObject, Source>> entry : resources.entrySet()) {
-				String path = entry.getKey() + ".json";
-				switch (entry.getValue()._2) {
-					case MOD:
-						if (!path.startsWith("settings")) {
-							break;
-						}
-						path = "mod/" + path;
-					case GENERAL:
-						if (!path.startsWith("settings")) {
-							break;
-						}
-						try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Util.getAppDir(), path))) {
-							JSONPrinter.print(writer, entry.getValue()._1);
-						} catch (final IOException e) {
-							ErrorLogger.logError(e);
-						}
-						break;
-					case ZIP:
-						final Path p = zipFile.getPath("/" + path);
-						final Path parent = p.getParent();
-						if (parent != null) {
-							Files.createDirectories(parent);
-						}
-						try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
-							JSONPrinter.print(zipwriter, entry.getValue()._1);
-						} catch (final IOException e) {
-							ErrorLogger.logError(e);
-						}
-						break;
-					default:
-						break;
+		zipLock.writeLock().lock();
+		try {
+			if (zip != null) {
+				try {
+					zip.close();
+				} catch (final IOException e) {
+					ErrorLogger.logError(e);
+					return;
 				}
 			}
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
-		}
-		try {
-			zip = new ZipFile(zipPath);
-		} catch (final ZipException e) {
-			// This can happen if the zip is empty, just ignore it
-			zip = null;
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
+			try (final FileSystem zipFile = FileSystems.newFileSystem(zipPath.toPath())) {
+				for (final Entry<String, Tuple<JSONObject, Source>> entry : resources.entrySet()) {
+					String path = entry.getKey() + ".json";
+					switch (entry.getValue()._2) {
+						case MOD:
+							if (!path.startsWith("settings")) {
+								break;
+							}
+							path = "mod/" + path;
+						case GENERAL:
+							if (!path.startsWith("settings")) {
+								break;
+							}
+							try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Util.getAppDir(), path))) {
+								JSONPrinter.print(writer, entry.getValue()._1);
+							} catch (final IOException e) {
+								ErrorLogger.logError(e);
+							}
+							break;
+						case ZIP:
+							final Path p = zipFile.getPath("/" + path);
+							final Path parent = p.getParent();
+							if (parent != null) {
+								Files.createDirectories(parent);
+							}
+							try (final BufferedWriter zipwriter = Files.newBufferedWriter(p, StandardOpenOption.CREATE)) {
+								JSONPrinter.print(zipwriter, entry.getValue()._1);
+							} catch (final IOException e) {
+								ErrorLogger.logError(e);
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+			try {
+				zip = new ZipFile(zipPath);
+			} catch (final ZipException e) {
+				// This can happen if the zip is empty, just ignore it
+				zip = null;
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+		} finally {
+			zipLock.writeLock().unlock();
 		}
 	}
 
@@ -659,31 +688,36 @@ public class ResourceManager {
 	 *             If there is no such zip file
 	 */
 	public static void setZipFile(final File path) {
-		zipPath = path;
+		zipLock.writeLock().lock();
 		try {
-			zip = new ZipFile(path);
-			discardChanges();
-		} catch (final ZipException e) {
-			// This can happen if the zip is empty, just ignore it
-			zip = null;
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
-		}
-		for (final List<Consumer<Boolean>> listeners : pathListeners.values()) {
-			for (final Consumer<Boolean> listener : listeners) {
-				listener.accept(false);
+			zipPath = path;
+			try {
+				zip = new ZipFile(path);
+				discardChanges();
+			} catch (final ZipException e) {
+				// This can happen if the zip is empty, just ignore it
+				zip = null;
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
 			}
-		}
-		try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Util.getAppDir() + "/settings/Gruppe.txt"))) {
-			writer.write(path.getAbsolutePath());
-		} catch (final IOException e) {
-			ErrorLogger.logError(e);
-		}
-		final File directory = path.getParentFile();
-		for (final File current : directory.listFiles()) {
-			if (current.getName().startsWith("zipfstmp")) {
-				current.delete();
+			for (final List<Consumer<Boolean>> listeners : pathListeners.values()) {
+				for (final Consumer<Boolean> listener : listeners) {
+					listener.accept(false);
+				}
 			}
+			try (final BufferedWriter writer = new BufferedWriter(new FileWriter(Util.getAppDir() + "/settings/Gruppe.txt"))) {
+				writer.write(path.getAbsolutePath());
+			} catch (final IOException e) {
+				ErrorLogger.logError(e);
+			}
+			final File directory = path.getParentFile();
+			for (final File current : directory.listFiles()) {
+				if (current.getName().startsWith("zipfstmp")) {
+					current.delete();
+				}
+			}
+		} finally {
+			zipLock.writeLock().unlock();
 		}
 	}
 
