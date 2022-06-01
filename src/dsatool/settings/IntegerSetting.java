@@ -17,7 +17,6 @@ package dsatool.settings;
 
 import dsatool.resources.Settings;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 
 public class IntegerSetting extends Setting {
 
@@ -34,10 +33,11 @@ public class IntegerSetting extends Setting {
 
 	@Override
 	public void create(final SettingsPage page) {
-		final IntegerProperty property = new SimpleIntegerProperty(Settings.getSettingIntOrDefault(defaultVal, path));
+		page.addIntegerChoice(name, min, max);
+		final IntegerProperty property = page.getInt(name);
+		property.set(Settings.getSettingIntOrDefault(defaultVal, path));
 		property.addListener((o, oldV, newV) -> {
 			Settings.setSetting(newV.intValue(), path);
 		});
-		page.addIntegerChoice(name, property, min, max);
 	}
 }

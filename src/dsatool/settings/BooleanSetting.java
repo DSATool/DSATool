@@ -17,7 +17,6 @@ package dsatool.settings;
 
 import dsatool.resources.Settings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 
 public class BooleanSetting extends Setting {
 
@@ -30,10 +29,11 @@ public class BooleanSetting extends Setting {
 
 	@Override
 	public void create(final SettingsPage page) {
-		final BooleanProperty property = new SimpleBooleanProperty(Settings.getSettingBoolOrDefault(defaultVal, path));
+		page.addBooleanChoice(name);
+		final BooleanProperty property = page.getBool(name);
+		property.set(Settings.getSettingBoolOrDefault(defaultVal, path));
 		property.addListener((o, oldV, newV) -> {
 			Settings.setSetting(newV, path);
 		});
-		page.addBooleanChoice(name, property);
 	}
 }

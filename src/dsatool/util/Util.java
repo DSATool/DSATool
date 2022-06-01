@@ -21,6 +21,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -225,6 +229,22 @@ public class Util {
 			arguments[i] = arguments[i].replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p", Integer.toString(page));
 		}
 		Runtime.getRuntime().exec(arguments);
+	}
+
+	public static <K, V> void putAt(final LinkedHashMap<K, V> map, final int index, final K key, final V value) {
+		int i = 0;
+		final List<Entry<K, V>> temp = new ArrayList<>(map.size() - index);
+		for (final Entry<K, V> entry : map.entrySet()) {
+			if (i >= index) {
+				temp.add(entry);
+			}
+			++i;
+		}
+		map.put(key, value);
+		for (final Entry<K, V> entry : temp) {
+			map.remove(entry.getKey());
+			map.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 	private static boolean run(final String[] command) throws IOException {

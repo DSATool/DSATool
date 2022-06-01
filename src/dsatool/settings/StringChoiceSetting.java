@@ -18,7 +18,6 @@ package dsatool.settings;
 import java.util.Collection;
 
 import dsatool.resources.Settings;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class StringChoiceSetting extends Setting {
@@ -34,10 +33,11 @@ public class StringChoiceSetting extends Setting {
 
 	@Override
 	public void create(final SettingsPage page) {
-		final StringProperty property = new SimpleStringProperty(Settings.getSettingStringOrDefault(defaultVal, path));
+		page.addStringChoice(name, choices);
+		final StringProperty property = page.getString(name);
+		property.set(Settings.getSettingStringOrDefault(defaultVal, path));
 		property.addListener((o, oldV, newV) -> {
 			Settings.setSetting(newV, path);
 		});
-		page.addStringChoice(name, property, choices);
 	}
 }
