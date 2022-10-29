@@ -78,20 +78,11 @@ public class Tuple4<T1, T2, T3, T4> {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if ((obj == null) || !(obj instanceof Tuple4)) return false;
-		final Tuple4<?, ?, ?, ?> other = (Tuple4<?, ?, ?, ?>) obj;
-		if (!Objects.equals(_1, other._1)) {
-			return false;
-		}
-		if (!Objects.equals(_2, other._2)) {
-			return false;
-		}
-		if (!Objects.equals(_3, other._3)) {
-			return false;
-		}
-		if (!Objects.equals(_4, other._4)) {
-			return false;
-		}
+		if (!(obj instanceof final Tuple4<?, ?, ?, ?> other)) return false;
+		if (!Objects.equals(_1, other._1)) return false;
+		if (!Objects.equals(_2, other._2)) return false;
+		if (!Objects.equals(_3, other._3)) return false;
+		if (!Objects.equals(_4, other._4)) return false;
 		return true;
 	}
 

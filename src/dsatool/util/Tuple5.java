@@ -88,24 +88,14 @@ public class Tuple5<T1, T2, T3, T4, T5> {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if ((obj == null) || !(obj instanceof Tuple5)) return false;
-		final Tuple5<?, ?, ?, ?, ?> other = (Tuple5<?, ?, ?, ?, ?>) obj;
-		if (!Objects.equals(_1, other._1)) {
-			return false;
-		}
-		if (!Objects.equals(_2, other._2)) {
-			return false;
-		}
-		if (!Objects.equals(_3, other._3)) {
-			return false;
-		}
-		if (!Objects.equals(_4, other._4)) {
-			return false;
-		}
-		if (!Objects.equals(_5, other._5)) {
-			return false;
-		}
+		if (!(obj instanceof final Tuple5<?, ?, ?, ?, ?> other)) return false;
+		if (!Objects.equals(_1, other._1)) return false;
+		if (!Objects.equals(_2, other._2)) return false;
+		if (!Objects.equals(_3, other._3)) return false;
+		if (!Objects.equals(_4, other._4)) return false;
+		if (!Objects.equals(_5, other._5)) return false;
 		return true;
+
 	}
 
 	/**

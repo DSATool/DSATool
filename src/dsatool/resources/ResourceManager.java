@@ -107,22 +107,22 @@ public class ResourceManager {
 	private static final ParseListener discriminator = new ParseListener() {
 		@Override
 		public void handle(final ArrayParseEvent event) {
-			if (event.getValue() instanceof JSONObject) {
-				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault(discriminatingAttribute, null);
+			if (event.getValue() instanceof final JSONObject obj) {
+				final JSONObject attribute = obj.getObjOrDefault(discriminatingAttribute, null);
 				if (attribute != null) {
-					((JSONObject) event.getValue()).removeKey(discriminatingAttribute);
-					discriminatingAttributes.put((JSONObject) event.getValue(), attribute);
+					obj.removeKey(discriminatingAttribute);
+					discriminatingAttributes.put(obj, attribute);
 				}
 			}
 		}
 
 		@Override
 		public void handle(final ObjectParseEvent event) {
-			if (event.getValue() instanceof JSONObject) {
-				final JSONObject attribute = ((JSONObject) event.getValue()).getObjOrDefault(discriminatingAttribute, null);
+			if (event.getValue() instanceof final JSONObject obj) {
+				final JSONObject attribute = obj.getObjOrDefault(discriminatingAttribute, null);
 				if (attribute != null) {
-					((JSONObject) event.getValue()).removeKey(discriminatingAttribute);
-					discriminatingAttributes.put((JSONObject) event.getValue(), attribute);
+					obj.removeKey(discriminatingAttribute);
+					discriminatingAttributes.put(obj, attribute);
 				}
 				final int prio = attribute != null ? getPrio(attribute) : Integer.MAX_VALUE - 1;
 				if (event.getObject().containsKey(event.getKey())) {
@@ -479,22 +479,22 @@ public class ResourceManager {
 	private static void modifyResource(final JSONObject resource, final JSONObject modification) {
 		for (final String key : modification.keySet()) {
 			final Object value = modification.getUnsafe(key);
-			if (value instanceof JSONObject) {
+			if (value instanceof final JSONObject obj) {
 				if (resource.containsKey(key)) {
-					modifyResource(resource.getObj(key), (JSONObject) value);
+					modifyResource(resource.getObj(key), obj);
 				} else {
-					resource.put(key, ((JSONObject) value).clone(resource));
+					resource.put(key, obj.clone(resource));
 				}
-			} else if (value instanceof JSONArray) {
-				resource.put(key, ((JSONArray) value).clone(resource));
-			} else if (value instanceof Double) {
-				resource.put(key, (Double) value);
-			} else if (value instanceof Long) {
-				resource.put(key, (Long) value);
-			} else if (value instanceof Boolean) {
-				resource.put(key, (Boolean) value);
-			} else if (value instanceof String) {
-				resource.put(key, (String) value);
+			} else if (value instanceof final JSONArray arr) {
+				resource.put(key, arr.clone(resource));
+			} else if (value instanceof final Double d) {
+				resource.put(key, d);
+			} else if (value instanceof final Long l) {
+				resource.put(key, l);
+			} else if (value instanceof final Boolean b) {
+				resource.put(key, b);
+			} else if (value instanceof final String str) {
+				resource.put(key, str);
 			} else {
 				resource.removeKey(key);
 			}

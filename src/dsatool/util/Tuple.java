@@ -58,14 +58,9 @@ public class Tuple<T1, T2> {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if ((obj == null) || !(obj instanceof Tuple)) return false;
-		final Tuple<?, ?> other = (Tuple<?, ?>) obj;
-		if (!Objects.equals(_1, other._1)) {
-			return false;
-		}
-		if (!Objects.equals(_2, other._2)) {
-			return false;
-		}
+		if (!(obj instanceof final Tuple<?, ?> other)) return false;
+		if (!Objects.equals(_1, other._1)) return false;
+		if (!Objects.equals(_2, other._2)) return false;
 		return true;
 	}
 

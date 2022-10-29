@@ -37,13 +37,12 @@ public abstract class Setting {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if ((obj == null) || !(obj instanceof Setting)) return false;
-		final Setting other = (Setting) obj;
-		if (!Objects.equals(name, other.name)) {
-			return false;
+		if (obj instanceof final Setting other) {
+			if (!Objects.equals(name, other.name)) return false;
+			if (!Arrays.equals(path, other.path)) return false;
+			return true;
 		}
-		if (!Arrays.equals(path, other.path)) return false;
-		return true;
+		return false;
 	}
 
 	public String[] getPath() {

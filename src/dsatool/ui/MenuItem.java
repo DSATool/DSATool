@@ -50,16 +50,17 @@ public class MenuItem {
 	 *         menus
 	 */
 	public MenuItem addContextMenuEntry() {
-		if (!(item instanceof Control)) return null;
-		final Control w = (Control) item;
-		ContextMenu menu = w.getContextMenu();
-		if (menu == null) {
-			menu = new ContextMenu();
-			w.setContextMenu(menu);
+		if (item instanceof final Control w) {
+			ContextMenu menu = w.getContextMenu();
+			if (menu == null) {
+				menu = new ContextMenu();
+				w.setContextMenu(menu);
+			}
+			final javafx.scene.control.MenuItem context = new javafx.scene.control.MenuItem();
+			menu.getItems().add(context);
+			return new MenuItem(context);
 		}
-		final javafx.scene.control.MenuItem context = new javafx.scene.control.MenuItem();
-		menu.getItems().add(context);
-		return new MenuItem(context);
+		return null;
 	}
 
 	/**
@@ -69,10 +70,10 @@ public class MenuItem {
 	 *            The action to be executed (will be passed null as parameter!)
 	 */
 	public void setAction(final EventHandler<ActionEvent> action) {
-		if (item instanceof javafx.scene.control.MenuItem) {
-			((javafx.scene.control.MenuItem) item).setOnAction(action);
-		} else if (item instanceof Button) {
-			((Button) item).setOnAction(action);
+		if (item instanceof final javafx.scene.control.MenuItem mi) {
+			mi.setOnAction(action);
+		} else if (item instanceof final Button b) {
+			b.setOnAction(action);
 		}
 	}
 
@@ -83,10 +84,10 @@ public class MenuItem {
 	 *            The new text
 	 */
 	public void setText(final String name) {
-		if (item instanceof javafx.scene.control.MenuItem) {
-			((javafx.scene.control.MenuItem) item).setText(name);
-		} else if (item instanceof Button) {
-			((Button) item).setText(name);
+		if (item instanceof final javafx.scene.control.MenuItem mi) {
+			mi.setText(name);
+		} else if (item instanceof final Button b) {
+			b.setText(name);
 		}
 	}
 }

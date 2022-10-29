@@ -87,32 +87,32 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 				}
 			}
 		});
-		if (graphic instanceof TextField) {
-			((TextField) graphic).setOnAction(e -> {
+		if (graphic instanceof final TextField tf) {
+			tf.setOnAction(e -> {
 				requestFocus();
 			});
-		} else if (graphic instanceof ButtonBase) {
-			((ButtonBase) graphic).setOnAction(e -> {
+		} else if (graphic instanceof final ButtonBase b) {
+			b.setOnAction(e -> {
 				requestFocus();
 			});
-		} else if (graphic instanceof ComboBox) {
-			((ComboBox<?>) graphic).setOnAction(e -> {
+		} else if (graphic instanceof final ComboBox<?> cb) {
+			cb.setOnAction(e -> {
 				requestFocus();
 			});
 			graphic.focusedProperty().addListener((o, oldV, newV) -> {
 				if (newV) {
 					try {
-						((FakeFocusTextField) ((ComboBox<?>) graphic).getEditor()).setFakeFocus(true);
+						((FakeFocusTextField) cb.getEditor()).setFakeFocus(true);
 					} catch (final Exception e) {
 						ErrorLogger.logError(e);
 					}
 				}
 			});
-		} else if (graphic instanceof Spinner) {
-			graphic.focusedProperty().addListener((o, oldV, newV) -> {
+		} else if (graphic instanceof final Spinner<?> s) {
+			s.focusedProperty().addListener((o, oldV, newV) -> {
 				if (newV) {
 					try {
-						((FakeFocusTextField) ((Spinner<?>) graphic).getEditor()).setFakeFocus(true);
+						((FakeFocusTextField) s.getEditor()).setFakeFocus(true);
 					} catch (final Exception e) {
 						ErrorLogger.logError(e);
 					}

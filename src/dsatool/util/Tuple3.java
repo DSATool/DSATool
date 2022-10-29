@@ -68,17 +68,10 @@ public class Tuple3<T1, T2, T3> {
 	@Override
 	public boolean equals(final Object obj) {
 		if (this == obj) return true;
-		if ((obj == null) || !(obj instanceof Tuple3)) return false;
-		final Tuple3<?, ?, ?> other = (Tuple3<?, ?, ?>) obj;
-		if (!Objects.equals(_1, other._1)) {
-			return false;
-		}
-		if (!Objects.equals(_2, other._2)) {
-			return false;
-		}
-		if (!Objects.equals(_3, other._3)) {
-			return false;
-		}
+		if (!(obj instanceof final Tuple3<?, ?, ?> other)) return false;
+		if (!Objects.equals(_1, other._1)) return false;
+		if (!Objects.equals(_2, other._2)) return false;
+		if (!Objects.equals(_3, other._3)) return false;
 		return true;
 	}
 

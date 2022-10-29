@@ -252,7 +252,7 @@ public class Update {
 	}
 
 	private Tuple<JSONObject, String> searchUpdate(final File releaseInfoFile) {
-		JSONObject releaseInfo = null;
+		final JSONObject releaseInfo;
 
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(releaseInfoFile), "UTF-8"))) {
 			releaseInfo = parser.parse(reader);
@@ -264,7 +264,7 @@ public class Update {
 		final String link = releaseInfo.getString("updateInfo");
 		if (link == null || !releaseInfo.containsKey("releaseDate")) return null;
 
-		JSONObject updateInfo = null;
+		final JSONObject updateInfo;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(link).openStream()))) {
 			updateInfo = parser.parse(reader);
 		} catch (final Exception e) {
