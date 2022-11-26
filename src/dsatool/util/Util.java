@@ -247,6 +247,24 @@ public class Util {
 		}
 	}
 
+	public static void rename(final JSONObject object, final String oldName, final String newName) {
+		Object item = null;
+		final List<Tuple<String, Object>> temp = new ArrayList<>(object.size());
+		for (final String key : object.keySet()) {
+			if (item != null) {
+				temp.add(new Tuple<>(key, object.getUnsafe(key)));
+			} else if (key.equals(oldName)) {
+				item = object.getUnsafe(key);
+			}
+		}
+		object.removeKey(oldName);
+		object.putUnsafe(newName, item);
+		for (final Tuple<String, Object> entry : temp) {
+			object.removeKey(entry._1);
+			object.putUnsafe(entry._1, entry._2);
+		}
+	}
+
 	private static boolean run(final String[] command) throws IOException {
 		final Process process = Runtime.getRuntime().exec(command);
 		try {
