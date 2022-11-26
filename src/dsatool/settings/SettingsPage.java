@@ -249,7 +249,7 @@ public class SettingsPage {
 		return label;
 	}
 
-	private void createLine(final String text, final Control control, final Property<?> property) {
+	public void createLine(final String text, final Control control, final Property<?> property) {
 		final Label label = createLabel(text);
 		HBox.setHgrow(label, Priority.ALWAYS);
 		HBox.setMargin(control, new Insets(0, inset, 0, 0));
@@ -263,6 +263,10 @@ public class SettingsPage {
 		} else {
 			sections.get(currentSection).put(text, property);
 		}
+	}
+
+	public void endSection() {
+		currentSection = null;
 	}
 
 	public BooleanProperty getBool(final String key) {
@@ -295,6 +299,16 @@ public class SettingsPage {
 		return (IntegerProperty) sections.get(section).get(key);
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> Property<T> getProperty(final String key) {
+		return (Property<T>) properties.get(key);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> Property<T> getProperty(final TitledPane section, final String key) {
+		return (Property<T>) sections.get(section).get(key);
+	}
+
 	public Set<TitledPane> getSections() {
 		if (sections == null)
 			return Collections.emptySet();
@@ -314,6 +328,20 @@ public class SettingsPage {
 		Util.putAt(sections, index, section, movedProperties);
 		box.getChildren().remove(section);
 		box.getChildren().add(index + sectionStart, section);
+	}
+
+	public void removeNode(final Node node) {
+		box.getChildren().remove(node);
+	}
+
+	public void removeSection(final TitledPane section) {
+		sections.remove(section);
+		box.getChildren().remove(section);
+		if (currentSection == section) {
+			for (final TitledPane otherSection : sections.keySet()) {
+				currentSection = otherSection;
+			}
+		}
 	}
 
 	public void setInsets(final int inset, final int sectionInset) {
