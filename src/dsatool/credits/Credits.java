@@ -46,7 +46,6 @@ public class Credits {
 				"https://openjfx.io/", null));
 		credits.add(new Credits("Material Icons", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://material.io/icons/", null));
 		credits.add(new Credits("Jsonant", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://github.com/errt/Jsonant", null));
-		credits.add(new Credits("BoxTable", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://github.com/errt/BoxTable", null));
 	}
 
 	private final String text;
