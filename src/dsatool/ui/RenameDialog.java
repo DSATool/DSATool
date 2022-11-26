@@ -15,6 +15,7 @@
  */
 package dsatool.ui;
 
+import java.util.Collection;
 import java.util.function.BiConsumer;
 
 import dsatool.util.ErrorLogger;
@@ -47,7 +48,7 @@ public class RenameDialog {
 	private Button cancelButton;
 
 	public RenameDialog(final Window window, final String type, final String plural, final JSONValue category, final JSONObject item,
-			final BiConsumer<String, String> afterRename) {
+			final BiConsumer<String, String> afterRename, final Collection<String> prohibitedNames) {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
 
 		fxmlLoader.setController(this);
@@ -65,13 +66,14 @@ public class RenameDialog {
 		stage.setResizable(false);
 		stage.initOwner(window);
 
-		name.setText(item != null ? category instanceof final JSONObject obj ? obj.keyOf(item) : item.getStringOrDefault("Name", nextFreeName(category, type))
-				: nextFreeName(category, type));
+		final String oldName = item != null ? category instanceof final JSONObject obj ? obj.keyOf(item) : item.getStringOrDefault("Name", null) : null;
+
+		name.setText(oldName == null ? nextFreeName(category, null, type, prohibitedNames) : oldName);
 
 		okButton.setOnAction(event -> {
 			final String newName = name.getText();
 
-			if (isNameUsed(category, newName)) {
+			if (isNameUsed(category, oldName, newName, prohibitedNames)) {
 				final Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Name bereits vergeben");
 				alert.setHeaderText(plural + " müssen eindeutig benannt sein.");
@@ -89,20 +91,16 @@ public class RenameDialog {
 					}
 					afterRename.accept(null, newName);
 					actualItem.notifyListeners(null);
-					stage.close();
-				} else if (!newName.equals(item.getStringOrDefault("Name", null))) {
-					final String oldName;
+				} else if (!newName.equals(oldName)) {
 					if (category instanceof final JSONObject obj) {
-						oldName = obj.keyOf(item);
 						Util.rename(obj, oldName, newName);
 					} else {
-						oldName = item.getString("Name");
 						item.put("Name", newName);
 					}
 					afterRename.accept(oldName, newName);
 					item.notifyListeners(null);
-					stage.close();
 				}
+				stage.close();
 			}
 		});
 
@@ -115,7 +113,9 @@ public class RenameDialog {
 
 	}
 
-	private boolean isNameUsed(final JSONValue category, final String name) {
+	private boolean isNameUsed(final JSONValue category, final String oldName, final String name, final Collection<String> prohibitedNames) {
+		if (name.equals(oldName)) return false;
+		if (prohibitedNames.contains(name)) return true;
 		if (category instanceof final JSONArray arr) {
 			for (int i = 0; i < arr.size(); ++i) {
 				if (name.equals(arr.getObj(i).getStringOrDefault("Name", null))) return true;
@@ -125,10 +125,10 @@ public class RenameDialog {
 		return false;
 	}
 
-	private String nextFreeName(final JSONValue category, final String type) {
-		if (!isNameUsed(category, type)) return type;
+	private String nextFreeName(final JSONValue category, final String oldName, final String type, final Collection<String> prohibitedNames) {
+		if (!isNameUsed(category, oldName, type, prohibitedNames)) return type;
 		for (int i = 1; true; ++i) {
-			if (!isNameUsed(category, type + ' ' + i)) return type + ' ' + i;
+			if (!isNameUsed(category, oldName, type + ' ' + i, prohibitedNames)) return type + ' ' + i;
 		}
 	}
 
