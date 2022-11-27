@@ -1,7 +1,7 @@
 {
-	"releaseDate" : "2022-11-26_23-15",
-	"previousReleaseDate" : "2022-11-26_23-00",
-	"previousReleaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_2022-11-26_23-00.zip",
+	"releaseDate" : "2022-11-27_10-30",
+	"previousReleaseDate" : "2022-11-26_23-15",
+	"previousReleaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_2022-11-26_23-15.zip",
 	"updateInfo" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/update-info.json",
 	"signatureProviderName" : "SunEC",
 	"signatureKeyAlgorithm" : "EC",
