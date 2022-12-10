@@ -172,10 +172,10 @@ public class SettingsPage {
 		final Map<String, Property<?>> sectionProperties = new HashMap<>();
 		sections.put(section, sectionProperties);
 
-		GUIUtil.dragDropReorder(section, o -> {
-			final int index = box.getChildren().indexOf(o) - sectionStart;
-			moveSection((TitledPane) o, index);
-		}, box);
+		GUIUtil.dragDropReorder(section, () -> {}, () -> {
+			final int index = box.getChildren().indexOf(section) - sectionStart;
+			moveSection(section, index);
+		}, o -> {}, box);
 
 		final ContextMenu contextMenu = new ContextMenu();
 		final MenuItem upItem = new MenuItem("Nach oben");
