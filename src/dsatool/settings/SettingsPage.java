@@ -142,6 +142,15 @@ public class SettingsPage {
 		}
 	}
 
+	public void addProperty(final TitledPane section, final String text, final Property<?> property) {
+		final Map<String, Property<?>> actualProperties = section == null ? properties : sections.get(section);
+		if (actualProperties.containsKey(text)) {
+			ErrorLogger.log("Name bereits vergeben: " + text);
+		} else {
+			actualProperties.put(text, property);
+		}
+	}
+
 	public TitledPane addSection(final String title, final boolean needsCheckbox) {
 		if (sections == null) {
 			sections = new LinkedHashMap<>();
@@ -160,8 +169,8 @@ public class SettingsPage {
 		section.setCollapsible(false);
 		section.setExpanded(false);
 
-		final Map<String, Property<?>> properties = new HashMap<>();
-		sections.put(section, properties);
+		final Map<String, Property<?>> sectionProperties = new HashMap<>();
+		sections.put(section, sectionProperties);
 
 		GUIUtil.dragDropReorder(section, o -> {
 			final int index = box.getChildren().indexOf(o) - sectionStart;
@@ -198,19 +207,19 @@ public class SettingsPage {
 			final Label titleLabel = new Label(title);
 			titleLabel.setMaxWidth(Double.POSITIVE_INFINITY);
 			HBox.setHgrow(titleLabel, Priority.ALWAYS);
-			properties.put(null, titleLabel.textProperty());
+			sectionProperties.put(null, titleLabel.textProperty());
 
 			final CheckBox check = new CheckBox();
 			titleBox.getChildren().addAll(titleLabel, check);
 			HBox.setMargin(check, new Insets(0, -6, 0, 0));
 			check.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-			properties.put("", check.selectedProperty());
+			sectionProperties.put("", check.selectedProperty());
 		} else {
 			final Label titleLabel = new Label(title);
 			section.setGraphic(titleLabel);
 			titleLabel.paddingProperty().bind(Bindings.createObjectBinding(() -> section.isCollapsible() ? new Insets(0, 0, 0, 0) : new Insets(0, 0, 0, 15),
 					section.collapsibleProperty()));
-			properties.put(null, section.textProperty());
+			sectionProperties.put(null, section.textProperty());
 		}
 
 		return section;
@@ -255,14 +264,7 @@ public class SettingsPage {
 		HBox.setMargin(control, new Insets(0, inset, 0, 0));
 		final HBox line = new HBox(2, label, control);
 		addNode(line);
-		if (currentSection == null) {
-			if (properties.containsKey(text)) {
-				ErrorLogger.log("Name bereits vergeben: " + text);
-			}
-			properties.put(text, property);
-		} else {
-			sections.get(currentSection).put(text, property);
-		}
+		addProperty(currentSection, text, property);
 	}
 
 	public void endSection() {
@@ -274,7 +276,7 @@ public class SettingsPage {
 	}
 
 	public BooleanProperty getBool(final TitledPane section, final String key) {
-		return (BooleanProperty) sections.get(section).get(key);
+		return (BooleanProperty) getPropertyRaw(section, key);
 	}
 
 	public ScrollPane getControl() {
@@ -288,7 +290,7 @@ public class SettingsPage {
 
 	@SuppressWarnings("unchecked")
 	public ObjectProperty<File> getFile(final TitledPane section, final String key) {
-		return (ObjectProperty<File>) sections.get(section).get(key);
+		return (ObjectProperty<File>) getPropertyRaw(section, key);
 	}
 
 	public IntegerProperty getInt(final String key) {
@@ -296,7 +298,7 @@ public class SettingsPage {
 	}
 
 	public IntegerProperty getInt(final TitledPane section, final String key) {
-		return (IntegerProperty) sections.get(section).get(key);
+		return (IntegerProperty) getPropertyRaw(section, key);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -306,7 +308,13 @@ public class SettingsPage {
 
 	@SuppressWarnings("unchecked")
 	public <T> Property<T> getProperty(final TitledPane section, final String key) {
-		return (Property<T>) sections.get(section).get(key);
+		return (Property<T>) getPropertyRaw(section, key);
+	}
+
+	private Property<?> getPropertyRaw(final TitledPane section, final String key) {
+		if (section == null)
+			return properties.get(key);
+		return sections.get(section).get(key);
 	}
 
 	public Set<TitledPane> getSections() {
@@ -320,7 +328,7 @@ public class SettingsPage {
 	}
 
 	public StringProperty getString(final TitledPane section, final String key) {
-		return (StringProperty) sections.get(section).get(key);
+		return (StringProperty) getPropertyRaw(section, key);
 	}
 
 	public void moveSection(final TitledPane section, final int index) {
