@@ -59,12 +59,14 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 					final String text = getEditor().getText().trim();
 					if (text.isEmpty()) {
 						getEditor().setText(converter.toString(0.0));
-					} else if (Character.isDigit(text.charAt(0)) && Character.isDigit(text.charAt(text.length() - 1))) {
+					} else {
 						Double value = 0.0;
 						try {
 							value = converter.fromString(text);
 							valueFactory.setValue(value != null ? value : 0.0);
-						} catch (final Exception e) {}
+						} catch (final Exception e) {
+							getEditor().setText(oldValue);
+						}
 					}
 				}
 			}
@@ -96,8 +98,10 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 						Integer value = 0;
 						try {
 							value = converter.fromString(text);
-						} catch (final Exception e) {}
-						valueFactory.setValue(value != null ? value : 0);
+							valueFactory.setValue(value != null ? value : 0);
+						} catch (final Exception e) {
+							getEditor().setText(oldValue);
+						}
 					}
 				}
 			}
