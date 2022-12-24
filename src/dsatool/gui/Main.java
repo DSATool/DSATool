@@ -17,6 +17,8 @@ package dsatool.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.YearMonth;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,6 +43,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
@@ -83,11 +88,37 @@ public class Main extends Application {
 		});
 	}
 
+	private void checkJavaVersion() {
+		if (Settings.getSettingBoolOrDefault(true, "Allgemein", "Java-Update-Hinweis")) {
+			final YearMonth currentDate = YearMonth.now();
+			final int month = currentDate.getMonthValue();
+			final int releases = month > 10 ? 3 : month > 4 ? 2 : 1;
+			final int expectedJDK = (currentDate.getYear() - 2014) * 2 + releases;
+			final int actualJDK = Runtime.version().feature();
+			if (actualJDK < expectedJDK) {
+				final Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Java-Version veraltet");
+				alert.setHeaderText("DSATool wird mit Java-Version " + actualJDK + " ausgeführt. Diese ist vermutlich veraltet.");
+				alert.setContentText(
+						"Eine veraltete Java-Version ist ein Sicherheitsrisiko und kann dazu führen, dass zukünftige Updates des DSATool nicht ausgeführt werden können.\n"
+								+ "OK öffnet eine Website zum Download der aktuellen Java-Version " + expectedJDK + ".\n\n"
+								+ "Dieser Hinweis kann in den Einstellungen deaktiviert werden.");
+				alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+				final Optional<ButtonType> result = alert.showAndWait();
+				if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+					Main.app.getHostServices().showDocument("https://adoptium.net/de/temurin/releases/?version=" + expectedJDK);
+				}
+			}
+		}
+	}
+
 	@Override
 	public void start(final Stage primaryStage) {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ErrorLogger.logError(e));
 
 		GroupFileManager.openCurrentGroup();
+
+		checkJavaVersion();
 
 		Settings.addSetting(new BooleanSetting("Auto-Update", true, "Allgemein", "Auto-Update"));
 		if (new File(Update.updateListPath).exists()) {
@@ -98,6 +129,8 @@ public class Main extends Application {
 			updateThread.setPriority(Thread.MIN_PRIORITY);
 			updateThread.start();
 		}
+
+		Settings.addSetting(new BooleanSetting("Java-Update-Hinweis", true, "Allgemein", "Java-Update-Hinweis"));
 
 		app = this;
 		try {
