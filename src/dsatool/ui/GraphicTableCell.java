@@ -76,13 +76,26 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			@Override
 			public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
 				if (oldValue && !newValue) {
-					final int index = getTableRow().getIndex();
-					graphic.focusedProperty().removeListener(this);
-					if (index != -1) {
-						final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, index, column),
-								TableColumn.editCommitEvent(), getText.get());
-						Event.fireEvent(getTableColumn(), editEvent);
-						cancelEdit();
+					if (graphic.getScene().getFocusOwner() != graphic) {
+						final int index = getTableRow().getIndex();
+						graphic.focusedProperty().removeListener(this);
+						if (index != -1) {
+							final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, index, column),
+									TableColumn.editCommitEvent(), getText.get());
+							Event.fireEvent(getTableColumn(), editEvent);
+							cancelEdit();
+						}
+					} else if (graphic instanceof final ComboBox<?> cb) {
+						cb.valueProperty().addListener((o, oldV, newV) -> {
+							final int index = getTableRow().getIndex();
+							graphic.focusedProperty().removeListener(this);
+							if (index != -1) {
+								final CellEditEvent<S, T> editEvent = new CellEditEvent<>(table, new TablePosition<>(table, index, column),
+										TableColumn.editCommitEvent(), getText.get());
+								Event.fireEvent(getTableColumn(), editEvent);
+								cancelEdit();
+							}
+						});
 					}
 				}
 			}
