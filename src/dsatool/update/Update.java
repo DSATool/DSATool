@@ -45,10 +45,13 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.controlsfx.dialog.ProgressDialog;
+
 import dsatool.util.ErrorLogger;
 import dsatool.util.Tuple;
 import dsatool.util.Util;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -174,7 +177,8 @@ public class Update {
 			return "";
 	}
 
-	private String performUpdate(final JSONObject oldReleaseInfo, final String link, final List<Tuple<String, String>> files) {
+	private String performUpdate(final JSONObject oldReleaseInfo, final String link, final List<Tuple<String, String>> files, final int[] updateCount,
+			final Runnable singleUpdateDownloaded) {
 		final File dest = new File(Util.getAppDir() + "/update/" + link.substring(link.lastIndexOf('/')));
 		try (final ReadableByteChannel in = Channels.newChannel(new URL(link).openStream()); FileOutputStream out = new FileOutputStream(dest)) {
 			out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
@@ -182,6 +186,9 @@ public class Update {
 			ErrorLogger.logError(e);
 			return null;
 		}
+
+		singleUpdateDownloaded.run();
+
 		final String previousTime = oldReleaseInfo.getString("releaseDate");
 		try (ZipFile zipFile = new ZipFile(dest)) {
 			final ZipEntry releaseInfo = zipFile.getEntry("release-info.json");
@@ -201,7 +208,8 @@ public class Update {
 					ErrorLogger.log(error.toString());
 					return null;
 				}
-				final String oldKeySpec = performUpdate(oldReleaseInfo, info.getString("previousReleaseLink"), files);
+				++updateCount[0];
+				final String oldKeySpec = performUpdate(oldReleaseInfo, info.getString("previousReleaseLink"), files, updateCount, singleUpdateDownloaded);
 				if (oldKeySpec != null) {
 					signatureKeySpecification = oldKeySpec;
 				} else
@@ -219,10 +227,11 @@ public class Update {
 		return null;
 	}
 
-	private void performUpdates(final List<Tuple<JSONObject, String>> updates) {
+	private void performUpdates(final List<Tuple<JSONObject, String>> updates, final int[] updateCount, final Runnable singleTaskCompleted) {
 		final List<Tuple<String, String>> files = new ArrayList<>();
+
 		for (final Tuple<JSONObject, String> update : updates) {
-			performUpdate(update._1, update._2, files);
+			performUpdate(update._1, update._2, files, updateCount, singleTaskCompleted);
 		}
 
 		files.sort(Comparator.comparing(t -> t._1));
@@ -298,6 +307,17 @@ public class Update {
 			return;
 		}
 
+		final Task<Boolean> downloadTask = new Task<>() {
+			@Override
+			protected Boolean call() throws Exception {
+				final int[] updateCount = { updates.size(), 0 };
+				performUpdates(updates, updateCount, () -> {
+					updateProgress(++updateCount[1], updateCount[0]);
+				});
+				return true;
+			}
+		};
+
 		Platform.runLater(() -> {
 			final Alert performUpdate = new Alert(AlertType.INFORMATION);
 			performUpdate.setTitle("Aktualisierungen verfügbar");
@@ -306,7 +326,11 @@ public class Update {
 			performUpdate.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
 			final Optional<ButtonType> result = performUpdate.showAndWait();
 			if (result.isPresent() && result.get().equals(ButtonType.YES)) {
-				new Thread(() -> performUpdates(updates)).start();
+				final ProgressDialog dialog = new ProgressDialog(downloadTask);
+				dialog.setContentText("Updates werden heruntergeladen");
+				dialog.setTitle("DSA Tool Update");
+				dialog.setHeaderText("Update wird ausgeführt");
+				new Thread(downloadTask).start();
 			}
 		});
 	}
