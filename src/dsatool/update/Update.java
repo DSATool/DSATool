@@ -55,6 +55,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import jsonant.parse.JSONParser;
 import jsonant.value.JSONObject;
 
@@ -330,6 +331,7 @@ public class Update {
 				dialog.setContentText("Updates werden heruntergeladen");
 				dialog.setTitle("DSA Tool Update");
 				dialog.setHeaderText("Update wird ausgeführt");
+				dialog.initModality(Modality.NONE);
 				new Thread(downloadTask).start();
 			}
 		});
