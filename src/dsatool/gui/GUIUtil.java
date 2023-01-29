@@ -47,8 +47,8 @@ public class GUIUtil {
 		table.setColumnResizePolicy(GUIUtil::fixedWidthPolicy);
 
 		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(26);
-		table.minHeightProperty().bind(height);
 		table.maxHeightProperty().bind(height);
+		table.minHeightProperty().bind(height);
 	}
 
 	public static void cellValueFactories(final TableView<?> table, final String... properties) {
