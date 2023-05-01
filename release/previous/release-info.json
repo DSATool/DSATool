@@ -1,7 +1,7 @@
 {
-	"releaseDate" : "2023-01-29_15-00",
-	"previousReleaseDate" : "2022-12-24_12-45",
-	"previousReleaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_2022-12-24_12-45.zip",
+	"releaseDate" : "2023-05-01_14-45",
+	"previousReleaseDate" : "2023-01-29_15-00",
+	"previousReleaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_2023-01-29_15-00.zip",
 	"updateInfo" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/update-info.json",
 	"signatureProviderName" : "SunEC",
 	"signatureKeyAlgorithm" : "EC",
