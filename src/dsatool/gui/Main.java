@@ -116,6 +116,8 @@ public class Main extends Application {
 	public void start(final Stage primaryStage) {
 		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ErrorLogger.logError(e));
 
+		app = this;
+
 		GroupFileManager.openCurrentGroup();
 
 		checkJavaVersion();
@@ -132,7 +134,6 @@ public class Main extends Application {
 
 		Settings.addSetting(new BooleanSetting("Java-Update-Hinweis", true, "Allgemein", "Java-Update-Hinweis"));
 
-		app = this;
 		try {
 			final FXMLLoader fxmlLoader = new FXMLLoader();
 			final BorderPane root = fxmlLoader.load(getClass().getResource("MainWindow.fxml").openStream());
