@@ -52,7 +52,7 @@ public class ErrorLogger {
 		if (e instanceof IllegalArgumentException && "The start must be <= the end".equals(e.getMessage()))
 			return;
 
-		Platform.runLater(Util.exceptionAlert(e)::show);
+		Platform.runLater(() -> Util.exceptionAlert(e).show());
 		final File log = new File(Util.getAppDir() + "/error.log");
 		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
 			if (e.getMessage() != null) {
