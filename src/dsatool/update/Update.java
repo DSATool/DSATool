@@ -23,7 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
@@ -181,9 +182,9 @@ public class Update {
 	private String performUpdate(final JSONObject oldReleaseInfo, final String link, final List<Tuple<String, String>> files, final int[] updateCount,
 			final Runnable singleUpdateDownloaded) {
 		final File dest = new File(Util.getAppDir() + "/update/" + link.substring(link.lastIndexOf('/')));
-		try (final ReadableByteChannel in = Channels.newChannel(new URL(link).openStream()); FileOutputStream out = new FileOutputStream(dest)) {
+		try (final ReadableByteChannel in = Channels.newChannel(new URI(link).toURL().openStream()); FileOutputStream out = new FileOutputStream(dest)) {
 			out.getChannel().transferFrom(in, 0, Long.MAX_VALUE);
-		} catch (final IOException e) {
+		} catch (final IOException | URISyntaxException e) {
 			ErrorLogger.logError(e);
 			return null;
 		}
@@ -275,7 +276,7 @@ public class Update {
 		if (link == null || !releaseInfo.containsKey("releaseDate")) return null;
 
 		final JSONObject updateInfo;
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(link).openStream()))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(link).toURL().openStream()))) {
 			updateInfo = parser.parse(reader);
 		} catch (final Exception e) {
 			return null;
