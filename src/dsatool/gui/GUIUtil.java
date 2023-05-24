@@ -46,7 +46,7 @@ public class GUIUtil {
 	public static <T> void autosizeTable(final TableView<T> table) {
 		table.setColumnResizePolicy(GUIUtil::fixedWidthPolicy);
 
-		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(26);
+		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(28);
 		table.maxHeightProperty().bind(height);
 		table.minHeightProperty().bind(height);
 	}
