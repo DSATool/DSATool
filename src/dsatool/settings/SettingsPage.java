@@ -114,6 +114,7 @@ public class SettingsPage {
 
 	public ReactiveSpinner<Integer> addIntegerChoice(final String text, final int min, final int max) {
 		final ReactiveSpinner<Integer> result = new ReactiveSpinner<>(min, max);
+		result.setMinWidth(60);
 		result.setEditable(true);
 
 		result.setPrefWidth(45 + (min < 0 ? 10 : 0) + Math.floor(Math.log10(max)) * 10);

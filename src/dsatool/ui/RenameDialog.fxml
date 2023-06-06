@@ -13,7 +13,7 @@
    </HBox>
    <HBox spacing="2" alignment="CENTER_LEFT" >
       <Label maxWidth="Infinity" HBox.hgrow="ALWAYS" />
-      <Button fx:id="okButton" text="Ok" prefWidth="75" />
-      <Button fx:id="cancelButton" text="Abbrechen" prefWidth="75" />
+      <Button fx:id="okButton" text="Ok" prefWidth="90" />
+      <Button fx:id="cancelButton" text="Abbrechen" prefWidth="90" />
    </HBox>
 </VBox>
