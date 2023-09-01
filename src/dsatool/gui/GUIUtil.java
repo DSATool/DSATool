@@ -18,6 +18,7 @@ package dsatool.gui;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -51,6 +52,8 @@ public class GUIUtil {
 		final DoubleBinding height = Bindings.size(table.getItems()).multiply(table.getFixedCellSize()).add(insetsHeight).add(26);
 		table.maxHeightProperty().bind(height);
 		table.minHeightProperty().bind(height);
+
+		table.setMinWidth(table.getColumns().stream().collect(Collectors.summingDouble(TableColumn::getMinWidth)));
 	}
 
 	public static void cellValueFactories(final TableView<?> table, final String... properties) {
