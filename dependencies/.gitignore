@@ -2,5 +2,5 @@
 !.gitignore
 !controlsfx.jar
 !Jsonant.jar
-!JavaFX-19.jar
-!JavaFX-Web-19.jar
+!JavaFX-21.jar
+!JavaFX-Web-21.jar
