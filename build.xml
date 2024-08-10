@@ -5,7 +5,7 @@
 	<target name="deploy" description="Builds the jar archive">
 		<mkdir dir="plugins"/>
     	<mkdir dir="bin"/>
-    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="14" target="14"/>
+    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="16" target="16"/>
 		<jar destfile="DSATool.jar">
 			<manifest>
 				<attribute name="Main-Class" value="dsatool.util.Runner"/>
