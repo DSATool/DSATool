@@ -21,9 +21,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -51,6 +53,8 @@ import javafx.scene.text.Text;
 import jsonant.value.JSONObject;
 
 public class Util {
+
+	public static DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.GERMANY);
 
 	public final static String javaExecutable = ProcessHandle.current().info().command().orElse("java");
 
@@ -226,7 +230,7 @@ public class Util {
 	private static void openWith(final File file, final int page, final String command) throws IOException {
 		final String[] arguments = command.split(" ");
 		for (int i = 1; i < arguments.length; ++i) {
-			arguments[i] = arguments[i].replace("%f", "\"" + file.getAbsolutePath() + "\"").replace("%p", Integer.toString(page));
+			arguments[i] = arguments[i].replace("%f", file.getAbsolutePath()).replace("%p", Integer.toString(page));
 		}
 		Runtime.getRuntime().exec(arguments);
 	}
