@@ -58,7 +58,7 @@ public class SettingsDialog {
 
 		stage = new Stage();
 		stage.setTitle("Einstellungen");
-		stage.setScene(new Scene(pane, 600, 350));
+		stage.setScene(new Scene(pane, 700, 350));
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.initOwner(window);
 

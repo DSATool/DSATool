@@ -69,7 +69,7 @@ public class ReferenceDialog {
 
 		stage = new Stage();
 		stage.setTitle("Pfad für " + title);
-		stage.setScene(new Scene(pane, 600, 125));
+		stage.setScene(new Scene(pane, 650, 125));
 		stage.initModality(Modality.WINDOW_MODAL);
 		stage.setResizable(false);
 		stage.initOwner(window);

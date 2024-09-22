@@ -25,15 +25,15 @@
                     <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
                   </tooltip>
                </Label>
-               <ListView fx:id="usedBooks" maxHeight="163" >
+               <ListView fx:id="usedBooks" maxHeight="160" >
                   <tooltip>
                     <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
                   </tooltip>
                </ListView>
                <Button fx:id="edit" text="&#xE3C9;" disable="true" minWidth="35" onAction="#editBook" >
-                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <padding><Insets top="0" right="0" bottom="-5" left="0"/></padding>
                   <font>
-                     <Font name="Material Icons" size="20.0" />
+                     <Font name="Material Symbols Outlined" size="20.0" />
                   </font>
                   <tooltip>
                      <Tooltip text="Buch bearbeiten" />
@@ -44,9 +44,9 @@
                <Label text="" />
                <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
                <Button text="&#xE314;" minWidth="35" onAction="#useBooks" >
-                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <padding><Insets top="2" right="0" bottom="-3" left="0"/></padding>
                   <font>
-                     <Font name="Material Icons" size="20.0" />
+                     <Font name="Material Symbols Outlined" size="20.0" />
                   </font>
                   <tooltip>
                      <Tooltip text="Benutzen" />
@@ -56,9 +56,9 @@
                   </tooltip>
                </Button>
                <Button text="&#xE315;" minWidth="35" onAction="#removeBooks" >
-                  <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
+                  <padding><Insets top="2" right="0" bottom="-3" left="0"/></padding>
                   <font>
-                     <Font name="Material Icons" size="20.0" />
+                     <Font name="Material Symbols Outlined" size="20.0" />
                   </font>
                   <tooltip>
                      <Tooltip text="Nicht mehr benutzen" />

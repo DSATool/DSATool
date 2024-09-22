@@ -44,7 +44,8 @@ public class Credits {
 				"http://fxexperience.com/controlsfx/", null));
 		credits.add(new Credits("JavaFX\nCopyright (c) 2008, Oracle", "GPLv2 with Class Path Exception", Util.getAppDir() + "/licenses/GPLv2_CPE.txt",
 				"https://openjfx.io/", null));
-		credits.add(new Credits("Material Icons", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://material.io/icons/", null));
+		credits.add(new Credits("Material Symbols Outlined", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt",
+				"https://material.io/icons/", null));
 		credits.add(new Credits("Jsonant", "Apache License Version 2.0", Util.getAppDir() + "/licenses/ALv2.txt", "https://github.com/errt/Jsonant", null));
 	}
 

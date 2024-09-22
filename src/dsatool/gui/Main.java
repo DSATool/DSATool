@@ -140,7 +140,7 @@ public class Main extends Application {
 			window = fxmlLoader.getController();
 			window.setStage(primaryStage);
 
-			Font.loadFont(new FileInputStream(new File(Util.getAppDir() + "/resources/fonts/MaterialIcons-Regular.ttf")), 15);
+			Font.loadFont(new FileInputStream(new File(Util.getAppDir() + "/resources/fonts/MaterialSymbolsOutlined-Regular.ttf")), 15);
 
 			final Rectangle2D resolution = Screen.getPrimary().getVisualBounds();
 			primaryStage.setMaxWidth(resolution.getWidth());

@@ -74,7 +74,8 @@ public class Util {
 			}
 
 			final String finalName = name;
-			final Label iconLabel = new Label("\uE54B");
+			final Label iconLabel = new Label("\uEA19");
+			iconLabel.setPadding(new Insets(-2, 0, -7, 0));
 			iconLabel.getStyleClass().add("icon-font");
 			iconLabel.setTextFill(Color.DIMGREY);
 			final String page = Integer.toString(refs.getInt(name));
