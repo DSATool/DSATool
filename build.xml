@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="deploy" name="DSATool" xmlns:unless="ant:unless">
 	<property name="Name" value="DSATool"/>
-	<property name="Includes" value="dependencies/controlsfx.jar,dependencies/Jsonant.jar,dependencies/JavaFX-21.jar,dependencies/JavaFX-Web-21.jar,licenses/ALv2.txt,licenses/controlsfx-license.txt,licenses/GPLv2_CPE.txt,resources/fonts/MaterialSymbolsOutlined-Regular.ttf,update/Updater.jar"/>
+	<property name="Includes" value="dependencies/controlsfx.jar,dependencies/Jsonant.jar,dependencies/JavaFX-23.jar,dependencies/JavaFX-Web-23.jar,licenses/ALv2.txt,licenses/controlsfx-license.txt,licenses/GPLv2_CPE.txt,resources/fonts/MaterialSymbolsOutlined-Regular.ttf,update/Updater.jar"/>
 	<target name="deploy" description="Builds the jar archive">
 		<mkdir dir="plugins"/>
     	<mkdir dir="bin"/>
-    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="16" target="16"/>
+    	<javac srcdir="src" destdir="bin" includeantruntime="false" debug="true" debuglevel="lines,vars,source" source="21" target="21"/>
 		<jar destfile="DSATool.jar">
 			<manifest>
 				<attribute name="Main-Class" value="dsatool.util.Runner"/>
-				<attribute name="Class-Path" value="dependencies/JavaFX-21.jar dependencies/JavaFX-Web-21.jar dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
+				<attribute name="Class-Path" value="dependencies/JavaFX-23.jar dependencies/JavaFX-Web-23.jar dependencies/controlsfx.jar dependencies/Jsonant.jar"/>
 			</manifest>
 			<fileset dir="bin" excludes="dsatool/update/Updater.class,dsatool/update/SignatureTool.class"/>
 			<metainf file="LICENSE"/>
