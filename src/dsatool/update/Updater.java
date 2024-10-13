@@ -163,7 +163,7 @@ public class Updater {
 
 	private static void log(final String message) {
 		final File log = new File(getAppDir() + "/error.log");
-		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log, true)))) {
 			writer.write(message);
 			writer.println();
 		} catch (final IOException ioe) {
@@ -173,7 +173,7 @@ public class Updater {
 
 	private static void logError(final Exception e) {
 		final File log = new File(getAppDir() + "/error.log");
-		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log)))) {
+		try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(log, true)))) {
 			if (e.getMessage() != null) {
 				writer.write(e.getMessage());
 				writer.println();
