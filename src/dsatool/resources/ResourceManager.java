@@ -640,6 +640,9 @@ public class ResourceManager {
 							}
 							break;
 						case ZIP:
+							if (path.startsWith("data")) {
+								break;
+							}
 							final Path p = zipFile.getPath("/" + path);
 							final Path parent = p.getParent();
 							if (parent != null) {
