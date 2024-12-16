@@ -86,24 +86,16 @@ public class Util {
 			label.getStyleClass().add("flat-link");
 			label.setOnAction(o -> openBook(finalName, books.getObj(finalName), refs.getInt(finalName)));
 
-			boolean first = true;
 			final ContextMenu openMenu = new ContextMenu();
-			final StringBuilder tooltip = new StringBuilder();
-			for (final String bookName : refs.keySet()) {
+			final String tooltip = StringUtil.mkString(refs, "\n", bookName -> {
 				final String reference = bookName + " S. " + refs.getInt(bookName);
 				final MenuItem openItem = new MenuItem(reference);
 				openItem.setOnAction(e -> openBook(bookName, books.getObj(bookName), refs.getInt(bookName)));
 				openMenu.getItems().add(openItem);
-
-				if (first) {
-					first = false;
-				} else {
-					tooltip.append("\n");
-				}
-				tooltip.append(reference);
-			}
+				return reference;
+			});
 			label.setContextMenu(openMenu);
-			label.setTooltip(new Tooltip(tooltip.toString()));
+			label.setTooltip(new Tooltip(tooltip));
 
 			final Label graphic = new Label("", label);
 			graphic.setAlignment(Pos.CENTER_RIGHT);
