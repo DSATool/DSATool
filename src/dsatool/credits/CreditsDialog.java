@@ -15,6 +15,7 @@
  */
 package dsatool.credits;
 
+import dsatool.gui.Main;
 import dsatool.util.ErrorLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -75,5 +76,10 @@ public class CreditsDialog {
 	@FXML
 	public void close() {
 		stage.close();
+	}
+
+	@FXML
+	public void openToolWebsite() {
+		Main.app.getHostServices().showDocument("https://dsatool.github.io/");
 	}
 }
