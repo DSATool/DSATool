@@ -68,11 +68,6 @@ public class SettingsDialog {
 			}
 		});
 
-		final BookSettingsPage books = new BookSettingsPage(stage);
-		list.getItems().add("Regelwerke");
-		pages.put("Regelwerke", books.getControl());
-		tabArea.getChildren().add(books.getControl());
-
 		final Map<String, Map<String, Set<Setting>>> settings = Settings.getSettings();
 		for (final String pageName : settings.keySet()) {
 			final Map<String, Set<Setting>> page = settings.get(pageName);
@@ -94,6 +89,11 @@ public class SettingsDialog {
 				}
 			}
 		}
+
+		final BookSettingsPage books = new BookSettingsPage(stage);
+		list.getItems().add(1, "Regelwerke");
+		pages.put("Regelwerke", books.getControl());
+		tabArea.getChildren().add(1, books.getControl());
 
 		list.getSelectionModel().clearAndSelect(0);
 
