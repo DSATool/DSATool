@@ -98,10 +98,10 @@ public class SettingsPage {
 		final Button result = new Button("Kein");
 		final ObjectProperty<File> property = new SimpleObjectProperty<>();
 		createLine(text, result, property);
-		property.addListener((ov, oldVal, newVal) -> {
+		property.addListener((_, _, newVal) -> {
 			result.setText(newVal != null ? newVal.getName() : "Kein");
 		});
-		result.setOnAction(e -> {
+		result.setOnAction(_ -> {
 			final FileChooser dialog = new FileChooser();
 
 			dialog.setTitle("Datei öffnen");
@@ -121,10 +121,10 @@ public class SettingsPage {
 
 		final IntegerProperty property = new SimpleIntegerProperty();
 		createLine(text, result, property);
-		result.getValueFactory().valueProperty().addListener((o, oldV, newV) -> {
+		result.getValueFactory().valueProperty().addListener((_, _, newV) -> {
 			property.set(newV);
 		});
-		property.addListener((o, oldV, newV) -> {
+		property.addListener((_, _, newV) -> {
 			result.getValueFactory().setValue(newV.intValue());
 		});
 		return result;
@@ -176,22 +176,22 @@ public class SettingsPage {
 		GUIUtil.dragDropReorder(section, () -> {}, () -> {
 			final int index = box.getChildren().indexOf(section) - sectionStart;
 			moveSection(section, index);
-		}, o -> {}, box);
+		}, _ -> {}, box);
 
 		final ContextMenu contextMenu = new ContextMenu();
 		final MenuItem upItem = new MenuItem("Nach oben");
-		upItem.setOnAction(event -> {
+		upItem.setOnAction(_ -> {
 			final int index = box.getChildren().indexOf(section) - sectionStart;
 			moveSection(section, index - 1);
 		});
 		contextMenu.getItems().add(upItem);
 		final MenuItem downItem = new MenuItem("Nach unten");
-		downItem.setOnAction(event -> {
+		downItem.setOnAction(_ -> {
 			final int index = box.getChildren().indexOf(section) - sectionStart;
 			moveSection(section, index + 1);
 		});
 		contextMenu.getItems().add(downItem);
-		contextMenu.setOnShowing(e -> {
+		contextMenu.setOnShowing(_ -> {
 			final int index = box.getChildren().indexOf(section) - sectionStart;
 			upItem.setVisible(index > 0);
 			downItem.setVisible(index < sections.size() - 1);
@@ -234,10 +234,10 @@ public class SettingsPage {
 		final ComboBox<String> result = new ReactiveComboBox<>(FXCollections.observableArrayList(choices));
 		final StringProperty property = new SimpleStringProperty();
 		createLine(text, result, property);
-		result.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> {
+		result.getSelectionModel().selectedItemProperty().addListener((_, _, newVal) -> {
 			property.set(newVal);
 		});
-		property.addListener((ov, oldVal, newVal) -> {
+		property.addListener((_, _, newVal) -> {
 			result.getSelectionModel().select(newVal);
 		});
 		return result;

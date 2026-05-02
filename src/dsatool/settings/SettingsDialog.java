@@ -57,7 +57,7 @@ public class SettingsDialog {
 
 		stage = GUIUtil.setupStage(pane, 700, 375, "Einstellungen", window, true);
 
-		list.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
+		list.getSelectionModel().selectedItemProperty().addListener((_, _, newV) -> {
 			if (newV != null) {
 				pages.get(newV).toFront();
 			}

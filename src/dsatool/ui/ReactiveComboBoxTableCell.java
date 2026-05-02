@@ -30,14 +30,14 @@ public class ReactiveComboBoxTableCell<S> extends GraphicTableCell<S, String> {
 	}
 
 	public static <S> Callback<TableColumn<S, String>, TableCell<S, String>> forTableColumn(final ObservableList<String> items, final boolean alwaysVisible) {
-		return list -> new ReactiveComboBoxTableCell<>(items, alwaysVisible);
+		return _ -> new ReactiveComboBoxTableCell<>(items, alwaysVisible);
 	}
 
 	protected final ObjectProperty<ObservableList<String>> items;
 
 	public ReactiveComboBoxTableCell(final boolean alwaysVisible) {
 		super(alwaysVisible);
-		this.items = new SimpleObjectProperty<>();
+		items = new SimpleObjectProperty<>();
 	}
 
 	public ReactiveComboBoxTableCell(final ObservableList<String> items, final boolean alwaysVisible) {

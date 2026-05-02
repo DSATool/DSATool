@@ -32,10 +32,10 @@ public class ReactiveComboBox<T> extends ComboBox<T> {
 
 	private long lastChange = 0;
 
-	private final ChangeListener<String> textListener = (observable, oldValue, newValue) -> {
+	private final ChangeListener<String> textListener = (_, _, newV) -> {
 		final TextField editor = getEditor();
 		final int previousCaret = editor.getCaretPosition() + 1;
-		final String text = newValue;
+		final String text = newV;
 
 		T item = null;
 		if (previousCaret > 0 && previousCaret <= text.length()) {

@@ -65,7 +65,7 @@ public class RenameDialog {
 
 		name.setText(oldName == null ? nextFreeName(category, null, type, prohibitedNames) : oldName);
 
-		okButton.setOnAction(event -> {
+		okButton.setOnAction(_ -> {
 			final String newName = name.getText();
 
 			if (isNameUsed(category, oldName, newName, prohibitedNames)) {
@@ -99,7 +99,7 @@ public class RenameDialog {
 			}
 		});
 
-		cancelButton.setOnAction(event -> stage.close());
+		cancelButton.setOnAction(_ -> stage.close());
 
 		okButton.setDefaultButton(true);
 		cancelButton.setCancelButton(true);

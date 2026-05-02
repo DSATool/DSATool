@@ -113,7 +113,7 @@ public class MainWindowController {
 				final MenuItem item = new MenuItem(itemName);
 				group.getItems().add(item);
 				return new dsatool.ui.MenuItem(item);
-			}, o -> {
+			}, _ -> {
 				group.getItems().add(new SeparatorMenuItem());
 			});
 		});
@@ -132,40 +132,40 @@ public class MainWindowController {
 			});
 		});
 		final MenuGroup file = mainMenu.addGroup("Datei");
-		file.addItem("Neu").setAction(o -> {
+		file.addItem("Neu").setAction(_ -> {
 			if (askSaveChanges()) {
 				GroupFileManager.createNewZipFile();
 			}
 		});
-		file.addItem("Laden").setAction(o -> {
+		file.addItem("Laden").setAction(_ -> {
 			if (askSaveChanges()) {
 				GroupFileManager.openNewGroup();
 			}
 		});
-		file.addItem("Speichern").setAction(o -> {
+		file.addItem("Speichern").setAction(_ -> {
 			ResourceManager.saveResources();
 		});
 		file.addSeparator();
-		file.addItem("Neu laden").setAction(o -> {
+		file.addItem("Neu laden").setAction(_ -> {
 			ResourceManager.discardChanges();
 		});
 		file.addSeparator();
-		file.addItem("Schließen").setAction(o -> {
+		file.addItem("Schließen").setAction(_ -> {
 			if (askSaveChanges()) {
 				Platform.exit();
 			}
 		});
 
 		final MenuGroup edit = mainMenu.addGroup("Bearbeiten");
-		edit.addItem("Einstellungen").setAction(o -> {
+		edit.addItem("Einstellungen").setAction(_ -> {
 			new SettingsDialog(window);
 		});
 
 		final MenuGroup help = mainMenu.addGroup("Hilfe");
-		help.addItem("Nach Updates suchen").setAction(o -> {
+		help.addItem("Nach Updates suchen").setAction(_ -> {
 			new Thread(() -> new Update().searchUpdates(true)).start();
 		});
-		help.addItem("Über DSATool").setAction(o -> {
+		help.addItem("Über DSATool").setAction(_ -> {
 			new CreditsDialog(window);
 		});
 	}
@@ -177,7 +177,7 @@ public class MainWindowController {
 	public void setStage(final Stage stage) {
 		window = stage;
 
-		window.setOnCloseRequest(o -> {
+		window.setOnCloseRequest(_ -> {
 			ResourceManager.saveResources();
 			Platform.exit();
 		});

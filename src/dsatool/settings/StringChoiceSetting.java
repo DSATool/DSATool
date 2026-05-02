@@ -36,7 +36,7 @@ public class StringChoiceSetting extends Setting {
 		page.addStringChoice(name, choices);
 		final StringProperty property = page.getString(name);
 		property.set(Settings.getSettingStringOrDefault(defaultVal, path));
-		property.addListener((o, oldV, newV) -> {
+		property.addListener((_, _, newV) -> {
 			Settings.setSetting(newV, path);
 		});
 	}

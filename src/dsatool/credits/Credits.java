@@ -97,7 +97,7 @@ public class Credits {
 			licenseLabel.setManaged(false);
 			licenseLink.setText(license);
 			licenseLink.setTooltip(new Tooltip(licenseUrl));
-			licenseLink.setOnAction(e -> Main.app.getHostServices().showDocument(licenseUrl));
+			licenseLink.setOnAction(_ -> Main.app.getHostServices().showDocument(licenseUrl));
 		} else {
 			if (license != null) {
 				licenseLabel.setText(license);
@@ -111,7 +111,7 @@ public class Credits {
 
 		if (url != null) {
 			urlLabel.setText(url);
-			urlLabel.setOnAction(e -> Main.app.getHostServices().showDocument(url));
+			urlLabel.setOnAction(_ -> Main.app.getHostServices().showDocument(url));
 		} else {
 			urlLabel.setVisible(false);
 			urlLabel.setManaged(false);

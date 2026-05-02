@@ -25,7 +25,7 @@ import javafx.util.StringConverter;
 public class ReactiveSpinner<T> extends Spinner<T> {
 
 	public ReactiveSpinner() {
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		getEditor().textProperty().addListener((ChangeListener<String>) (_, _, _) -> {
 			final String text = getEditor().getText();
 			final SpinnerValueFactory<T> valueFactory = getValueFactory();
 			if (valueFactory != null) {
@@ -51,7 +51,7 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 			@NamedArg("amountToStepBy") final double amountToStepBy) {
 		super(min, max, initialValue, amountToStepBy);
 
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		getEditor().textProperty().addListener((ChangeListener<String>) (_, oldValue, _) -> {
 			final SpinnerValueFactory<Double> valueFactory = (SpinnerValueFactory<Double>) getValueFactory();
 			if (valueFactory != null) {
 				final StringConverter<Double> converter = valueFactory.getConverter();
@@ -86,7 +86,7 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 			@NamedArg("amountToStepBy") final int amountToStepBy) {
 		super(min, max, initialValue, amountToStepBy);
 
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		getEditor().textProperty().addListener((ChangeListener<String>) (_, oldValue, _) -> {
 			final SpinnerValueFactory<Integer> valueFactory = (SpinnerValueFactory<Integer>) getValueFactory();
 			if (valueFactory != null) {
 				final StringConverter<Integer> converter = valueFactory.getConverter();
@@ -111,7 +111,7 @@ public class ReactiveSpinner<T> extends Spinner<T> {
 	public ReactiveSpinner(@NamedArg("items") final ObservableList<T> items) {
 		super(items);
 
-		getEditor().textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		getEditor().textProperty().addListener((ChangeListener<String>) (_, _, _) -> {
 			final String text = getEditor().getText();
 			final SpinnerValueFactory<T> valueFactory = getValueFactory();
 			if (valueFactory != null) {

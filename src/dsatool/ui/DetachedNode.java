@@ -82,7 +82,7 @@ public class DetachedNode {
 		if (window == null) {
 			window = GUIUtil.setupStage(new BorderPane(), width, height, name, null, false);
 
-			window.setOnCloseRequest(event -> {
+			window.setOnCloseRequest(_ -> {
 				window = null;
 			});
 

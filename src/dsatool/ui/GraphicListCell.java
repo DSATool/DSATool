@@ -74,17 +74,11 @@ public abstract class GraphicListCell<T> extends ListCell<T> {
 			}
 		});
 		if (graphic instanceof final TextField tf) {
-			tf.setOnAction(e -> {
-				requestFocus();
-			});
+			tf.setOnAction(_ -> requestFocus());
 		} else if (graphic instanceof final ButtonBase b) {
-			b.setOnAction(e -> {
-				requestFocus();
-			});
+			b.setOnAction(_ -> requestFocus());
 		} else if (graphic instanceof final ComboBoxBase<?> cb) {
-			cb.setOnAction(e -> {
-				requestFocus();
-			});
+			cb.setOnAction(_ -> requestFocus());
 		}
 	}
 

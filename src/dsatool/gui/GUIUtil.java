@@ -52,7 +52,7 @@ public class GUIUtil {
 	public static <T> void autosizeTable(final TableView<T> table) {
 		table.setColumnResizePolicy(GUIUtil::fixedWidthPolicy);
 
-		table.skinProperty().addListener((obs, ol, ne) -> {
+		table.skinProperty().addListener((_, _, _) -> {
 			final Pane header = (Pane) table.lookup("TableHeaderRow");
 			header.setPrefHeight(table.getFixedCellSize());
 		});

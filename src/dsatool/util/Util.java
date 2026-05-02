@@ -85,13 +85,13 @@ public class Util {
 			final Hyperlink label = new Hyperlink(page, iconLabel);
 			label.setGraphicTextGap(0);
 			label.getStyleClass().add("flat-link");
-			label.setOnAction(o -> openBook(finalName, books.getObj(finalName), refs.getInt(finalName)));
+			label.setOnAction(_ -> openBook(finalName, books.getObj(finalName), refs.getInt(finalName)));
 
 			final ContextMenu openMenu = new ContextMenu();
 			final String tooltip = StringUtil.mkString(refs, "\n", bookName -> {
 				final String reference = bookName + " S. " + refs.getInt(bookName);
 				final MenuItem openItem = new MenuItem(reference);
-				openItem.setOnAction(e -> openBook(bookName, books.getObj(bookName), refs.getInt(bookName)));
+				openItem.setOnAction(_ -> openBook(bookName, books.getObj(bookName), refs.getInt(bookName)));
 				openMenu.getItems().add(openItem);
 				return reference;
 			});
@@ -138,7 +138,7 @@ public class Util {
 	}
 
 	public static <T> ChangeListener<T> changeListener(final BooleanSupplier check, final Consumer<T> listener) {
-		return (observable, oldV, newV) -> {
+		return (_, oldV, newV) -> {
 			if (newV == null || oldV == null || oldV.equals(newV) || check.getAsBoolean()) return;
 			listener.accept(newV);
 		};

@@ -84,7 +84,7 @@ public class ReferenceDialog {
 			offset.getValueFactory().setValue(book.getIntOrDefault("Seitenoffset", 0));
 		}
 
-		path.textProperty().addListener((o, oldV, newV) -> {
+		path.textProperty().addListener((_, _, newV) -> {
 			if ("".equals(newV.trim())) {
 				book.removeKey("Pfad");
 			} else {
@@ -92,7 +92,7 @@ public class ReferenceDialog {
 			}
 		});
 
-		specified.selectedProperty().addListener((o, oldV, newV) -> {
+		specified.selectedProperty().addListener((_, _, newV) -> {
 			command.setDisable(!newV);
 			if (newV) {
 				book.put("Befehl", command.getText().trim());
@@ -105,7 +105,7 @@ public class ReferenceDialog {
 			}
 		});
 
-		withOffset.selectedProperty().addListener((o, oldV, newV) -> {
+		withOffset.selectedProperty().addListener((_, _, newV) -> {
 			if (newV) {
 				book.put("Seitenoffset", offset.getValue());
 			} else if (!specified.isSelected()) {
@@ -113,7 +113,7 @@ public class ReferenceDialog {
 			}
 		});
 
-		command.textProperty().addListener((o, oldV, newV) -> {
+		command.textProperty().addListener((_, _, newV) -> {
 			if ("".equals(newV.trim())) {
 				book.putNull("Befehl");
 			} else {
@@ -121,7 +121,7 @@ public class ReferenceDialog {
 			}
 		});
 
-		offset.valueProperty().addListener((o, oldV, newV) -> {
+		offset.valueProperty().addListener((_, _, newV) -> {
 			book.put("Seitenoffset", newV);
 		});
 

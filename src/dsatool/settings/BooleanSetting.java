@@ -32,7 +32,7 @@ public class BooleanSetting extends Setting {
 		page.addBooleanChoice(name);
 		final BooleanProperty property = page.getBool(name);
 		property.set(Settings.getSettingBoolOrDefault(defaultVal, path));
-		property.addListener((o, oldV, newV) -> {
+		property.addListener((_, _, newV) -> {
 			Settings.setSetting(newV, path);
 		});
 	}

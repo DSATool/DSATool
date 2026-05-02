@@ -290,7 +290,7 @@ public class Update {
 
 	public void searchUpdates(final boolean notifyOnNoUpdate) {
 		final List<Tuple<JSONObject, String>> updates = new LinkedList<>();
-		for (final File releaseInfo : new File(Util.getAppDir() + "/update").listFiles((dir, name) -> name.toLowerCase().endsWith(".json"))) {
+		for (final File releaseInfo : new File(Util.getAppDir() + "/update").listFiles((_, name) -> name.toLowerCase().endsWith(".json"))) {
 			final Tuple<JSONObject, String> update = searchUpdate(releaseInfo);
 			if (update != null) {
 				updates.add(update);

@@ -27,7 +27,7 @@ public class DoubleSpinnerTableCell<S> extends GraphicTableCell<S, Double> {
 
 	public static <S> Callback<TableColumn<S, Double>, TableCell<S, Double>> forTableColumn(final double min, final double max, final double step,
 			final boolean alwaysVisible, final BiFunction<DoubleSpinnerTableCell<S>, Boolean, Tuple<Double, Double>> update) {
-		return list -> new DoubleSpinnerTableCell<>(min, max, step, alwaysVisible) {
+		return _ -> new DoubleSpinnerTableCell<>(min, max, step, alwaysVisible) {
 			@Override
 			public void updateItem(final Double item, final boolean empty) {
 				final Tuple<Double, Double> bounds = update.apply(this, empty);

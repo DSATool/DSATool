@@ -36,7 +36,7 @@ public class IntegerSetting extends Setting {
 		page.addIntegerChoice(name, min, max);
 		final IntegerProperty property = page.getInt(name);
 		property.set(Settings.getSettingIntOrDefault(defaultVal, path));
-		property.addListener((o, oldV, newV) -> {
+		property.addListener((_, _, newV) -> {
 			Settings.setSetting(newV.intValue(), path);
 		});
 	}

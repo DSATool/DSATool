@@ -110,7 +110,7 @@ public class BookSettingsPage implements Serializable {
 		initializeList(usedBooks);
 		initializeList(unusedBooks);
 
-		usedBooks.getSelectionModel().selectedIndexProperty().addListener((o, oldV, newV) -> {
+		usedBooks.getSelectionModel().selectedIndexProperty().addListener((_, _, _) -> {
 			edit.setDisable(usedBooks.getSelectionModel().getSelectedIndices().size() != 1);
 		});
 
@@ -123,7 +123,7 @@ public class BookSettingsPage implements Serializable {
 			offset.getValueFactory().setValue(Settings.getSettingIntOrDefault(0, "Allgemein", "Bücher:Seitenoffset"));
 		}
 
-		specified.selectedProperty().addListener((o, oldV, newV) -> {
+		specified.selectedProperty().addListener((_, _, newV) -> {
 			command.setDisable(!newV);
 			offset.setDisable(!newV);
 			if (newV) {
@@ -137,7 +137,7 @@ public class BookSettingsPage implements Serializable {
 			}
 		});
 
-		command.textProperty().addListener((o, oldV, newV) -> {
+		command.textProperty().addListener((_, _, newV) -> {
 			if ("".equals(newV.trim())) {
 				Settings.removeSetting("Allgemein", "Bücher:Befehl");
 			} else {
@@ -145,7 +145,7 @@ public class BookSettingsPage implements Serializable {
 			}
 		});
 
-		offset.valueProperty().addListener((o, oldV, newV) -> {
+		offset.valueProperty().addListener((_, _, newV) -> {
 			if (newV == 0) {
 				Settings.removeSetting("Allgemein", "Bücher:Seitenoffset");
 			} else {
@@ -163,7 +163,7 @@ public class BookSettingsPage implements Serializable {
 			HBox.setHgrow(label, Priority.ALWAYS);
 			final CheckBox check = new CheckBox();
 			box.getChildren().add(box.getChildren().size() - 2, new HBox(2, label, check));
-			check.setOnAction(e -> {
+			check.setOnAction(_ -> {
 				for (final String bookName : categoryBooks) {
 					moveBook(bookName, check.isSelected() ? unusedBooks : usedBooks, check.isSelected() ? usedBooks : unusedBooks);
 				}
@@ -250,7 +250,7 @@ public class BookSettingsPage implements Serializable {
 
 			final ContextMenu menu = new ContextMenu();
 			final MenuItem editItem = new MenuItem("Bearbeiten");
-			editItem.setOnAction(e -> {
+			editItem.setOnAction(_ -> {
 				final String item = cell.getItem();
 				new ReferenceDialog(window, item);
 			});

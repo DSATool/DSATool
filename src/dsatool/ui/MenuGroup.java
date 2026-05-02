@@ -49,7 +49,7 @@ public class MenuGroup {
 	 */
 	public MenuGroup(final Function<String, MenuItem> addItem) {
 		this.addItem = addItem;
-		addSeparator = o -> {};
+		addSeparator = _ -> {};
 	}
 
 	/**

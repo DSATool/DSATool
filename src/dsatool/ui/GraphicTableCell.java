@@ -86,7 +86,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 							cancelEdit();
 						}
 					} else if (graphic instanceof final ComboBox<?> cb) {
-						cb.valueProperty().addListener((o, oldV, newV) -> {
+						cb.valueProperty().addListener((_, _, _) -> {
 							final int index = getTableRow().getIndex();
 							graphic.focusedProperty().removeListener(this);
 							if (index != -1) {
@@ -101,18 +101,12 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			}
 		});
 		if (graphic instanceof final TextField tf) {
-			tf.setOnAction(e -> {
-				requestFocus();
-			});
+			tf.setOnAction(_ -> requestFocus());
 		} else if (graphic instanceof final ButtonBase b) {
-			b.setOnAction(e -> {
-				requestFocus();
-			});
+			b.setOnAction(_ -> requestFocus());
 		} else if (graphic instanceof final ComboBox<?> cb) {
-			cb.setOnAction(e -> {
-				requestFocus();
-			});
-			graphic.focusedProperty().addListener((o, oldV, newV) -> {
+			cb.setOnAction(_ -> requestFocus());
+			graphic.focusedProperty().addListener((_, _, newV) -> {
 				if (newV) {
 					try {
 						((FakeFocusTextField) cb.getEditor()).setFakeFocus(true);
@@ -122,7 +116,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 				}
 			});
 		} else if (graphic instanceof final Spinner<?> s) {
-			s.focusedProperty().addListener((o, oldV, newV) -> {
+			s.focusedProperty().addListener((_, _, newV) -> {
 				if (newV) {
 					try {
 						((FakeFocusTextField) s.getEditor()).setFakeFocus(true);

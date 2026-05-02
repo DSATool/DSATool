@@ -49,7 +49,7 @@ public class PluginLoader {
 	public static void loadPlugins() {
 		final File pluginDirectory = new File(Util.getAppDir() + File.separator + pluginDir);
 
-		final File[] pluginJars = pluginDirectory.listFiles((dir, name) -> name.toLowerCase().endsWith(".jar"));
+		final File[] pluginJars = pluginDirectory.listFiles((_, name) -> name.toLowerCase().endsWith(".jar"));
 
 		if (pluginJars == null) {
 			ErrorLogger.log("No plugins found in dir " + pluginDirectory);

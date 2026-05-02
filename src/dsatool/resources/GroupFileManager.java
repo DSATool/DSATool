@@ -55,7 +55,7 @@ public class GroupFileManager {
 		final File file = dialog.showSaveDialog(null);
 		if (file != null) {
 			ResourceManager.discardResources();
-			try (final ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file))) {
+			try (final ZipOutputStream _ = new ZipOutputStream(new FileOutputStream(file))) {
 				ResourceManager.setZipFile(file);
 				for (final Plugin plugin : PluginLoader.plugins.values()) {
 					plugin.loadData();
