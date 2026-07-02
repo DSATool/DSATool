@@ -19,16 +19,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import dsatool.gui.GUIUtil;
 import dsatool.resources.Settings;
 import dsatool.util.ErrorLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -56,11 +55,7 @@ public class SettingsDialog {
 			ErrorLogger.logError(e);
 		}
 
-		stage = new Stage();
-		stage.setTitle("Einstellungen");
-		stage.setScene(new Scene(pane, 700, 350));
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.initOwner(window);
+		stage = GUIUtil.setupStage(pane, 700, 375, "Einstellungen", window, true);
 
 		list.getSelectionModel().selectedItemProperty().addListener((o, oldV, newV) -> {
 			if (newV != null) {

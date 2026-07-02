@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import dsatool.gui.GUIUtil;
+import dsatool.gui.ThemedAlert;
 import dsatool.resources.ResourceManager;
 import dsatool.resources.Settings;
 import dsatool.ui.ReactiveSpinner;
@@ -277,7 +278,7 @@ public class BookSettingsPage implements Serializable {
 	private void modify() {
 		if (!modified) {
 			Platform.runLater(() -> {
-				final Alert alert = new Alert(AlertType.INFORMATION);
+				final Alert alert = new ThemedAlert(AlertType.INFORMATION);
 				alert.setTitle("Hinweis");
 				alert.setHeaderText("Ein Neustart des Tools ist erforderlich, um diese Änderung wirksam zu machen.");
 				alert.show();

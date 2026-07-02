@@ -15,17 +15,16 @@
  */
 package dsatool.credits;
 
+import dsatool.gui.GUIUtil;
 import dsatool.gui.Main;
 import dsatool.util.ErrorLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -50,11 +49,7 @@ public class CreditsDialog {
 			ErrorLogger.logError(e);
 		}
 
-		stage = new Stage();
-		stage.setTitle("Über DSATool");
-		stage.setScene(new Scene(pane, 600, 350));
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.initOwner(window);
+		stage = GUIUtil.setupStage(pane, 600, 400, "Über DSATool", window, true);
 
 		box.prefWidthProperty().bind(stage.widthProperty().subtract(35));
 

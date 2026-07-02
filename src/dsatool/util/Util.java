@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import dsatool.gui.ThemedAlert;
 import dsatool.resources.ResourceManager;
 import dsatool.resources.Settings;
 import javafx.beans.binding.Bindings;
@@ -47,8 +48,7 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.skin.LabeledSkinBase;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import jsonant.value.JSONObject;
 
@@ -57,6 +57,8 @@ public class Util {
 	public static DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.GERMANY);
 
 	public final static String javaExecutable = ProcessHandle.current().info().command().orElse("java");
+
+	private static Font labelFont = null;
 
 	public static void addReference(final Labeled control, final JSONObject data, final double padding, final ReadOnlyDoubleProperty width) {
 		final JSONObject books = ResourceManager.getResource("settings/Buecher");
@@ -77,12 +79,11 @@ public class Util {
 			final Label iconLabel = new Label("\uEA19");
 			iconLabel.setPadding(new Insets(-2, 0, -7, 0));
 			iconLabel.getStyleClass().add("icon-font");
-			iconLabel.setTextFill(Color.DIMGREY);
+			iconLabel.getStyleClass().add("flat-link");
 			final String page = Integer.toString(refs.getInt(name));
 
 			final Hyperlink label = new Hyperlink(page, iconLabel);
 			label.setGraphicTextGap(0);
-			label.setTextFill(Color.DIMGREY);
 			label.getStyleClass().add("flat-link");
 			label.setOnAction(o -> openBook(finalName, books.getObj(finalName), refs.getInt(finalName)));
 
@@ -97,33 +98,29 @@ public class Util {
 			label.setContextMenu(openMenu);
 			label.setTooltip(new Tooltip(tooltip));
 
+			if (labelFont == null) {
+				labelFont = Font.font("Crimson Pro", 14);
+			}
+
+			final Text textMeasure = new Text(label.getText());
+			textMeasure.setFont(labelFont);
+
 			final Label graphic = new Label("", label);
 			graphic.setAlignment(Pos.CENTER_RIGHT);
-			graphic.setPadding(new Insets(0, (3 - page.length()) * 6, 0, 0));
+			graphic.setPadding(new Insets(0, 20 - textMeasure.getBoundsInLocal().getWidth(), 0, 0));
 			control.setContentDisplay(ContentDisplay.RIGHT);
 			control.setGraphic(graphic);
-			if (control.getSkin() != null) {
-				final Text text = (Text) ((LabeledSkinBase<?>) control.getSkin()).getChildren().get(1);
-				text.setText(control.getText());
-				graphic.minWidthProperty()
-						.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
-			} else {
-				control.skinProperty().addListener((o, oldV, newV) -> {
-					if (newV != null) {
-						final Text text = (Text) ((LabeledSkinBase<?>) newV).getChildren().get(1);
-						text.setText(control.getText());
-						graphic.minWidthProperty()
-								.bind(Bindings.max(width.subtract(text.getLayoutBounds().getWidth() + padding), label.widthProperty()));
-					}
-				});
-			}
+
+			textMeasure.setText(control.getText());
+			graphic.minWidthProperty().bind(Bindings.max(width.subtract(textMeasure.getBoundsInLocal().getWidth() + padding), label.widthProperty()));
+
 		} else {
 			control.setGraphic(null);
 		}
 	}
 
 	public static Alert alert(final String text) {
-		final Alert alert = new Alert(AlertType.ERROR);
+		final Alert alert = new ThemedAlert(AlertType.ERROR);
 		alert.setTitle("Fehler");
 		alert.setHeaderText("Ein Fehler ist aufgetreten.\nWeitere Informationen befinden sich unter ./error.log");
 

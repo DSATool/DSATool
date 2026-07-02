@@ -17,14 +17,14 @@ package dsatool.gui;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.controlsfx.control.StatusBar;
-
-import com.sun.javafx.css.StyleManager;
 
 import dsatool.control.MainWindowController;
 import dsatool.plugins.Plugin;
@@ -32,6 +32,7 @@ import dsatool.plugins.PluginLoader;
 import dsatool.resources.GroupFileManager;
 import dsatool.resources.Settings;
 import dsatool.settings.BooleanSetting;
+import dsatool.settings.StringChoiceSetting;
 import dsatool.ui.DetachableNode;
 import dsatool.ui.DetachedNode;
 import dsatool.ui.MenuGroup;
@@ -42,7 +43,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -50,6 +50,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 	public static StatusBar statusBar;
@@ -96,7 +97,7 @@ public class Main extends Application {
 			final int expectedJDK = (currentDate.getYear() - 2014) * 2 + releases;
 			final int actualJDK = Runtime.version().feature();
 			if (actualJDK < expectedJDK) {
-				final Alert alert = new Alert(AlertType.WARNING);
+				final Alert alert = new ThemedAlert(AlertType.WARNING);
 				alert.setTitle("Java-Version veraltet");
 				alert.setHeaderText("DSATool wird mit Java-Version " + actualJDK + " ausgeführt. Diese ist vermutlich veraltet.");
 				alert.setContentText(
@@ -114,9 +115,17 @@ public class Main extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) {
-		Thread.setDefaultUncaughtExceptionHandler((t, e) -> ErrorLogger.logError(e));
+		Thread.setDefaultUncaughtExceptionHandler((_, e) -> ErrorLogger.logError(e));
 
 		app = this;
+
+		for (final File font : new File("resources/fonts").listFiles((_, name) -> name.endsWith(".ttf"))) {
+			try {
+				Font.loadFont(new FileInputStream(font), 154);
+			} catch (final FileNotFoundException e) {
+				ErrorLogger.logError(e);
+			}
+		}
 
 		GroupFileManager.openCurrentGroup();
 
@@ -134,6 +143,9 @@ public class Main extends Application {
 
 		Settings.addSetting(new BooleanSetting("Java-Update-Hinweis", true, "Allgemein", "Java-Update-Hinweis"));
 
+		Settings.addSetting(new StringChoiceSetting("Thema", "Stein",
+				List.of("Stein", "Marmor", "Pergament", "Holz", "Anthrazit", "Mine", "Gift", "Wald", "Gras", "Meer", "Himmel"), "Allgemein", "Thema"));
+
 		try {
 			final FXMLLoader fxmlLoader = new FXMLLoader();
 			final BorderPane root = fxmlLoader.load(getClass().getResource("MainWindow.fxml").openStream());
@@ -145,13 +157,15 @@ public class Main extends Application {
 			final Rectangle2D resolution = Screen.getPrimary().getVisualBounds();
 			primaryStage.setMaxWidth(resolution.getWidth());
 			primaryStage.setMaxHeight(resolution.getHeight());
-			final Scene scene = new Scene(root, Math.min(1100, resolution.getWidth()), Math.min(880, resolution.getHeight()));
+			final ThemedScene scene = new ThemedScene(root, Math.min(1100, resolution.getWidth()), Math.min(880, resolution.getHeight()));
 
 			Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
-			StyleManager.getInstance().addUserAgentStylesheet(getClass().getResource("application.css").toExternalForm());
 
-			primaryStage.setTitle("DSA Tool");
+			scene.titleProperty.set("DSATool");
+			primaryStage.titleProperty().bind(scene.titleProperty);
 			primaryStage.setScene(scene);
+
+			primaryStage.initStyle(StageStyle.EXTENDED);
 
 			window.initializeMenus();
 			statusBar = window.getStatusBar();

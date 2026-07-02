@@ -1,0 +1,29 @@
+* {
+    /* Hintergründe – dunkel, warm */
+    -fx-color-bg-0: #181513;  /* tiefer, warmer Dunkelton */
+    -fx-color-bg-1: #211b18;  /* Panels, etwas heller */
+    -fx-color-bg-2: #2a221e;  /* hervorgehobene Flächen */
+
+    -fx-color-surface: #332822; /* Karten/Dialoge wie geöltes Holz */
+	-fx-color-border:  #7b5d49; /* warme Holz-/Messingkante */
+
+    /* Akzent – Messing/Bronze */
+    -fx-color-accent:      #c2903f;  /*Primär-Akzent */
+    -fx-color-accent-alt:  #b08746;  /* Hover/Fokus */
+    -fx-color-accent-soft: #3a2e22;  /* dezente warme Header/Markierungen */
+    -fx-accent: derive(-fx-color-accent, 20%);
+
+    /* Ornamente – dunkles Messing */
+    -fx-color-ornament-border: #b1823a;
+
+    /* Text */
+    -fx-color-text:        #f2ebdd;  /* Haupttext */
+    -fx-color-text-soft:   #d4c7b4;  /* sekundärer Text */
+    -fx-color-text-muted:  #928473;  /* Platzhalter, Hilfetexte */
+    -fx-color-text-invert: #1b140c;  /* Text auf hellen Akzentflächen */
+
+    /* Statusfarben – etwas „natürlicher“ warm */
+    -fx-color-valid:   #2f8a47;  /* Kräutergrün */
+    -fx-color-invalid: #d84633;  /* Ziegel-/Blutrot */
+    -fx-color-warning: #e0aa3a;  /* warmes Gold/Ocker */
+}

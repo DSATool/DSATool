@@ -17,17 +17,16 @@ package dsatool.settings;
 
 import java.io.File;
 
+import dsatool.gui.GUIUtil;
 import dsatool.resources.ResourceManager;
 import dsatool.ui.ReactiveSpinner;
 import dsatool.util.ErrorLogger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import jsonant.value.JSONObject;
@@ -67,12 +66,7 @@ public class ReferenceDialog {
 			ErrorLogger.logError(e);
 		}
 
-		stage = new Stage();
-		stage.setTitle("Pfad für " + title);
-		stage.setScene(new Scene(pane, 650, 125));
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setResizable(false);
-		stage.initOwner(window);
+		stage = GUIUtil.setupStage(pane, 650, 165, "Pfad für " + title, window, true);
 
 		books = ResourceManager.getResource("settings/Buecher");
 		book = books.getObj(title);

@@ -48,6 +48,7 @@ import java.util.zip.ZipFile;
 
 import org.controlsfx.dialog.ProgressDialog;
 
+import dsatool.gui.ThemedAlert;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Tuple;
 import dsatool.util.Util;
@@ -250,7 +251,7 @@ public class Update {
 		}
 
 		Platform.runLater(() -> {
-			final Alert restart = new Alert(AlertType.INFORMATION);
+			final Alert restart = new ThemedAlert(AlertType.INFORMATION);
 			restart.setTitle("Aktualisierungen heruntergeladen");
 			restart.setHeaderText("Aktualisierungen wurden heruntergeladen und werden mit dem nächsten Neustart installiert");
 			restart.setContentText("Soll DSATool jetzt neu gestartet werden?");
@@ -298,7 +299,7 @@ public class Update {
 		if (updates.isEmpty()) {
 			if (notifyOnNoUpdate) {
 				Platform.runLater(() -> {
-					final Alert noUpdate = new Alert(AlertType.INFORMATION);
+					final Alert noUpdate = new ThemedAlert(AlertType.INFORMATION);
 					noUpdate.setTitle("Keine Aktualisierungen verfügbar");
 					noUpdate.setHeaderText("Es sind keine Aktualisierungen verfügbar");
 					noUpdate.setContentText("DSATool ist bereits auf dem neuesten Stand");
@@ -321,7 +322,7 @@ public class Update {
 		};
 
 		Platform.runLater(() -> {
-			final Alert performUpdate = new Alert(AlertType.INFORMATION);
+			final Alert performUpdate = new ThemedAlert(AlertType.INFORMATION);
 			performUpdate.setTitle("Aktualisierungen verfügbar");
 			performUpdate.setHeaderText("Aktualisierungen sind verfügbar");
 			performUpdate.setContentText("Soll jetzt aktualisiert werden?");

@@ -30,8 +30,7 @@
                     <Tooltip text="Inhalte dieser Regelwerke werden aktuell verwendet, wobei Varianten aus weiter oben in der Liste stehenden Regelwerken Vorzug gegegeben wird"/>
                   </tooltip>
                </ListView>
-               <Button fx:id="edit" text="&#xE3C9;" disable="true" minWidth="35" onAction="#editBook" >
-                  <padding><Insets top="0" right="0" bottom="-5" left="0"/></padding>
+               <Button fx:id="edit" text="&#xE3C9;" disable="true" minWidth="35" onAction="#editBook" style="-fx-padding: 0 0 -5 0;" >
                   <font>
                      <Font name="Material Symbols Outlined" size="20.0" />
                   </font>
@@ -43,8 +42,7 @@
             <VBox spacing="5" >
                <Label text="" />
                <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
-               <Button text="&#xE314;" minWidth="35" onAction="#useBooks" >
-                  <padding><Insets top="2" right="0" bottom="-3" left="0"/></padding>
+               <Button text="&#xE314;" minWidth="35" onAction="#useBooks" style="-fx-padding: 2 0 -3 0;" >
                   <font>
                      <Font name="Material Symbols Outlined" size="20.0" />
                   </font>
@@ -55,8 +53,7 @@
 	                 </font>
                   </tooltip>
                </Button>
-               <Button text="&#xE315;" minWidth="35" onAction="#removeBooks" >
-                  <padding><Insets top="2" right="0" bottom="-3" left="0"/></padding>
+               <Button text="&#xE315;" minWidth="35" onAction="#removeBooks" style="-fx-padding: 2 0 -3 0;" >
                   <font>
                      <Font name="Material Symbols Outlined" size="20.0" />
                   </font>

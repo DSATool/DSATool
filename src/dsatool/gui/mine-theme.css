@@ -1,0 +1,30 @@
+* {
+	/* Primäre Hintergründe – hell, leicht warm */
+	-fx-color-bg-0: #0f1114;  /* tiefer Stollen */
+	-fx-color-bg-1: #15191f;  /* Panels */
+	-fx-color-bg-2: #1e232b;  /* hervorgehobene Flächen */
+
+	/* Oberflächen / Rahmen */
+	-fx-color-surface: #262b34; /* Karten, Dialoge – Felsplatten */
+	-fx-color-border:  #5a6473;   /* kühler, klar erkennbarer Rahmen */
+
+	/* Akzent – Glut/Kupfer */
+	-fx-color-accent:      #c26232;  /* Primär (Schmiedeglut) */
+	-fx-color-accent-alt:  #9a5931;  /* Hover/Fokus */
+	-fx-color-accent-soft: #2e2622;  /* glimmende Flächen, Header */
+	-fx-accent: derive(-fx-color-accent, 20%);
+	
+	/* Ornamente – rohes Erz */
+	-fx-color-ornament-border: #b77b3a;
+	
+	/* Text – hell, leicht kühl für Stein-Kontrast */
+	-fx-color-text:        #f3f5f8;  /* Haupttext (fast Weiß) */
+	-fx-color-text-soft:   #c8ced6;  /* sekundärer Text */
+	-fx-color-text-muted:  #959ba5;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #181b22;  /* Text auf sehr hellen/Glutflächen */
+
+	/* Statusfarben – kräftig, aber nicht neon */
+	-fx-color-valid:   #2ec06a;  /* Erzgrün */
+	-fx-color-invalid: #e4372b;  /* glühendes Rot */
+	-fx-color-warning: #e0a13a;  /* Glutgold/Amber */
+}

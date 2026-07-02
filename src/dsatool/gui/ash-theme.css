@@ -1,0 +1,30 @@
+* {
+   	/* Primäre Hintergründe – dunkel, neutral-grau */
+   	-fx-color-bg-0: #2a2a2a;  /* Anwendungs-Hintergrund */
+   	-fx-color-bg-1: #333333;  /* Panels, Sidebars */
+   	-fx-color-bg-2: #3d3d3d;  /* leicht hervorgehobene Flächen */
+
+	/* Oberflächen / Rahmen */
+   	-fx-color-surface: #454545;
+   	-fx-color-border:  #777270;	 /* Rahmen */
+
+   	/* Akzent: dezent metallisches Kupfer */
+   	-fx-color-accent:      #c48663;  /* Primär-Akzent */
+   	-fx-color-accent-alt:  #c18a63;  /* hellerer Akzent (Hover/Fokus) */
+   	-fx-color-accent-soft: #3a3433;  /* sehr dezente warme Flächen */
+   	-fx-accent: derive(-fx-color-accent, 20%);
+
+   	/* Ornamente / dekorative Rahmen */
+   	-fx-color-ornament-border: #b48260;
+
+   	/* Textfarben – hohe Lesbarkeit auf dunklem Grund */
+   	-fx-color-text:        #f4efe5; /* Haupttext */
+   	-fx-color-text-soft:   #d8d1c7;  /* sekundärer Text */
+   	-fx-color-text-muted:  #9c968e;  /* Platzhalter, Hilfetexte */
+   	-fx-color-text-invert: #181310;  /* Text auf hellen/Kupfer-Flächen */
+
+   	/* Statusfarben */
+   	-fx-color-valid:   #257a42;  /* ruhiges, aber klares Grün */
+   	-fx-color-invalid: #d63c32;  /* warmes, gut sichtbares Rot */
+	-fx-color-warning: #ffb32b;  /* kräftiges, gut lesbares Amber/Gold */
+}

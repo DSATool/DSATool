@@ -1,0 +1,30 @@
+* {
+    /* Hintergründe – neblig, steinig-grün */
+    -fx-color-bg-0: #101413;  /* dunkler Hain */
+    -fx-color-bg-1: #181e1c;  /* Panels */
+    -fx-color-bg-2: #222a26;  /* hervorgehobene Flächen */
+
+	/* Oberflächen / Rahmen */
+    -fx-color-surface: #2b3430;  /* Tabellenflächen, Cards, Dialoge */
+	-fx-color-border:  #6a766f; /* weicher, moosiger Rahmen */
+
+    /* Akzent – Moosgrün + Himmelsblau als Zweitwirkung (über Komponenten) */
+    -fx-color-accent:      #4f9b5f;  /* Primär (Moosgrün) */
+    -fx-color-accent-alt:  #62b073;  /* Hover/Fokus */
+    -fx-color-accent-soft: #1f2b24;  /* dezente Flächen */
+	-fx-accent: derive(-fx-color-accent, 20%);
+
+    /* Ornamente – helles Stein-/Holzbeige */
+    -fx-color-ornament-border: #b2a27d;
+
+    /* Text – neutral bis leicht warm, naturhaft */
+    -fx-color-text:        #edf3ee;  /* Haupttext */
+    -fx-color-text-soft:   #c6d0c9;  /* sekundärer Text */
+    -fx-color-text-muted:  #909a93;  /* Platzhalter, Hilfetexte */
+    -fx-color-text-invert: #101512;  /* Text auf hellen/akzentuierten Flächen */
+
+    /* Statusfarben – eher erdig/natürlich */
+	-fx-color-valid:   #3a9f42;  /* sattes, dunkleres Wald-Laubgrün */
+	-fx-color-invalid: #dd3f34;  /* gedämpftes Rot */
+    -fx-color-warning: #c9a34a;  /* pflanzliches Ocker */
+}

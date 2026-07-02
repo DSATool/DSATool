@@ -24,6 +24,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Control;
 import javafx.scene.control.IndexedCell;
 import javafx.scene.control.ListView;
@@ -37,6 +38,10 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 public class GUIUtil {
 
@@ -296,6 +301,21 @@ public class GUIUtil {
 		col.setResizable(true);
 		TableView.UNCONSTRAINED_RESIZE_POLICY.call(new ResizeFeatures<>(table, col, delta));
 		col.setResizable(resizable);
+	}
+
+	public static Stage setupStage(final Parent root, final double width, final double height, final String title, final Window window, final boolean modal) {
+		final Stage stage = new Stage();
+		final ThemedScene scene = new ThemedScene(root, width, height);
+		scene.titleProperty.set(title);
+		stage.titleProperty().bind(scene.titleProperty);
+		stage.setScene(scene);
+		stage.initStyle(StageStyle.EXTENDED);
+		if (modal) {
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.setResizable(false);
+		}
+		stage.initOwner(window);
+		return stage;
 	}
 
 	private GUIUtil() {}

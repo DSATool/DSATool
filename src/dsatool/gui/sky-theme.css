@@ -1,0 +1,30 @@
+* {
+	/* Primäre Hintergründe – hell, leicht warm */
+	-fx-color-bg-0: #f2f7fd;  /* Anwendungs-Hintergrund */
+	-fx-color-bg-1: #e3edf8;  /* Panels / Karten */
+	-fx-color-bg-2: #d0dff0;  /* hervorgehobene Flächen */
+	
+	/* Oberflächen / Rahmen */
+	-fx-color-surface: #bccde1;  /* Inhaltsflächen, Tabellen */
+    -fx-color-border:  #667896;  /* Rahmen – kühles Küstengrau/Blau */
+   	
+	/* Akzente (Meer) */
+	-fx-color-accent:      #6b879f;  /* Akzent primär (Buttons, aktive Elemente) */
+	-fx-color-accent-alt:  #7f9ab0;  /* Hover/Fokus */
+	-fx-color-accent-soft: #e2f0fb;  /* sanfte Akzentflächen, Header, Chips */
+	-fx-accent: derive(-fx-color-accent, 20%);
+	
+	/* Ornamente / dekorative Rahmen – feiner Kontrast */
+	-fx-color-ornament-border: #4f6078;  /* dunkler Rahmen für Ornamente */	
+	
+	/* Textfarben – klarer, etwas kühler Kontrast */
+    -fx-color-text:        #222833;  /* Haupttext – dunkles, leicht kühles Grau */
+	-fx-color-text-soft:   #4a5565;  /* sekundärer Text */
+	-fx-color-text-muted:  #7f8896;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #f5f9ff;  /* Text auf dunklen/Accent-Flächen */
+	
+	/* Statusfarben */
+	-fx-color-valid:   #1f7a3d;  /* „OK“ – türkis/blau-grün, passend zum Meer */
+	-fx-color-invalid: #b24548;  /* Fehler – warmes Rot als Kontrast zum Blau */
+	-fx-color-warning: #d28a33;  /* Warnung – warmes Gold/Orange */
+}

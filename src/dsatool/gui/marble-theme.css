@@ -1,0 +1,30 @@
+* {
+	/* Primäre Hintergründe – hell, leicht warm */
+	-fx-color-bg-0: #f6f5f3;  /* Hauptfläche – heller, warmer Marmor */
+	-fx-color-bg-1: #ece9e3; 
+	-fx-color-bg-2: #e0dbd3;  /* hervorgehobene Flächen */
+
+	/* Rahmen & Ornamente (Stein/Metall) */
+	-fx-color-surface: #d3ccc0;  /* „polierte“ Elemente, Karten, Tabellen */
+	-fx-color-border:  #9a9082;  /* allgemeine Rahmenlinien */
+	
+	/* Akzent: Kupfer */
+	-fx-color-accent:      #b5863b;  /* Primär (Buttons, aktive Elemente) */
+	-fx-color-accent-alt:  #c9994a;  /* Hover/Fokus */
+	-fx-color-accent-soft: #f2e6d2;  /* sanfte Akzentflächen */
+	-fx-accent: derive(-fx-color-accent, 20%);
+	
+	/* Ornamente / dekorative Rahmen – feiner Kontrast */
+	-fx-color-ornament-border: #756a5c;  /* dunkle, ornamentale Linien */
+	
+	/* Textfarben – klarer, etwas kühler Kontrast */
+	-fx-color-text:        #26221a;  /* Haupttext */
+	-fx-color-text-soft:   #554f44;  /* sekundärer Text */
+	-fx-color-text-muted:  #888074;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #f8f4ee;  /* Text auf Akzent-/dunklen Flächen */
+	
+	/* Statusfarben */
+	-fx-color-valid: #3d8368;  /* „OK“ – gedecktes Smaragdgrün, gut lesbar auf den hellen Marmorflächen */
+	-fx-color-invalid: #af433a;
+	-fx-color-warning: #c48733;
+}

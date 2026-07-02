@@ -37,13 +37,14 @@ public class ColoredProgressBarTableCell<S extends Colorable> extends GraphicTab
 		final ProgressBar progressBar = new ProgressBar();
 		progressBar.setMaxWidth(Double.MAX_VALUE);
 		final StackPane pane = new StackPane(progressBar, label);
-		setGraphic(pane);
 
 		progressBar.progressProperty().bind(getTableColumn().getCellObservableValue(getIndex()));
 
 		label.textProperty().bind(getTableView().getItems().get(getIndex()).textProperty());
 
-		progressBar.setStyle("-fx-accent: " + createColor(getTableView().getItems().get(getIndex()).getColor()) + "; -fx-control-inner-background: "
+		final String progressColor = createColor(getTableView().getItems().get(getIndex()).getColor());
+
+		progressBar.setStyle("-fx-color-progress: " + progressColor + "; -fx-control-inner-background: "
 				+ createColor(getTableView().getItems().get(getIndex()).getColor().brighter().desaturate().desaturate()) + ";");
 
 		setText(null);

@@ -1,0 +1,29 @@
+* {
+    /* Hintergründe – pergamentartig, warm-hell */
+    -fx-color-bg-0: #f6f1e6;  /* App-Hintergrund */
+    -fx-color-bg-1: #ede2d1;  /* Panels, Sidebars */
+    -fx-color-bg-2: #e2d2bc;  /* hervorgehobene Flächen */
+
+    -fx-color-surface: #fbf6ed; /* Tabellenflächen, Cards, Dialoge */
+    -fx-color-border:  #b9a990; /* Rahmen, leicht gealtertes Pergament */
+
+    /* Akzent – Purpur/Weinrot */
+	-fx-color-accent:      #b97a47;  /* Primär ( aktive Elemente) – sanfteres Holz/Kupfer */
+	-fx-color-accent-alt:  #c8945d;  /* Hover/Fokus */
+	-fx-color-accent-soft: #f4e1d1;  /* sanfte Akzentflächen, Header, Chips */
+    -fx-accent: derive(-fx-color-accent, 20%);
+
+    /* Ornamente – stumpfes Gold */
+    -fx-color-ornament-border: #b8944c;
+
+    /* Text – dunkel, leicht warm */
+	-fx-color-text:        #2a2117;  /* Haupttext – sehr dunkles, warmes Braun */
+	-fx-color-text-soft:   #5a4a38;  /* sekundärer Text */
+	-fx-color-text-muted:  #8a7460;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #fbf7f1;  /* Text auf Akzent-/dunklen Flächen */
+
+    /* Statusfarben – eher klassisch, warm */
+    -fx-color-valid:   #228b47;  /* Siegelgrün */
+	-fx-color-invalid: #b4463f;  /* Fehler – warmes Ziegelrot */
+    -fx-color-warning: #c6881c;  /* goldener Warn-/Hinweis-Ton */
+}

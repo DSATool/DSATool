@@ -1,0 +1,31 @@
+* {
+
+	/* Hintergründe – Holz & vergilbtes Papier */
+	-fx-color-bg-0: #070b12;  /* App-Hintergrund – helles Pergament */
+	-fx-color-bg-1: #0d131d;  /* Panels */
+	-fx-color-bg-2: #141b27;  /* hervorgehobene Flächen */
+	
+ 	/* Surface – Haupt-Inhaltsflächen (Karten, Dialoge, Tabellen) */
+    -fx-color-surface: #1b2533;  /* Tischplatte / Kartenfläche */
+    -fx-color-border:  #586173;  /* kühler Metallrahmen */
+
+    /* Akzent – Messing / Gold & Signalblau */
+    -fx-color-accent:      #8494ab;  /* Primär (Messinggold) */
+    -fx-color-accent-alt:  #8da2b7;  /* Hover/Fokus heller Messington */
+    -fx-color-accent-soft: #e2f0fb;  /* dunkle Akzentflächen, Header */
+    -fx-accent: derive(-fx-color-accent, 20%);
+
+    /* Ornamente – Messingrahmen, Holzintarsien */
+    -fx-color-ornament-border: #4f6078;
+
+    /* Text – klar, leicht kühl für Kontrast auf Blau */
+    -fx-color-text:        #f2f5fb;  /* Haupttext */
+    -fx-color-text-soft:   #c7cfdd;  /* sekundärer Text */
+    -fx-color-text-muted:  #8b93a3;  /* Platzhalter, Hilfetexte */
+    -fx-color-text-invert: #100f0a;  /* Text auf sehr hellen/Goldflächen */
+
+    /* Statusfarben – maritim angehaucht */
+    -fx-color-valid:   #1c8b3f;  /* sattes Türkisgrün */
+    -fx-color-invalid: #cf4b4a;  /* Warnrot */
+    -fx-color-warning: #d6a347;  /* warmes Signal-Gold */
+}

@@ -17,9 +17,9 @@ package dsatool.ui;
 
 import java.util.function.Supplier;
 
+import dsatool.gui.GUIUtil;
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -157,9 +157,7 @@ public class DetachableNode {
 	 */
 	public void detach() {
 		if (window == null) {
-			window = new Stage();
-			window.setTitle(name);
-			window.setScene(new Scene(new BorderPane(), width, height));
+			window = GUIUtil.setupStage(new BorderPane(), width, height, name, null, false);
 
 			window.setOnCloseRequest(event -> {
 				attach(false);

@@ -1,5 +1,8 @@
 /images/
 /fonts/*
+!/fonts/Cinzel-Bold.ttf
+!/fonts/CrimsonPro-Regular.ttf
+!/fonts/CrimsonPro-Bold.ttf
 !/fonts/MaterialSymbolsOutlined-Regular.ttf
 !/fonts/codepoints
 /logos/

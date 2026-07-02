@@ -14,7 +14,7 @@
          <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
       </VBox>
    </ScrollPane>
-   <HBox >
+   <HBox>
       <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
       <Hyperlink text="https://dsatool.github.io/" onAction="#openToolWebsite" >
          <padding><Insets top="3" right="0" bottom="0" left="0"/></padding>

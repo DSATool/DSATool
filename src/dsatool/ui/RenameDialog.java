@@ -18,18 +18,18 @@ package dsatool.ui;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 
+import dsatool.gui.GUIUtil;
+import dsatool.gui.ThemedAlert;
 import dsatool.util.ErrorLogger;
 import dsatool.util.Util;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import jsonant.value.JSONArray;
@@ -59,12 +59,7 @@ public class RenameDialog {
 			ErrorLogger.logError(e);
 		}
 
-		final Stage stage = new Stage();
-		stage.setTitle(type);
-		stage.setScene(new Scene(root, 290, 55));
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setResizable(false);
-		stage.initOwner(window);
+		final Stage stage = GUIUtil.setupStage(root, 290, 60, type, window, true);
 
 		final String oldName = item != null ? category instanceof final JSONObject obj ? obj.keyOf(item) : item.getStringOrDefault("Name", null) : null;
 
@@ -74,7 +69,7 @@ public class RenameDialog {
 			final String newName = name.getText();
 
 			if (isNameUsed(category, oldName, newName, prohibitedNames)) {
-				final Alert alert = new Alert(AlertType.WARNING);
+				final Alert alert = new ThemedAlert(AlertType.WARNING);
 				alert.setTitle("Name bereits vergeben");
 				alert.setHeaderText(plural + " müssen eindeutig benannt sein.");
 				alert.setContentText(type + " konnte nicht gespeichert werden.");

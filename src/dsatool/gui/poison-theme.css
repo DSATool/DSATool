@@ -1,0 +1,30 @@
+* {
+    /* Hintergründe – sehr dunkel, leicht violett-blau */
+    -fx-color-bg-0: #090b12;  /* App-Hintergrund / tiefste Schatten */
+    -fx-color-bg-1: #10141c;  /* Panels */
+    -fx-color-bg-2: #171a24;  /* hervorgehobene Flächen */
+
+    /* Surface – Haupt-Inhaltsflächen (Karten, Dialoge, Tabellen) */
+    -fx-color-surface: #202432;  /* kalter Stein */
+    -fx-color-border:  #585c68;  /* gedämpfter, kalter Rahmen */
+
+    /* Akzent – nekrotisches Grün */
+    -fx-color-accent:      #4a9a5d;  /* Primär (Ektoplasma-Grün, nicht zu grell) */
+	-fx-color-accent-alt:  #5cad6f;  /* Hover/Fokus */
+	-fx-color-accent-soft: #19241e;  /* grünlich dunkle Flächen / Header */
+    -fx-accent: derive(-fx-color-accent, 20%);
+
+    /* Ornamente – Knochen */
+    -fx-color-ornament-border: #c6b89b;  /* Knochenbeige */
+
+    /* Text – hell, leicht kalt */
+    -fx-color-text:        #f4f6fb;  /* Haupttext */
+    -fx-color-text-soft:   #cbd0dd;  /* sekundärer Text */
+    -fx-color-text-muted:  #8f94a2;  /* Platzhalter, Hilfetexte */
+    -fx-color-text-invert: #050608;  /* Text auf grünen/hellen Flächen */
+
+    /* Statusfarben – unheimlich, gut differenzierbar */
+    -fx-color-valid:   #34e68e;  /* Heil-/Lebensgrün (magisch) */
+    -fx-color-invalid: #d94b6e;  /* dämonisch-magenta Rot */
+    -fx-color-warning: #d3b243;  /* fauliges Gold/Ocker */
+}

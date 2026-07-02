@@ -1,0 +1,30 @@
+* {
+    /* Hintergründe */
+	-fx-color-bg-0: #f1f7ea;   /* Hauptfläche – helles, frisches Grünweiß */
+	-fx-color-bg-1: #e3f0d4;   /* Panels / Karten */
+	-fx-color-bg-2: #d4e7c3;  /* hervorgehobene Flächen (leicht kräftigeres Grün) */	
+	
+    /* Rahmen & Ornamente */
+	-fx-color-surface: #c0d9a3;/* Inhaltsflächen, Tabellen */
+    -fx-color-border:  #869b62;  /* Rahmen – mittleres Olivgrün */
+
+    /* Akzente */
+    -fx-color-accent:      #6ea94a;  /* Primär (Buttons, aktive Elemente) */
+    -fx-color-accent-alt:  #8cbc5e;  /* Hover/Fokus */
+	-fx-color-accent-soft: #eaf5de;  /* sanfte Akzentflächen, Header, Chips */
+	-fx-accent: derive(-fx-color-accent, 20%);
+
+	/* Ornamente / dekorative Rahmen – feiner Kontrast */
+	-fx-color-ornament-border: #6c804d;  /* dunkler Rahmen für Ornamente */
+
+    /* Text */
+	-fx-color-text:        #242d18;  /* Haupttext (dunkles Blatt/Erde) */
+	-fx-color-text-soft:   #535e40;  /* sekundärer Text */
+	-fx-color-text-muted:  #828e70;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #f7fbf2;  /* Text auf sehr dunklen / Akzentflächen */
+
+    /* Status */
+	-fx-color-valid:   #1f9a3a;  /* sattes, klares Laubgrün, gut sichtbar als „OK“ */
+	-fx-color-invalid: #c13b32;  /* kräftiges, warmes Rot mit hohem Signalcharakter */
+	-fx-color-warning: #c28a34;  /* warmes Gold/Orange */
+}

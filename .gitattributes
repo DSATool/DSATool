@@ -1,0 +1,2 @@
+JavaFX-Web-*.jar filter=lfs diff=lfs merge=lfs -text
+JavaFX-Web-23.jar !filter !diff !merge -text

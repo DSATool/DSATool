@@ -1,0 +1,30 @@
+* {
+	/* Primäre Hintergründe – hell, leicht warm */
+	-fx-color-bg-0: #f5f5f5;  /* Anwendungs-Hintergrund */
+	-fx-color-bg-1: #eceaea;  /* Panels, Sidebars */
+	-fx-color-bg-2: #e0dddb;  /* leicht hervorgehobene Flächen */
+	
+	/* Oberflächen / Rahmen */
+	-fx-color-surface: #faf8f6;  /* Tabellenflächen, Cards, Dialoge */
+	-fx-color-border:  #b5afa9;	 /* Rahmen */
+	
+	/* Akzent: Kupfer */
+	-fx-color-accent:      #b97855;  /* Primär-Akzent */
+	-fx-color-accent-alt:  #d39a6f;  /* Hover/Fokus */
+	-fx-color-accent-soft: #f0e6df;  /* dezente warme Flächen (z.B. Header) */
+	-fx-accent: derive(-fx-color-accent, 20%);
+	
+	/* Ornamente / dekorative Rahmen – feiner Kontrast */
+	-fx-color-ornament-border: #a77352;
+	
+	/* Textfarben – klarer, etwas kühler Kontrast */
+	-fx-color-text:        #252220;  /* Haupttext */
+	-fx-color-text-soft:   #4a4340;  /* sekundärer Text */
+	-fx-color-text-muted:  #87807a;  /* Platzhalter, Hilfetexte */
+	-fx-color-text-invert: #fdfaf7;  /* Text auf Kupfer-/dunklen Flächen */
+	
+	/* Statusfarben */
+	-fx-color-valid:   #138f3b;  /* klares, leuchtendes Grün */
+	-fx-color-invalid: #c01515;  /* starkes, gut sichtbares Rot */
+	-fx-color-warning: #c8841f;  /* warmes, klares Amber/Gold für Warnungen */
+}

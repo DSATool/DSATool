@@ -17,8 +17,7 @@
    <Label text="Pfad zur Datei:" />
    <HBox spacing="2" >
       <TextField fx:id="path" HBox.hgrow="ALWAYS" />
-      <Button onAction="#browsePath" prefWidth="25" prefHeight="25" text="&#xE8B6;" >
-         <padding><Insets top="0" right="0" bottom="-5" left="0"/></padding>
+      <Button onAction="#browsePath" prefWidth="25" prefHeight="25" text="&#xE8B6;" style="-fx-padding: 0 0 -5 0;" >
          <font>
             <Font name="Material Symbols Outlined" size="20.0" />
          </font>

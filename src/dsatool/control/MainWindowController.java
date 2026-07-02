@@ -20,6 +20,7 @@ import java.util.Optional;
 import org.controlsfx.control.StatusBar;
 
 import dsatool.credits.CreditsDialog;
+import dsatool.gui.ThemedAlert;
 import dsatool.resources.GroupFileManager;
 import dsatool.resources.ResourceManager;
 import dsatool.settings.SettingsDialog;
@@ -82,7 +83,7 @@ public class MainWindowController {
 	 */
 	private boolean askSaveChanges() {
 		resizeToolSelector();
-		final Alert saveConfirmation = new Alert(AlertType.CONFIRMATION);
+		final Alert saveConfirmation = new ThemedAlert(AlertType.CONFIRMATION);
 		saveConfirmation.setTitle("Änderungen speichern?");
 		saveConfirmation.setHeaderText("Änderungen speichern?");
 		saveConfirmation.setContentText("Sollen ungespeicherte Änderungen jetzt gespeichert werden?");
@@ -118,7 +119,6 @@ public class MainWindowController {
 		});
 		toolsMenu = new dsatool.ui.Menu(groupName -> {
 			final TitledPane menu = new TitledPane();
-			menu.setAnimated(false);
 			menu.setText(groupName);
 			toolSelector.getChildren().add(menu);
 			final VBox group = new VBox();
