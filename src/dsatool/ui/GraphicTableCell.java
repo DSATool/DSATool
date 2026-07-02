@@ -76,7 +76,7 @@ public abstract class GraphicTableCell<S, T> extends TableCell<S, T> {
 			@Override
 			public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
 				if (oldValue && !newValue) {
-					if (graphic.getScene().getFocusOwner() != graphic) {
+					if (graphic.getScene() != null && graphic.getScene().getFocusOwner() != graphic) {
 						final int index = getTableRow().getIndex();
 						graphic.focusedProperty().removeListener(this);
 						if (index != -1) {
