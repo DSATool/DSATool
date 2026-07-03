@@ -119,7 +119,7 @@ public class Main extends Application {
 
 		app = this;
 
-		for (final File font : new File("resources/fonts").listFiles((_, name) -> name.endsWith(".ttf"))) {
+		for (final File font : new File(Util.getAppDir() + "/resources/fonts").listFiles((_, name) -> name.endsWith(".ttf"))) {
 			try {
 				Font.loadFont(new FileInputStream(font), 154);
 			} catch (final FileNotFoundException e) {

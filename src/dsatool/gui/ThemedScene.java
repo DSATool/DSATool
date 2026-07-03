@@ -62,7 +62,7 @@ public class ThemedScene extends Scene {
 			case "Gras" -> "grass-theme.css";
 			case "Meer" -> "sea-theme.css";
 			case "Himmel" -> "sky-theme.css";
-			default -> "stone-theme.css";
+			case null, default -> "stone-theme.css";
 		};
 		return ThemedScene.class.getResource(themeFile).toExternalForm();
 	}
