@@ -1,2 +1,4 @@
 JavaFX-Web-*.jar filter=lfs diff=lfs merge=lfs -text
 JavaFX-Web-23.jar !filter !diff !merge -text
+DSATool_2026-07-03_13-30.zip filter=lfs diff=lfs merge=lfs -text
+DSATool_2026-07-03_13-30_full.zip filter=lfs diff=lfs merge=lfs -text

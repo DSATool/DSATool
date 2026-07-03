@@ -1,4 +1,4 @@
 {
 	"releaseDate" : "@releaseDate@",
-	"releaseLink" : "https://raw.githubusercontent.com/DSATool/DSATool/master/release/DSATool_@releaseDate@.zip"
+	"releaseLink" : "https://media.githubusercontent.com/media/DSATool/DSATool/refs/heads/master/release/DSATool_@releaseDate@.zip"
 }

@@ -19,7 +19,7 @@
 	<target name="update" description="Creates a zip file for release" depends="deploy,Updater">
 		<delete dir="release/current"/>
 		<mkdir dir="release/current"/>
-		<copy todir="release/current" includeEmptyDirs="false">
+		<copy todir="release/current" includeEmptyDirs="false" overwrite="true">
 			<fileset dir="." includes="${Includes},${Name}.jar">
 			    <different targetdir="release/previous"/>
 			</fileset>
@@ -48,10 +48,10 @@
 				<striplinebreaks/>
 			</filterchain>
 		</loadfile>
-		<copy file="release/release-info.template" tofile="release/current/release-info.json"/>
+		<copy file="release/release-info.template" tofile="release/current/release-info.json" overwrite="true"/>
 		<replace file="release/current/release-info.json" token="@releaseDate@" value="${releaseDate}"/>
 		<replace file="release/current/release-info.json" token="@previousReleaseDate@" value="${previousReleaseDate}"/>
-		<copy file="release/current/release-info.json" tofile="release/current/update/${Name}.json"/>
+		<copy file="release/current/release-info.json" tofile="release/current/update/${Name}.json" overwrite="true"/>
 		<copy file="release/update-info.template" tofile="release/update-info.json" overwrite="true"/>
 		<replace file="release/update-info.json" token="@releaseDate@" value="${releaseDate}"/>
 		<java jar="update/SignatureTool.jar" fork="true">
@@ -64,14 +64,14 @@
 			<arg value="SHA512withECDSA"/>
 		</java>
 		<delete dir="release/previous"/>
-		<copy todir="release/previous" includeEmptyDirs="false">
+		<copy todir="release/previous" includeEmptyDirs="false" overwrite="true">
 			<fileset dir="." includes="${Includes},${Name}.jar"/>
 		</copy>
-		<copy file="release/current/release-info.json" todir="release/previous"/>
+		<copy file="release/current/release-info.json" todir="release/previous" overwrite="true"/>
 		<delete dir="release/current"/>
 	</target>
 	<target name="release" description="Creates a full release as well as an update" depends="update">
-		<copy file="release/release-info.template" tofile="update/${Name}.json"/>
+		<copy file="release/release-info.template" tofile="update/${Name}.json" overwrite="true"/>
 		<replace file="update/${Name}.json" token="@releaseDate@" value="${releaseDate}"/>
 		<replace file="update/${Name}.json" token="@previousReleaseDate@" value="${previousReleaseDate}"/>
 		<zip destfile="release/${Name}_${releaseDate}_full.zip">
